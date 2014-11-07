@@ -4,70 +4,73 @@ using System.Collections;
 public class Move : MonoBehaviour {
 
 	private float x, y, distance;
+
 	// Use this for initialization
 	void Start () {
 
-		//checks what quadrant the planet spawned in
+		//checks what quadrant the planet spawned in and gives it appropriate velocity
+
+		//Bottom left
 		if (transform.position.x < 0 && transform.position.y < 0) {
-						x = Random.Range(1.0f, 15.0f);
-			y = 0.0f; //Random.Range (1.0f, 2.0f);
+						x = Random.Range(5.0f, 15.0f);
+						y = -6.0f;
+
+				//Bottom Right
 				} else if (transform.position.x > 0 && transform.position.y < 0) {
-			x = 0.0f; //Random.Range(-2.0f, -1.0f);
-			y = Random.Range (1.0f, 15.0f);
+						x = 6.0f;
+						y = Random.Range (5.0f, 15.0f);
+
+				//Top left
 				} else if (transform.position.x < 0 && transform.position.y > 0) {
-			x = 0.0f; //Random.Range(1.0f, 2.0f);
-			y = Random.Range (-15.0f, -1.0f);
+						x = -6.0f;
+						y = Random.Range (-15.0f, -5.0f);
+
+				//Top Right
 				} else {
-			x = Random.Range(-15.0f, -1.0f);
-			y = 0.0f; //Random.Range (-2.0f, -1.0f);
+						x = Random.Range(-15.0f, -5.0f);
+						y = 6.0f;
 				}
-		// Deletes planet after 10 seconds
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		//Distance from sun
 		distance = Mathf.Sqrt ((transform.position.x * transform.position.x) + (transform.position.y * transform.position.y));
+
+		//Deletes planet if it falls into sun or goes too far off screen
 		if (distance <= 2.5f || transform.position.x <= -100f || transform.position.x >= 100f
 		    || transform.position.y <= -100f || transform.position.y >= 100f)
 						DeletePlanet ();
-		updateVel (ref x, ref y);
+
+		//Updates velocity and moves planet
+		updateVel (ref x, ref y, distance);
 		transform.Translate (new Vector3 (x, y, 0f) * Time.deltaTime);
 
 
 	}
 
+	//deletes planet and decrements class wide count
 	public void DeletePlanet()
 	{
 		Destroy (gameObject);
 		--Planet.planetNum;
 		}
 
-	public void updateVel(ref float x, ref float y)
+	//Uses newtons law to move velocity relative to sun
+	public void updateVel(ref float x, ref float y, float dist)
 	{
 
 		float gravConst = 1f;
 		float sunMass = 50f, planetMass = 10f;
 		float force, acc;
-		//float xFrac, yFrac, deltaMomentum, deltaVel;
 
-		float dist = Mathf.Sqrt ((transform.position.x * transform.position.x) + (transform.position.y * transform.position.y));
-
+		//avoids dividing by zero
 		if (dist == 0)
-						dist = .0000000000001f;
+			dist = .0000000000001f;
 
+		//Newtons law
 		force = gravConst * ((sunMass * planetMass) / Mathf.Pow (dist, 2f));
-
-		/*
-		xFrac = transform.position.x / dist * -1f;
-		yFrac = transform.position.y / dist * -1f;
-
-		deltaMomentum = force / planetMass;
-		deltaVel = deltaMomentum / planetMass;
-
-		x += xFrac * deltaVel;
-		y += yFrac * deltaVel;
-		*/
 
 		acc = force / planetMass;
 		x += transform.position.x * (acc / dist) * -1f;
