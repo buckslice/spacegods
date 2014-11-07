@@ -21,22 +21,22 @@ public class PlanetSpawner : MonoBehaviour {
             switch (Random.Range(1, 5)) {
                 case 1:
                     x = -0.1f;
-                    y = Random.Range(0f, 1f);
+                    y = Random.Range(0f, 0.25f);
                     break;
 
                 case 2:
                     x = 1.1f;
-                    y = Random.Range(0, 1f);
+                    y = Random.Range(0.75f, 1f);
                     break;
 
                 case 3:
                     y = -0.1f;
-                    x = Random.Range(0f, 1f);
+                    x = Random.Range(0.75f, 1f);
                     break;
 
                 case 4:
                     y = 1.1f;
-                    x = Random.Range(0f, 1f);
+                    x = Random.Range(0f, 0.25f);
                     break;
 
             }
