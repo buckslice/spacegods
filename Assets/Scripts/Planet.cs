@@ -22,7 +22,7 @@ public class Planet : MonoBehaviour {
 	public void SpawnPlanet()
 	{
 
-		if (planetNum < 10) {
+		if (planetNum < 20) {
 
 			int selectSide = Random.Range(1, 4);
 
