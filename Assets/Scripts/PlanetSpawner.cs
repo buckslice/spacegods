@@ -12,7 +12,7 @@ public class PlanetSpawner : MonoBehaviour {
     }
 
     public void SpawnPlanet() {
-        if (planetNum < 50) {
+        if (planetNum < 15) {
 
             float x = 0f;
             float y = 0f;
