@@ -29,6 +29,8 @@ Thumbs.db
 Temp/
 Library/
 
+Builds/
+
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
