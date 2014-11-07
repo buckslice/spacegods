@@ -125,6 +125,46 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!1 &167415152
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 167415153}
+  - 114: {fileID: 167415154}
+  m_Layer: 0
+  m_Name: Planet Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &167415153
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 167415152}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .29977572, y: -.682286322, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+--- !u!114 &167415154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 167415152}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1726560a7d85c2b4e88bf28ea30de130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  muhThang: {fileID: 100000, guid: 7d70bd0fe078b8e458f770a631c3f76e, type: 2}
 --- !u!1 &291421339
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,6 +365,7 @@ GameObject:
   - 92: {fileID: 717554942}
   - 124: {fileID: 717554941}
   - 81: {fileID: 717554940}
+  - 114: {fileID: 717554945}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -401,6 +442,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!114 &717554945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 717554939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1726560a7d85c2b4e88bf28ea30de130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  muhThang: {fileID: 100000, guid: 7d70bd0fe078b8e458f770a631c3f76e, type: 2}
 --- !u!1001 &1308351004
 Prefab:
   m_ObjectHideFlags: 0
@@ -585,6 +638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minSize: 8
+  mainCam: {fileID: 0}
 --- !u!114 &1664334439
 MonoBehaviour:
   m_ObjectHideFlags: 0

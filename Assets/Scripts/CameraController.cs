@@ -4,7 +4,7 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
     public float minSize = 5f;
-    private Camera mainCam;
+    public Camera mainCam;
 
     // Use this for initialization
     void Start() {
@@ -39,6 +39,7 @@ public class CameraController : MonoBehaviour {
         // should probably add some smoothing to this later (by lerping)
         mainCam.orthographicSize = Mathf.Max(minSize, (bounds.extents.y < reqHeight) ? reqHeight : bounds.extents.y);
 
+		
     }
 
 }
