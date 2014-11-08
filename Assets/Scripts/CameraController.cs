@@ -4,7 +4,7 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
     public float minSize = 5f;
-    public Camera mainCam;
+    private Camera mainCam;
 
     // Use this for initialization
     void Start() {

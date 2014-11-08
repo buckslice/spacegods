@@ -5,6 +5,7 @@ public class PlanetSpawner : MonoBehaviour {
 
     public GameObject planet;
     static public int planetNum = 0;
+    public int maxPlanets = 15;
 
     // Use this for initialization
     void Start() {
@@ -12,7 +13,7 @@ public class PlanetSpawner : MonoBehaviour {
     }
 
     public void SpawnPlanet() {
-        if (planetNum < 15) {
+        if (planetNum < maxPlanets) {
 
             float x = 0f;
             float y = 0f;
@@ -21,25 +22,21 @@ public class PlanetSpawner : MonoBehaviour {
             switch (Random.Range(1, 5)) {
                 case 1:
                     x = -0.1f;
-                    //y = Random.Range(0f, 0.25f);
                     y = Random.Range(0f, 1f);
                     break;
 
                 case 2:
                     x = 1.1f;
-                    //y = Random.Range(0.75f, 1f);
                     y = Random.Range(0f, 1f);
                     break;
 
                 case 3:
                     y = -0.1f;
-                    //x = Random.Range(0.75f, 1f);
                     x = Random.Range(0f, 1f);
                     break;
 
                 case 4:
                     y = 1.1f;
-                    //x = Random.Range(0f, 0.25f);
                     x = Random.Range(0f, 1f);
                     break;
 

@@ -508,6 +508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planet: {fileID: 100002, guid: 4e4d0708d790b0a4f84f87663c10fca1, type: 2}
+  maxPlanets: 15
 --- !u!1001 &1672688518
 Prefab:
   m_ObjectHideFlags: 0
