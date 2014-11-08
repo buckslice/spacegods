@@ -7,7 +7,7 @@ public class GodController : MonoBehaviour {
     // player number, used for input
     public int player = 0;
 
-    private Transform myTransform;
+    private Transform model;
     private Rigidbody2D myRigidbody;
     private God god;
 
@@ -15,21 +15,25 @@ public class GodController : MonoBehaviour {
     private float dx;
     private float dy;
 
+    // track the original orientation of the model
+    private float flipX;
+
     // Use this for initialization
     void Start() {
-        myTransform = transform;
+        model = transform.Find("Model");
         myRigidbody = GetComponent<Rigidbody2D>();
         god = GetComponent<God>();
+        flipX = model.localScale.x;
+        Game.instance.addPlayer(this);
     }
 
     // Update is called once per frame
     void Update() {
         // flips sprite based on last horizontal movement direction
         // as well as the default flip orientation of gods sprite
-        if (dx != 0) {
-            //float flip = dx < 0 ? god.flipSprite ? 1 : -1 : god.flipSprite ? -1 : 1;
-            float flip = dx < 0 ? 1 : -1;
-            myTransform.localScale = new Vector3(flip, 1, 1);
+        if (!Mathf.Approximately(dx, 0f)) {
+            int flip = dx < 0 ? 1 : -1;
+            model.localScale = new Vector3(flipX * flip, model.localScale.y, model.localScale.z);
         }
     }
 
@@ -50,5 +54,9 @@ public class GodController : MonoBehaviour {
         if (Mathf.Approximately(dx, 0f) && Mathf.Approximately(dy, 0f)) {
             myRigidbody.velocity = myRigidbody.velocity * god.dampeningFactor;
         }
+    }
+
+    public Bounds getCameraBounds() {
+        return model.renderer.bounds;
     }
 }

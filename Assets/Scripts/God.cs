@@ -12,14 +12,9 @@ public class God : MonoBehaviour {
     [Range(.9f, 1f)]
     public float dampeningFactor = 0.99f;
 
-    private Transform myTransform;
-    private Rigidbody2D myRigidbody;
-
     // Use this for initialization
     void Start() {
-        myTransform = transform;
-        myRigidbody = rigidbody2D;
-        Game.instance.addGodToList(this);
+
     }
 
     // Update is called once per frame
@@ -31,7 +26,4 @@ public class God : MonoBehaviour {
 
     }
 
-    public Bounds getBounds() {
-        return myRigidbody.collider2D.bounds;
-    }
 }

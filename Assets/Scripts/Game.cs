@@ -11,7 +11,7 @@ public class Game : MonoBehaviour {
     }
 
     // list of all gods in current game
-    public List<God> gods;
+    public List<GodController> players;
 
 	// Use this for initialization
 	void Start () {
@@ -23,7 +23,7 @@ public class Game : MonoBehaviour {
 	
 	}
 
-    public void addGodToList(God god) {
-        gods.Add(god);
+    public void addPlayer(GodController player) {
+        players.Add(player);
     }
 }

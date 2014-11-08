@@ -16,9 +16,9 @@ public class CameraController : MonoBehaviour {
 
         // calculate bounding box of all the gods in match
         Bounds bounds = new Bounds();
-        for (int i = 0; i < Game.instance.gods.Count; ++i) {
-            God god = Game.instance.gods[i];
-            Bounds b = god.getBounds();
+        for (int i = 0; i < Game.instance.players.Count; ++i) {
+            GodController player = Game.instance.players[i];
+            Bounds b = player.getCameraBounds();
 
             // if you don't want to include origin
             if (i == 0) {

@@ -15,16 +15,32 @@ public class PlanetGravity : MonoBehaviour {
 
         // add some random velocity tangent to the direction of gravity
         Vector3 dir = (gravitationTarget.transform.position - myRigidBody.transform.position).normalized;
+
+        // Random.Range(-1f,1f) instead of 1f at the end will make orbits go either way
+        // resulting in many more collisions and a generally less stable system
         Vector3 tangent = Vector3.Cross(dir, new Vector3(0, 0, 1f));
         
         myRigidBody.velocity = 10f * tangent;
 
     }
 
-    void Update() {
-        // add gravity force towards sun
-        Vector3 g = (gravitationTarget.transform.position - myRigidBody.transform.position).normalized * gravity;
+    void FixedUpdate() {
+        // less realistic constant gravity (gravity constant was 4)
+        //Vector3 g = (gravitationTarget.transform.position - myRigidBody.transform.position).normalized * gravity;
+
+        // more realistic gravity (scales with distance)
+        Vector3 dist = (gravitationTarget.position - transform.position) / 10f;
+        Vector3 g = Mathf.Max(gravity / dist.sqrMagnitude, 1f) * dist.normalized;
+
         myRigidBody.AddForce(g * myRigidBody.mass);
+    }
+
+    void Update() {
+        // destroy planet if 100f away from sun
+        if ((gravitationTarget.position - transform.position).sqrMagnitude > 100 * 100) {
+            Destroy(gameObject);
+            --PlanetSpawner.planetNum;
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
