@@ -24,9 +24,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400002}
-  - 50: {fileID: 5000000}
   - 114: {fileID: 11400000}
   - 58: {fileID: 5800000}
+  - 50: {fileID: 5000000}
   m_Layer: 0
   m_Name: BasicPlanet
   m_TagString: Planet
@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravity: 20
+  collision: {fileID: 8300000, guid: f3ed097d7c4f8d0478e91135781c3b8e, type: 3}
+  explosion: {fileID: 8300000, guid: cee22c80f6190e343a2294263d9d1dcb, type: 3}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

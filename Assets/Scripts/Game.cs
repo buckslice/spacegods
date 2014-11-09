@@ -26,4 +26,8 @@ public class Game : MonoBehaviour {
     public void addPlayer(GodController player) {
         players.Add(player);
     }
+
+    public void removePlayer(GodController player) {
+        players.Remove(player);
+    }
 }

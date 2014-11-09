@@ -124,6 +124,7 @@ MonoBehaviour:
   health: 100
   maxSpeed: 100
   acceleration: 10
+  throwStrength: 20
   dampeningFactor: .99000001
 --- !u!212 &21200000
 SpriteRenderer:

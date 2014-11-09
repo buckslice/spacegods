@@ -7,6 +7,7 @@ public class God : MonoBehaviour {
     public int health = 100;
     public float maxSpeed = 100f;
     public float acceleration = 10f;
+    public float throwStrength = 20f;
 
     // .99 is a pretty good value here it seems
     [Range(.9f, 1f)]

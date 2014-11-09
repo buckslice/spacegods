@@ -31,6 +31,7 @@ public class CameraController : MonoBehaviour {
         // set center of camera to center of the bounding box
         mainCam.transform.position = new Vector3(bounds.center.x, bounds.center.y, -10f);
 
+
         // calculate minimum required height
         float reqHeight = bounds.extents.x / mainCam.aspect;
 

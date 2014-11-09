@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Rigidbody2D))]
+//[RequireComponent(typeof(Rigidbody2D))]
 public class PlanetGravity : MonoBehaviour {
 
     public float gravity = 1f;  // should make sun class eventually and move this there
 
     private Transform gravitationTarget;
     private Rigidbody2D myRigidBody;
+    public AudioClip collision;
+    public AudioClip explosion;
 
     void Start() {
         myRigidBody = GetComponent<Rigidbody2D>();
@@ -18,7 +20,7 @@ public class PlanetGravity : MonoBehaviour {
 
         // Random.Range(-1f,1f) instead of 1f at the end will make orbits go either way
         Vector3 tangent = Vector3.Cross(dir, new Vector3(0, 0, 1f));
-        
+
         myRigidBody.velocity = 10f * tangent;
 
     }
@@ -37,16 +39,21 @@ public class PlanetGravity : MonoBehaviour {
     void Update() {
         // destroy planet if 100f away from sun
         if ((gravitationTarget.position - transform.position).sqrMagnitude > 100 * 100) {
-            Destroy(gameObject);
             --PlanetSpawner.planetNum;
+            Destroy(gameObject);
         }
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
-        // kill planet if it hits sun
-        if (collision.gameObject.tag == "Sun") {
-            Destroy(gameObject);
+        if (collision.gameObject.tag == "Planet") {
+            // only want one of the planets to play the sound so base it off random factor like x position
+            if (transform.position.x > collision.transform.position.x) {
+                AudioManager.instance.playSound("Collision", transform.position, 1f);
+            }
+        } else if (collision.gameObject.tag == "Sun") { // kill planet if it hits sun
+            AudioManager.instance.playSound("Explosion0", transform.position, .25f);
             --PlanetSpawner.planetNum;
+            Destroy(gameObject);
         }
     }
 }
