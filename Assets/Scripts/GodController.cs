@@ -15,6 +15,10 @@ public class GodController : MonoBehaviour {
     private float dx;
     private float dy;
 
+	//Compare trigger values in previous frame
+	private bool oldTrigger;
+	private bool newTrigger;
+
     // track the original orientation of the model
     private float flipX;
     private bool isFlipped = false; // true when facing right, false when facing left
@@ -26,6 +30,7 @@ public class GodController : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+		oldTrigger = false;
         model = transform.Find("Model");
         myRigidbody = GetComponent<Rigidbody2D>();
         god = GetComponent<God>();
@@ -50,8 +55,9 @@ public class GodController : MonoBehaviour {
             Destroy(gameObject);
         }
 
+		newTrigger = Input.GetAxis ("Fire_360_" + player) < 0.0;
         if (myPlanet != null) { // if your god is holding a planet
-            if (Input.GetButtonDown("Fire" + player)) { //throw planet
+            if (Input.GetButtonDown("Fire" + player) || (!oldTrigger && newTrigger)) { //throw planet
                 releaseButtonFire = false;
                 Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();
                 planetBody.simulated = true;  //renable planets physics
@@ -73,9 +79,10 @@ public class GodController : MonoBehaviour {
             }
         }
 
-        if (Input.GetButtonUp("Fire" + player)) {
+		if (Input.GetButtonUp("Fire" + player) || (oldTrigger && !newTrigger)) {
             releaseButtonFire = true;
         }
+		oldTrigger = newTrigger;
     }
 
     void FixedUpdate() {
@@ -83,7 +90,14 @@ public class GodController : MonoBehaviour {
         // define input axis' under Edit->Project Settings->Input
         // so far just 2 player keyboard input set up, but can later expand to 4+ people with controllers
         dx = Input.GetAxis("Horizontal" + player) * god.acceleration;
+		//Making sure players cant press keyboard AND controller for speed boost
+		if (dx == 0.0) {
+			dx = Input.GetAxis ("Horizontal_360_" + player) * god.acceleration;
+				}
         dy = Input.GetAxis("Vertical" + player) * god.acceleration;
+		if (dy == 0.0) {
+			dy = Input.GetAxis("Vertical_360_" + player) * god.acceleration;
+				}
         myRigidbody.AddForce(new Vector2(dx, dy), ForceMode2D.Force);
 
         // limit velocity to maxSpeed of god
@@ -99,7 +113,7 @@ public class GodController : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Planet") {
-            if (Input.GetButton("Fire" + player) && myPlanet == null) {  // catch planet if button is down and we dont have one
+            if ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null) {  // catch planet if button is down and we dont have one
                 if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
                     myPlanet = collision.gameObject;
                     Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();
