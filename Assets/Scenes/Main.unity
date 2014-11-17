@@ -164,6 +164,9 @@ Transform:
   m_Children:
   - {fileID: 512563307}
   m_Father: {fileID: 0}
+<<<<<<< HEAD
+  m_RootOrder: 2
+=======
   m_RootOrder: 3
 --- !u!114 &291421345
 MonoBehaviour:
@@ -176,6 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4e334405b66e0b40ab26508cae6bf6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+>>>>>>> e0df8a768b184743b2ccf2330dddb0323d093050
 --- !u!1 &512563306
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +330,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!1001 &1323610079
 Prefab:
   m_ObjectHideFlags: 0
@@ -364,7 +368,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 29f2844e1d89a4ed09e527cd2039d6ea, type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1500000, guid: 29f2844e1d89a4ed09e527cd2039d6ea, type: 2}
       propertyPath: maxSize
@@ -627,7 +631,7 @@ Transform:
   m_Children:
   - {fileID: 2001413266}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 4
 --- !u!58 &1626528573
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -669,7 +673,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!114 &1664334438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -804,7 +808,7 @@ Transform:
   m_Children:
   - {fileID: 1594342676}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!114 &1996267973
 MonoBehaviour:
   m_ObjectHideFlags: 0
