@@ -23,7 +23,6 @@ public class GodController : MonoBehaviour {
     private float flipX;
     private bool isFlipped = false; // true when facing right, false when facing left
 
-    private bool buttonDown = false;
     private GameObject myPlanet;
     private CircleCollider2D planetCollider;
     private bool releaseButtonFire = true;
