@@ -97,7 +97,9 @@ public class GodController : MonoBehaviour {
 		if (dy == 0.0) {
 			dy = Input.GetAxis("Vertical_360_" + player) * god.acceleration;
 				}
-        myRigidbody.AddForce(new Vector2(dx, dy), ForceMode2D.Force);
+
+		myRigidbody.velocity = myRigidbody.velocity*.95f+new Vector2(dx, dy)*2f*.05f;
+        //myRigidbody.AddForce(new Vector2(dx, dy), ForceMode2D.Force);
 
         // limit velocity to maxSpeed of god
         if (myRigidbody.velocity.sqrMagnitude > god.maxSpeed * god.maxSpeed) {
