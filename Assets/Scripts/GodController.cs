@@ -43,11 +43,13 @@ public class GodController : MonoBehaviour {
     void Update() {
         // flips sprite based on last horizontal movement direction
         // as well as the default flip orientation of gods sprite
-        if (!Mathf.Approximately(dx, 0f)) {
-            isFlipped = dx < 0;
-            int flip = isFlipped ? -1 : 1;
-            model.localScale = new Vector3(flipX * flip, model.localScale.y, model.localScale.z);
-        }
+		if (!Mathf.Approximately (dx, 0f) || !Mathf.Approximately (Input.GetAxis ("Horizontal_aim_360_" + player), 0f)) {
+				isFlipped = Mathf.Approximately (Input.GetAxis ("Horizontal_aim_360_" + player), 0f) ? dx < 0 : 
+					Input.GetAxis ("Horizontal_aim_360_" + player) < 0f;
+				int flip = isFlipped ? -1 : 1;
+				model.localScale = new Vector3 (flipX * flip, model.localScale.y, model.localScale.z);
+				}
+
 
         if (god.health <= 0) {
             Game.instance.removePlayer(this);
@@ -63,7 +65,8 @@ public class GodController : MonoBehaviour {
 
                 // this throws to left or right but once controllers are added
                 // we should throw according to direction of right thumbstick
-                Vector2 launch = new Vector2(isFlipped ? -god.throwStrength : god.throwStrength, 0f);
+				Vector2 launch = new Vector2(isFlipped ? -god.throwStrength : god.throwStrength, 
+				                             Input.GetAxis("Vertical_aim_360_" + player) * god.throwStrength);
                 planetBody.velocity = myRigidbody.velocity + launch; 
 
                 myRigidbody.mass -= planetBody.mass; // subtract off planets mass
@@ -72,7 +75,8 @@ public class GodController : MonoBehaviour {
                 myPlanet = null;
             } else {    // move the planet in front of god for blocking (should be based of right thumsbtick later too)
                 float xHoldDistance = isFlipped ? -2f : 2f;
-                Vector3 target = transform.position + Vector3.right * xHoldDistance;
+				float yHoldDistance = Input.GetAxis("Vertical_aim_360_" + player) * 2;
+                Vector3 target = transform.position + Vector3.right * xHoldDistance + Vector3.up * yHoldDistance;
                 myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, .1f);
                 planetCollider.center = new Vector2(xHoldDistance, 0f);
             }
