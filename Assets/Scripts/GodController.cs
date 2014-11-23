@@ -72,10 +72,10 @@ public class GodController : MonoBehaviour {
                 myRigidbody.mass -= planetBody.mass; // subtract off planets mass
                 myPlanet.transform.parent = null;
                 planetCollider.enabled = false;
-                myPlanet = null;
+				myPlanet = null;
             } else {    // move the planet in front of god for blocking (should be based of right thumsbtick later too)
                 float xHoldDistance = isFlipped ? -2f : 2f;
-				float yHoldDistance = Input.GetAxis("Vertical_aim_360_" + player) * 2;
+				float yHoldDistance = Input.GetAxis("Vertical_aim_360_" + player) * 2f;
                 Vector3 target = transform.position + Vector3.right * xHoldDistance + Vector3.up * yHoldDistance;
                 myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, .1f);
                 planetCollider.center = new Vector2(xHoldDistance, 0f);
