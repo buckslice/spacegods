@@ -27,5 +27,4 @@ public class God : MonoBehaviour {
     void FixedUpdate() {
 
     }
-
 }

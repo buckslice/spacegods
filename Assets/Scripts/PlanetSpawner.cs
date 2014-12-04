@@ -9,11 +9,14 @@ public class PlanetSpawner : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        InvokeRepeating("SpawnPlanet", 1f, 1f);
+		SpawnPlanets ();
     }
+	void Update(){
+		SpawnPlanets ();
+	}
 
-    public void SpawnPlanet() {
-        if (planetNum < maxPlanets) {
+    public void SpawnPlanets() {
+        while (planetNum < maxPlanets && !Game.instance.gameIsOver()) {
 
             float x = 0f;
             float y = 0f;
