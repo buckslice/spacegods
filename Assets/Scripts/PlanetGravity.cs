@@ -10,6 +10,7 @@ public class PlanetGravity : MonoBehaviour {
     private Rigidbody2D myRigidBody;
     public AudioClip collision;
     public AudioClip explosion;
+    public PhysicsMaterial2D noBounce;
 
     void Start() {
         myRigidBody = GetComponent<Rigidbody2D>();
@@ -45,6 +46,11 @@ public class PlanetGravity : MonoBehaviour {
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.tag == "Player") {
+            myRigidBody.collider2D.sharedMaterial = noBounce;
+        }
+
+
         if (collision.gameObject.tag == "Planet") {
             // only want one of the planets to play the sound so base it off random factor like x position
             if (transform.position.x > collision.transform.position.x) {

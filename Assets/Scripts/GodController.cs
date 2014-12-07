@@ -123,6 +123,8 @@ public class GodController : MonoBehaviour {
         }
     }
 
+
+
     public Bounds getCameraBounds() {
         return model.renderer.bounds;
     }
