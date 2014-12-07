@@ -15,17 +15,25 @@ public class GodController : MonoBehaviour {
     private float dx;
     private float dy;
 
+	//Compare trigger values in previous frame
+	private bool oldTrigger;
+	private bool newTrigger;
+
+	//catchable
+	int catchable;
+
     // track the original orientation of the model
     private float flipX;
     private bool isFlipped = false; // true when facing right, false when facing left
 
-    private bool buttonDown = false;
     private GameObject myPlanet;
     private CircleCollider2D planetCollider;
     private bool releaseButtonFire = true;
 
     // Use this for initialization
     void Start() {
+		catchable = 0;
+		oldTrigger = false;
         model = transform.Find("Model");
         myRigidbody = GetComponent<Rigidbody2D>();
         god = GetComponent<God>();
@@ -39,43 +47,57 @@ public class GodController : MonoBehaviour {
     void Update() {
         // flips sprite based on last horizontal movement direction
         // as well as the default flip orientation of gods sprite
-        if (!Mathf.Approximately(dx, 0f)) {
-            isFlipped = dx < 0;
-            int flip = isFlipped ? -1 : 1;
-            model.localScale = new Vector3(flipX * flip, model.localScale.y, model.localScale.z);
-        }
+		if (!Mathf.Approximately (dx, 0f) || !Mathf.Approximately (Input.GetAxis ("Horizontal_aim_360_" + player), 0f)) {
+				isFlipped = Mathf.Approximately (Input.GetAxis ("Horizontal_aim_360_" + player), 0f) ? dx < 0 : 
+					Input.GetAxis ("Horizontal_aim_360_" + player) < 0f;
+				int flip = isFlipped ? -1 : 1;
+				model.localScale = new Vector3 (flipX * flip, model.localScale.y, model.localScale.z);
+				}
+
 
         if (god.health <= 0) {
             Game.instance.removePlayer(this);
             Destroy(gameObject);
         }
 
+		newTrigger = Input.GetAxis ("Fire_360_" + player) < 0.0;
         if (myPlanet != null) { // if your god is holding a planet
-            if (Input.GetButtonDown("Fire" + player)) { //throw planet
+            if (Input.GetButtonDown("Fire" + player) || (!oldTrigger && newTrigger)) { //throw planet
+				PlanetGravity myGrav = myPlanet.GetComponent<PlanetGravity>();
+				myGrav.makeFalse();
+				myGrav.makeTrue();
                 releaseButtonFire = false;
                 Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();
                 planetBody.simulated = true;  //renable planets physics
 
                 // this throws to left or right but once controllers are added
                 // we should throw according to direction of right thumbstick
-                Vector2 launch = new Vector2(isFlipped ? -god.throwStrength : god.throwStrength, 0f);
+				Vector2 launch = new Vector2(isFlipped ? -god.throwStrength : god.throwStrength, 
+				                             Input.GetAxis("Vertical_aim_360_" + player) * god.throwStrength);
                 planetBody.velocity = myRigidbody.velocity + launch; 
 
                 myRigidbody.mass -= planetBody.mass; // subtract off planets mass
                 myPlanet.transform.parent = null;
                 planetCollider.enabled = false;
-                myPlanet = null;
+				myPlanet = null;
+				myGrav = null;
             } else {    // move the planet in front of god for blocking (should be based of right thumsbtick later too)
                 float xHoldDistance = isFlipped ? -2f : 2f;
-                Vector3 target = transform.position + Vector3.right * xHoldDistance;
+				float yHoldDistance = Input.GetAxis("Vertical_aim_360_" + player) * 2f;
+                Vector3 target = transform.position + Vector3.right * xHoldDistance + Vector3.up * yHoldDistance;
                 myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, .1f);
                 planetCollider.center = new Vector2(xHoldDistance, 0f);
             }
         }
+		if (Input.GetButtonDown ("Fire" + player) || (!oldTrigger && newTrigger)) {
+			catchable = 0;
+				}
 
-        if (Input.GetButtonUp("Fire" + player)) {
+		if (Input.GetButtonUp("Fire" + player) || (oldTrigger && !newTrigger)) {
             releaseButtonFire = true;
         }
+		oldTrigger = newTrigger;
+		++catchable;
     }
 
     void FixedUpdate() {
@@ -83,8 +105,17 @@ public class GodController : MonoBehaviour {
         // define input axis' under Edit->Project Settings->Input
         // so far just 2 player keyboard input set up, but can later expand to 4+ people with controllers
         dx = Input.GetAxis("Horizontal" + player) * god.acceleration;
+		//Making sure players cant press keyboard AND controller for speed boost
+		if (dx == 0.0) {
+			dx = Input.GetAxis ("Horizontal_360_" + player) * god.acceleration;
+				}
         dy = Input.GetAxis("Vertical" + player) * god.acceleration;
-        myRigidbody.AddForce(new Vector2(dx, dy), ForceMode2D.Force);
+		if (dy == 0.0) {
+			dy = Input.GetAxis("Vertical_360_" + player) * god.acceleration;
+				}
+
+		myRigidbody.velocity = myRigidbody.velocity*.95f+new Vector2(dx, dy)*2f*.05f;
+        //myRigidbody.AddForce(new Vector2(dx, dy), ForceMode2D.Force);
 
         // limit velocity to maxSpeed of god
         if (myRigidbody.velocity.sqrMagnitude > god.maxSpeed * god.maxSpeed) {
@@ -99,7 +130,9 @@ public class GodController : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Planet") {
-            if (Input.GetButton("Fire" + player) && myPlanet == null) {  // catch planet if button is down and we dont have one
+			PlanetGravity planCol = collision.gameObject.GetComponent<PlanetGravity>();
+            if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 100)) 
+			     && ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null))) {  // catch planet if button is down and we dont have one
                 if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
                     myPlanet = collision.gameObject;
                     Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();
