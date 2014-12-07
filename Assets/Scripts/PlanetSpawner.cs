@@ -45,6 +45,7 @@ public class PlanetSpawner : MonoBehaviour {
             Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(x, y, 10f));
             GameObject newPlanet = (GameObject)Instantiate(planet, p, Quaternion.identity);
             newPlanet.transform.parent = gameObject.transform;
+			newPlanet.GetComponent<CircleCollider2D>().isTrigger = true;
             ++planetNum;
         }
     }
