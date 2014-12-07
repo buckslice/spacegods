@@ -19,6 +19,9 @@ public class GodController : MonoBehaviour {
 	private bool oldTrigger;
 	private bool newTrigger;
 
+	//catchable
+	int catchable;
+
     // track the original orientation of the model
     private float flipX;
     private bool isFlipped = false; // true when facing right, false when facing left
@@ -29,6 +32,7 @@ public class GodController : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+		catchable = 0;
 		oldTrigger = false;
         model = transform.Find("Model");
         myRigidbody = GetComponent<Rigidbody2D>();
@@ -59,6 +63,9 @@ public class GodController : MonoBehaviour {
 		newTrigger = Input.GetAxis ("Fire_360_" + player) < 0.0;
         if (myPlanet != null) { // if your god is holding a planet
             if (Input.GetButtonDown("Fire" + player) || (!oldTrigger && newTrigger)) { //throw planet
+				PlanetGravity myGrav = myPlanet.GetComponent<PlanetGravity>();
+				myGrav.makeFalse();
+				myGrav.makeTrue();
                 releaseButtonFire = false;
                 Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();
                 planetBody.simulated = true;  //renable planets physics
@@ -73,6 +80,7 @@ public class GodController : MonoBehaviour {
                 myPlanet.transform.parent = null;
                 planetCollider.enabled = false;
 				myPlanet = null;
+				myGrav = null;
             } else {    // move the planet in front of god for blocking (should be based of right thumsbtick later too)
                 float xHoldDistance = isFlipped ? -2f : 2f;
 				float yHoldDistance = Input.GetAxis("Vertical_aim_360_" + player) * 2f;
@@ -81,11 +89,15 @@ public class GodController : MonoBehaviour {
                 planetCollider.center = new Vector2(xHoldDistance, 0f);
             }
         }
+		if (Input.GetButtonDown ("Fire" + player) || (!oldTrigger && newTrigger)) {
+			catchable = 0;
+				}
 
 		if (Input.GetButtonUp("Fire" + player) || (oldTrigger && !newTrigger)) {
             releaseButtonFire = true;
         }
 		oldTrigger = newTrigger;
+		++catchable;
     }
 
     void FixedUpdate() {
@@ -118,7 +130,9 @@ public class GodController : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Planet") {
-            if ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null) {  // catch planet if button is down and we dont have one
+			PlanetGravity planCol = collision.gameObject.GetComponent<PlanetGravity>();
+            if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 100)) 
+			     && ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null))) {  // catch planet if button is down and we dont have one
                 if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
                     myPlanet = collision.gameObject;
                     Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();

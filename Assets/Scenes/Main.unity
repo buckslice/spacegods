@@ -592,6 +592,7 @@ MonoBehaviour:
   gravity: 20
   collision: {fileID: 8300000, guid: f3ed097d7c4f8d0478e91135781c3b8e, type: 3}
   explosion: {fileID: 8300000, guid: cee22c80f6190e343a2294263d9d1dcb, type: 3}
+  catchBool: 0
 --- !u!1001 &1323610079
 Prefab:
   m_ObjectHideFlags: 0
