@@ -5,17 +5,18 @@ using System.Collections;
 public class God : MonoBehaviour {
 
     public int health = 100;
+    private int maxHealth;
     public float maxSpeed = 100f;
     public float acceleration = 10f;
     public float throwStrength = 20f;
 
-    // .99 is a pretty good value here it seems
-    [Range(.9f, 1f)]
-    public float dampeningFactor = 0.99f;
-
     // Use this for initialization
     void Start() {
+        maxHealth = health;
+    }
 
+    public int getMaxHealth() {
+        return maxHealth;
     }
 
     // Update is called once per frame

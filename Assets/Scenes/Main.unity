@@ -248,7 +248,6 @@ MonoBehaviour:
   maxSpeed: 100
   acceleration: 10
   throwStrength: 20
-  dampeningFactor: .99000001
 --- !u!50 &291421342
 Rigidbody2D:
   m_ObjectHideFlags: 0
@@ -592,6 +591,7 @@ MonoBehaviour:
   gravity: 20
   collision: {fileID: 8300000, guid: f3ed097d7c4f8d0478e91135781c3b8e, type: 3}
   explosion: {fileID: 8300000, guid: cee22c80f6190e343a2294263d9d1dcb, type: 3}
+  noBounce: {fileID: 0}
   catchBool: 0
 --- !u!1001 &1323610079
 Prefab:
@@ -1110,7 +1110,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449acb889f887b648b5e28fda11bb50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targSize: 5
   minSize: 8
+  jumpSize: 5
 --- !u!114 &1664334439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1259,7 +1261,6 @@ MonoBehaviour:
   maxSpeed: 100
   acceleration: 10
   throwStrength: 20
-  dampeningFactor: .99000001
 --- !u!50 &1996267975
 Rigidbody2D:
   m_ObjectHideFlags: 0
