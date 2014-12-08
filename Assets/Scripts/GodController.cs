@@ -131,7 +131,7 @@ public class GodController : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Planet") {
             PlanetGravity planCol = collision.gameObject.GetComponent<PlanetGravity>();
-            if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 100))
+            if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 30))
                  && ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null))) {  // catch planet if button is down and we dont have one
                 if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
                     myPlanet = collision.gameObject;

@@ -49,7 +49,7 @@ public class PlanetGravity : MonoBehaviour {
     }
 
 	public void makeFalse() {
-		Invoke ("makeTooFalse", .5f);
+		Invoke ("makeTooFalse", .01f);
 		}
 
 	public void makeTooFalse() {
