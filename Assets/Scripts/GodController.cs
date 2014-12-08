@@ -128,50 +128,55 @@ public class GodController : MonoBehaviour {
 		// moved movement code out of FixedUpdate since its no longer using AddForce     
 	}
 	
-	//    void OnCollisionEnter2D(Collision2D collision) {
-	//        if (collision.gameObject.tag == "Planet") {
-	//            PlanetGravity planCol = collision.gameObject.GetComponent<PlanetGravity>();
-	//            if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 100))
-	//                 && ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null))) {  // catch planet if button is down and we dont have one
-	//                if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
-	//                    myPlanet = collision.gameObject;
-	//                    Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();
-	//                    planetBody.simulated = false;  //disable planets physics
-	//                    myRigidbody.mass += planetBody.mass; // add planets mass to your own
-	//                    myPlanet.transform.parent = transform;
-	//                    planetCollider.enabled = true;
-	//                    planetCollider.radius = myPlanet.GetComponent<CircleCollider2D>().radius;   //set our planetCollider equal to radius of planet
-	//                }
-	//            } else {
-	//                // since were using mainly circle colliders, the first contact point will probably be the only one
-	//                ContactPoint2D first = collision.contacts[0];
-	//                // if either are our planetCollider then we dont take damage
-	//                if (first.collider == planetCollider || first.otherCollider == planetCollider) {
-	//                    AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-	//                } else {    // otherwise one of our gods colliders have been hit so we take damage
-	//                    AudioManager.instance.playSound("GodHurt", transform.position, 1f);
-	//                    god.health -= 20;
-	//                }
-	//            }
-	//        }
-	//    }
-	
+   void OnCollisionEnter2D(Collision2D collision) {
+		if (collision.gameObject.tag == "Planet") {
+            PlanetGravity planCol = collision.gameObject.GetComponent<PlanetGravity>();
+	            if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 15))
+	                 && ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null))) {  // catch planet if button is down and we dont have one
+	                if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
+	                    myPlanet = collision.gameObject;
+	                    Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();
+	                    planetBody.simulated = false;  //disable planets physics
+	                    myRigidbody.mass += planetBody.mass; // add planets mass to your own
+	                    myPlanet.transform.parent = transform;
+	                    planetCollider.enabled = true;
+	                    planetCollider.radius = myPlanet.GetComponent<CircleCollider2D>().radius;   //set our planetCollider equal to radius of planet
+	                }
+	            } else {
+	                // since were using mainly circle colliders, the first contact point will probably be the only one
+	                ContactPoint2D first = collision.contacts[0];
+	                // if either are our planetCollider then we dont take damage
+	                if (first.collider == planetCollider || first.otherCollider == planetCollider) {
+	                    AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
+	                } else {    // otherwise one of our gods colliders have been hit so we take damage
+	                    AudioManager.instance.playSound("GodHurt", transform.position, 1f);
+	                    god.health -= 20;
+	                }
+	            }
+	       }
+	}
+
+	/*
 	void OnCollisionEnter2D(Collision2D collision) {
-		// since were using mainly circle colliders, the first contact point will probably be the only one
-		ContactPoint2D first = collision.contacts[0];
-		// if either are our planetCollider then we dont take damage
-		if (first.collider == planetCollider || first.otherCollider == planetCollider) {
-			AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-		} else {    // otherwise one of our gods colliders have been hit so we take damage
-			AudioManager.instance.playSound("GodHurt", transform.position, 1f);
-			god.health -= 20;
+		if (collision.gameObject.tag == "Planet")
+		{
+			// since were using mainly circle colliders, the first contact point will probably be the only one
+			ContactPoint2D first = collision.contacts[0];
+			// if either are our planetCollider then we dont take damage
+			if (first.collider == planetCollider || first.otherCollider == planetCollider) {
+				AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
+			}
+			else {    // otherwise one of our gods colliders have been hit so we take damage
+				AudioManager.instance.playSound("GodHurt", transform.position, 1f);
+				god.health -= 20;
+			}
 		}
 	}
 	
 	void OnTriggerEnter2D(Collider2D trigger) {
 		if (trigger.gameObject.tag == "Planet") {
 			PlanetGravity planCol = trigger.gameObject.GetComponent<PlanetGravity>();
-			if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 100))
+			if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 1000))
 			     && ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null))) {  // catch planet if button is down and we dont have one
 				if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
 					myPlanet = trigger.gameObject;
@@ -186,8 +191,7 @@ public class GodController : MonoBehaviour {
 			}
 		}
 	}
-	
-	
+*/
 	
 	public Bounds getCameraBounds() {
 		return model.renderer.bounds;
