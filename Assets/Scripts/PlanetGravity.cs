@@ -12,10 +12,10 @@ public class PlanetGravity : MonoBehaviour {
     public AudioClip explosion;
     public PhysicsMaterial2D noBounce;
 
-	public bool catchBool;
+    public bool catchBool;
 
     void Start() {
-		catchBool = true;
+        catchBool = true;
         myRigidBody = GetComponent<Rigidbody2D>();
         gravitationTarget = GameObject.Find("Sun").transform;
 
@@ -48,20 +48,20 @@ public class PlanetGravity : MonoBehaviour {
         }
     }
 
-	public void makeFalse() {
-		Invoke ("makeTooFalse", .001f);
-		}
+    public void makeFalse() {
+        Invoke("makeTooFalse", .001f);
+    }
 
-	public void makeTooFalse() {
-		catchBool = false;
-		}
+    public void makeTooFalse() {
+        catchBool = false;
+    }
 
-	public void makeTrue() {
-		Invoke ("makeTooTrue", 10f);
-		}
-	public void makeTooTrue() {
-		catchBool = true;
-		}
+    public void makeTrue() {
+        Invoke("makeTooTrue", 10f);
+    }
+    public void makeTooTrue() {
+        catchBool = true;
+    }
 
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Player") {
