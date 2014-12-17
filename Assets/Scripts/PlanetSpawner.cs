@@ -9,11 +9,20 @@ public class PlanetSpawner : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+		//InvokeRepeating ("SpawnPlanets", 1f, .1f);
 		SpawnPlanets ();
+		//StartCoroutine (WaitBeforeSpawning ());
+
     }
 	void Update(){
+		//yield return new WaitForSeconds (2);
 		SpawnPlanets ();
 	}
+
+	public IEnumerator WaitBeforeSpawning() {
+		yield return new WaitForSeconds (2);
+		SpawnPlanets ();
+		}
 
     public void SpawnPlanets() {
         while (planetNum < maxPlanets && !Game.instance.gameIsOver()) {
