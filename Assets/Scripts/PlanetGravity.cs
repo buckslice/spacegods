@@ -42,7 +42,7 @@ public class PlanetGravity : MonoBehaviour {
 
     void Update() {
         // destroy planet if 50f away from sun or within 2f of the sun
-		if ((gravitationTarget.position - transform.position).sqrMagnitude > 50 * 50 || (gravitationTarget.position - transform.position).sqrMagnitude < 2 * 2) {
+		if ((gravitationTarget.position - transform.position).sqrMagnitude > 100 * 100 || (gravitationTarget.position - transform.position).sqrMagnitude < 2 * 2) {
             --PlanetSpawner.planetNum;
             Destroy(gameObject);
         }

@@ -4,19 +4,23 @@ using System.Collections;
 public class PlanetSpawner : MonoBehaviour {
 
     public GameObject planet;
-    static public int planetNum = 0;
+    static public int planetNum;
     public int maxPlanets = 15;
 
+	void Awake() {
+		planetNum = 0;
+		}
     // Use this for initialization
     void Start() {
-		//InvokeRepeating ("SpawnPlanets", 1f, .1f);
-		SpawnPlanets ();
+		InvokeRepeating ("SpawnPlanets", 2f, .3f);
+		//SpawnPlanets ();
 		//StartCoroutine (WaitBeforeSpawning ());
 
     }
 	void Update(){
 		//yield return new WaitForSeconds (2);
-		SpawnPlanets ();
+		//SpawnPlanets ();
+		WaitBeforeSpawning ();
 	}
 
 	public IEnumerator WaitBeforeSpawning() {
@@ -25,7 +29,7 @@ public class PlanetSpawner : MonoBehaviour {
 		}
 
     public void SpawnPlanets() {
-        while (planetNum < maxPlanets && !Game.instance.gameIsOver()) {
+        if (planetNum < maxPlanets && !Game.instance.gameIsOver()) {
 
             float x = 0f;
             float y = 0f;
