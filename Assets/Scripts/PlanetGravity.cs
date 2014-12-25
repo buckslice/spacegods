@@ -24,8 +24,13 @@ public class PlanetGravity : MonoBehaviour {
 
         // Random.Range(-1f,1f) instead of 1f at the end will make orbits go either way
         Vector3 tangent = Vector3.Cross(dir, new Vector3(0, 0, 1f));
+		Vector3 halfway = (dir + tangent.normalized).normalized;
+		halfway = (dir + halfway).normalized;
+		Vector3 position = new Vector3 (Random.Range (Mathf.Min (halfway.x, tangent.x), Mathf.Max (halfway.x, tangent.x)),
+		                               Random.Range (Mathf.Min (halfway.y, tangent.y), Mathf.Max (halfway.y, tangent.y)),
+		                               Random.Range (Mathf.Min (halfway.z, tangent.z), Mathf.Max (halfway.z, tangent.z)));
 
-        myRigidBody.velocity = 10f * tangent;
+        myRigidBody.velocity = 10f * position;
 
     }
 

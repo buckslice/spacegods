@@ -12,7 +12,7 @@ public class PlanetSpawner : MonoBehaviour {
 		}
     // Use this for initialization
     void Start() {
-		InvokeRepeating ("SpawnPlanets", 2f, .3f);
+		InvokeRepeating ("SpawnPlanets", 1f, .2f);
 		//SpawnPlanets ();
 		//StartCoroutine (WaitBeforeSpawning ());
 
