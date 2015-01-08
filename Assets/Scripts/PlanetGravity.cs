@@ -30,7 +30,7 @@ public class PlanetGravity : MonoBehaviour {
 		                               Random.Range (Mathf.Min (halfway.y, tangent.y), Mathf.Max (halfway.y, tangent.y)),
 		                               Random.Range (Mathf.Min (halfway.z, tangent.z), Mathf.Max (halfway.z, tangent.z)));
 
-        myRigidBody.velocity = 10f * position;
+        myRigidBody.velocity = Random.Range(10f, 15f) * position;
 
     }
 
@@ -62,7 +62,7 @@ public class PlanetGravity : MonoBehaviour {
     }
 
     public void makeTrue() {
-        Invoke("makeTooTrue", 10f);
+        Invoke("makeTooTrue", 5f);
     }
     public void makeTooTrue() {
         catchBool = true;
