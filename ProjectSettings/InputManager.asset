@@ -133,6 +133,38 @@ InputManager:
     axis: 0
     joyNum: 2
   - serializedVersion: 3
+    m_Name: Horizontal_360_3
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .200000003
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 0
+    joyNum: 3
+  - serializedVersion: 3
+    m_Name: Horizontal_360_4
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .200000003
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 0
+    joyNum: 4
+  - serializedVersion: 3
     m_Name: Vertical_360_1
     descriptiveName: 
     descriptiveNegativeName: 
@@ -164,6 +196,38 @@ InputManager:
     type: 2
     axis: 1
     joyNum: 2
+  - serializedVersion: 3
+    m_Name: Vertical_360_3
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .100000001
+    sensitivity: 1
+    snap: 0
+    invert: 1
+    type: 2
+    axis: 1
+    joyNum: 3
+  - serializedVersion: 3
+    m_Name: Vertical_360_4
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .100000001
+    sensitivity: 1
+    snap: 0
+    invert: 1
+    type: 2
+    axis: 1
+    joyNum: 4
   - serializedVersion: 3
     m_Name: Fire_360_1
     descriptiveName: 
@@ -197,6 +261,38 @@ InputManager:
     axis: 2
     joyNum: 2
   - serializedVersion: 3
+    m_Name: Fire_360_3
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .00100000005
+    sensitivity: 1
+    snap: 1
+    invert: 0
+    type: 2
+    axis: 2
+    joyNum: 3
+  - serializedVersion: 3
+    m_Name: Fire_360_4
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .00100000005
+    sensitivity: 1
+    snap: 1
+    invert: 0
+    type: 2
+    axis: 2
+    joyNum: 4
+  - serializedVersion: 3
     m_Name: Horizontal_aim_360_1
     descriptiveName: 
     descriptiveNegativeName: 
@@ -229,6 +325,38 @@ InputManager:
     axis: 3
     joyNum: 2
   - serializedVersion: 3
+    m_Name: Horizontal_aim_360_3
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .200000003
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 3
+    joyNum: 3
+  - serializedVersion: 3
+    m_Name: Horizontal_aim_360_4
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .200000003
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 3
+    joyNum: 4
+  - serializedVersion: 3
     m_Name: Vertical_aim_360_1
     descriptiveName: 
     descriptiveNegativeName: 
@@ -260,3 +388,35 @@ InputManager:
     type: 2
     axis: 4
     joyNum: 2
+  - serializedVersion: 3
+    m_Name: Vertical_aim_360_3
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .200000003
+    sensitivity: 1
+    snap: 0
+    invert: 1
+    type: 2
+    axis: 4
+    joyNum: 3
+  - serializedVersion: 3
+    m_Name: Vertical_aim_360_4
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 3
+    dead: .200000003
+    sensitivity: 1
+    snap: 0
+    invert: 1
+    type: 2
+    axis: 4
+    joyNum: 4
