@@ -13,6 +13,10 @@ public class PlanetSpawner : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+        //InvokeRepeating("SpawnPlanets", 1f, 1f);
+    }
+
+    public void Begin() {
         InvokeRepeating("SpawnPlanets", 1f, 1f);
     }
 
