@@ -1447,7 +1447,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1726560a7d85c2b4e88bf28ea30de130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planet: {fileID: 100002, guid: 4e4d0708d790b0a4f84f87663c10fca1, type: 2}
   maxPlanets: 15
 --- !u!114 &1664334441
 MonoBehaviour:

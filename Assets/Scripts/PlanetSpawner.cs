@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlanetSpawner : MonoBehaviour {
 
-    public GameObject planet;
+    private GameObject planet;
     static public int planetNum;
     public int maxPlanets = 15;
 
@@ -51,8 +51,17 @@ public class PlanetSpawner : MonoBehaviour {
             }
 
             Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(x, y, 10f));
-            GameObject newPlanet = (GameObject)Instantiate(planet, p, Quaternion.identity);
-            newPlanet.transform.parent = gameObject.transform;
+			switch (Random.Range(1,3)) { //Spawn planets with different prefab, add more cases for each prefab
+			case 1:
+				planet = (GameObject)Instantiate(Resources.Load("BasketballPlanet"), p, Quaternion.identity);
+				break;
+			case 2:
+				planet = (GameObject)Instantiate(Resources.Load ("IcyPlanet"), p, Quaternion.identity);
+				break;
+			}
+			//GameObject newPlanet = (GameObject)Instantiate(planet, p, Quaternion.identity);
+			//newPlanet.transform.parent = gameObject.transform;
+			planet.transform.parent = gameObject.transform;
             // newPlanet.GetComponent<CircleCollider2D>().isTrigger = true;
             ++planetNum;
         }
