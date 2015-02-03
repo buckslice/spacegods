@@ -37,11 +37,13 @@ public class HealthBar : MonoBehaviour {
 
         style.normal.background = texture;
 
-        GUI.Box(new Rect(screenPoint.x - 50, screenPoint.y + 70, god.health, 5), GUIContent.none, style);
+        float yOff = 700f / Camera.main.orthographicSize;
+
+        GUI.Box(new Rect(screenPoint.x - 50, screenPoint.y + yOff, god.health, 5), GUIContent.none, style);
 
         // add gray bar to see how far off from maxHealth you are
         texture.SetPixel(0, 0, Color.gray);
         texture.Apply();
-        GUI.Box(new Rect(screenPoint.x - 50 + god.health, screenPoint.y + 70, god.getMaxHealth() - god.health, 5), GUIContent.none, style);
+        GUI.Box(new Rect(screenPoint.x -50 + god.health, screenPoint.y + yOff, god.getMaxHealth() - god.health, 5), GUIContent.none, style);
     }
 }

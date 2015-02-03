@@ -7,26 +7,18 @@ public class PlanetSpawner : MonoBehaviour {
     static public int planetNum;
     public int maxPlanets = 15;
 
-	void Awake() {
-		planetNum = 0;
-		}
+    void Awake() {
+        planetNum = 0;
+    }
+
     // Use this for initialization
     void Start() {
-		InvokeRepeating ("SpawnPlanets", 1f, .2f);
-		//SpawnPlanets ();
-		//StartCoroutine (WaitBeforeSpawning ());
-
+        //InvokeRepeating("SpawnPlanets", 1f, 1f);
     }
-	void Update(){
-		//yield return new WaitForSeconds (2);
-		//SpawnPlanets ();
-		WaitBeforeSpawning ();
-	}
 
-	public IEnumerator WaitBeforeSpawning() {
-		yield return new WaitForSeconds (2);
-		SpawnPlanets ();
-		}
+    public void Begin() {
+        InvokeRepeating("SpawnPlanets", 1f, 1f);
+    }
 
     public void SpawnPlanets() {
         if (planetNum < maxPlanets && !Game.instance.gameIsOver()) {
@@ -61,7 +53,7 @@ public class PlanetSpawner : MonoBehaviour {
             Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(x, y, 10f));
             GameObject newPlanet = (GameObject)Instantiate(planet, p, Quaternion.identity);
             newPlanet.transform.parent = gameObject.transform;
-			// newPlanet.GetComponent<CircleCollider2D>().isTrigger = true;
+            // newPlanet.GetComponent<CircleCollider2D>().isTrigger = true;
             ++planetNum;
         }
     }

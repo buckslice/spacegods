@@ -18,9 +18,11 @@ public class GodController : MonoBehaviour {
     //Compare trigger values in previous frame
     private bool oldTrigger;
     private bool newTrigger;
+    private bool freezeInputs = true;
 
     //catchable
-    int catchable;
+    private int catchFrames;
+    private int invincible;
 
     // track the original orientation of the model
     private float flipX;
@@ -30,17 +32,25 @@ public class GodController : MonoBehaviour {
     private CircleCollider2D planetCollider;
     private bool releaseButtonFire = true;
 
+    private bool usingJoysticks = true;
+
     // Use this for initialization
     void Start() {
-        catchable = 0;
+        catchFrames = 0;
         oldTrigger = false;
         model = transform.Find("Model");
         myRigidbody = GetComponent<Rigidbody2D>();
         god = GetComponent<God>();
-        flipX = model.localScale.x;
         Game.instance.addPlayer(this);
+        flipX = model.localScale.x;
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
         planetCollider.enabled = false;
+
+        usingJoysticks = Input.GetJoystickNames().Length != 0;
+        if (!usingJoysticks && player > 2) {    // temporary fix until we implement selection screen and stuff
+            player = 1;
+        }
+        //usingJoysticks = true;
     }
 
     // Update is called once per frame
@@ -48,14 +58,18 @@ public class GodController : MonoBehaviour {
         // add input force to rigidbody
         // define input axis' under Edit->Project Settings->Input
         // so far just 2 player keyboard input set up, but can later expand to 4+ people with controllers
-        dx = Input.GetAxis("Horizontal" + player) * god.acceleration;
+
         //Making sure players cant press keyboard AND controller for speed boost
-        if (dx == 0.0) {
+        if (!usingJoysticks) {
+            dx = Input.GetAxis("Horizontal" + player) * god.acceleration;
+            dy = Input.GetAxis("Vertical" + player) * god.acceleration;
+        } else {
             dx = Input.GetAxis("Horizontal_360_" + player) * god.acceleration;
-        }
-        dy = Input.GetAxis("Vertical" + player) * god.acceleration;
-        if (dy == 0.0) {
             dy = Input.GetAxis("Vertical_360_" + player) * god.acceleration;
+        }
+
+        if (freezeInputs) {
+            dx = dy = 0;
         }
 
         // lerp velocity for more responsive movement
@@ -68,7 +82,6 @@ public class GodController : MonoBehaviour {
             myRigidbody.velocity = myRigidbody.velocity.normalized * god.maxSpeed;
         }
 
-
         // flips sprite based on last horizontal movement direction
         // as well as the default flip orientation of gods sprite
         if (!Mathf.Approximately(dx, 0f) || !Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + player), 0f)) {
@@ -78,7 +91,6 @@ public class GodController : MonoBehaviour {
             model.localScale = new Vector3(flipX * flip, model.localScale.y, model.localScale.z);
         }
 
-
         if (god.health <= 0) {
             Game.instance.removePlayer(this);
             Destroy(gameObject);
@@ -86,7 +98,9 @@ public class GodController : MonoBehaviour {
 
         newTrigger = Input.GetAxis("Fire_360_" + player) < 0.0;
         if (myPlanet != null) { // if your god is holding a planet
-            if (Input.GetButtonDown("Fire" + player) || (!oldTrigger && newTrigger)) { //throw planet
+            bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + player);
+
+            if (fireInput) { //throw planet
                 PlanetGravity myGrav = myPlanet.GetComponent<PlanetGravity>();
                 myGrav.makeFalse();
                 myGrav.makeTrue();
@@ -113,26 +127,46 @@ public class GodController : MonoBehaviour {
                 planetCollider.center = new Vector2(xHoldDistance, yHoldDistance);
             }
         }
-        if (Input.GetButtonDown("Fire" + player) || (!oldTrigger && newTrigger)) {
-            catchable = 0;
+
+        if (usingJoysticks) {
+            if (!oldTrigger && newTrigger) {
+                catchFrames = 0;
+            }
+        } else if (Input.GetButtonDown("Fire" + player)) {
+            catchFrames = 0;
         }
 
-        if (Input.GetButtonUp("Fire" + player) || (oldTrigger && !newTrigger)) {
+        if (usingJoysticks) {
+            if (oldTrigger && !newTrigger) {
+                releaseButtonFire = true;
+            }
+        } else if (Input.GetButtonUp("Fire" + player)) {
             releaseButtonFire = true;
         }
+
         oldTrigger = newTrigger;
-        ++catchable;
+        ++catchFrames;
+    }
+
+    public void lockInput() {
+        freezeInputs = true;
+    }
+    public void unlockInput() {
+        freezeInputs = false;
     }
 
     void FixedUpdate() {
-        // moved movement code out of FixedUpdate since its no longer using AddForce     
+        invincible--;
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Planet") {
             PlanetGravity planCol = collision.gameObject.GetComponent<PlanetGravity>();
-            if ((planCol.catchBool || catchable < 15)
-                 && ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null)) {  // catch planet if button is down and we dont have one
+
+            bool canCatch = planCol.catchBool || catchFrames < 15;
+            bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + player) < 0.0 : Input.GetButton("Fire" + player);
+
+            if (canCatch && inputFire && myPlanet == null) {  // catch planet if button is down and we dont have one
                 if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
                     myPlanet = collision.gameObject;
                     Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D>();
@@ -148,50 +182,19 @@ public class GodController : MonoBehaviour {
                 // if either are our planetCollider then we dont take damage
                 if (first.collider == planetCollider || first.otherCollider == planetCollider) {
                     AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-                } else {    // otherwise one of our gods colliders have been hit so we take damage
+                } else if (invincible < 0) {    // otherwise one of our gods colliders have been hit so we take damage
                     AudioManager.instance.playSound("GodHurt", transform.position, 1f);
                     god.health -= 20;
+                    invincible = 25;
                 }
             }
         }
-    }
 
-    /*
-    void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.tag == "Planet")
-        {
-            // since were using mainly circle colliders, the first contact point will probably be the only one
-            ContactPoint2D first = collision.contacts[0];
-            // if either are our planetCollider then we dont take damage
-            if (first.collider == planetCollider || first.otherCollider == planetCollider) {
-                AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-            }
-            else {    // otherwise one of our gods colliders have been hit so we take damage
-                AudioManager.instance.playSound("GodHurt", transform.position, 1f);
-                god.health -= 20;
-            }
+        if (collision.gameObject.tag == "Sun" && invincible < 0) {
+            god.health -= 20;
+            invincible = 25;
         }
     }
-	
-    void OnTriggerEnter2D(Collider2D trigger) {
-        if (trigger.gameObject.tag == "Planet") {
-            PlanetGravity planCol = trigger.gameObject.GetComponent<PlanetGravity>();
-            if (((planCol.catchBool == true || (planCol.catchBool == false && catchable < 1000))
-                 && ((Input.GetButton("Fire" + player) || Input.GetAxis("Fire_360_" + player) < 0.0) && myPlanet == null))) {  // catch planet if button is down and we dont have one
-                if (releaseButtonFire) { // incase you just threw planet and still holding down button you dont want to pick up same one
-                    myPlanet = trigger.gameObject;
-                    Rigidbody2D planetBody = myPlanet.GetComponent<Rigidbody2D> ();
-                    planetBody.simulated = false;  //disable planets physics
-                    myRigidbody.mass += planetBody.mass; // add planets mass to your own
-                    myPlanet.transform.parent = transform;
-                    planetCollider.enabled = true;
-                    myPlanet.GetComponent<CircleCollider2D> ().isTrigger = false;
-                    planetCollider.radius = myPlanet.GetComponent<CircleCollider2D> ().radius;   //set our planetCollider equal to radius of planet
-                }
-            }
-        }
-    }
-*/
 
     public Bounds getCameraBounds() {
         return model.renderer.bounds;

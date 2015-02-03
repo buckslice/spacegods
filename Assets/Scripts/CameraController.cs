@@ -6,11 +6,16 @@ public class CameraController : MonoBehaviour {
     public float targSize = 5f;
     public float minSize = 5f;
     public float jumpSize = 8f;
+    public float backgroundScale = 1f / 25f;
+
     private Camera mainCam;
+    private GameObject background;
+
 
     // Use this for initialization
     void Start() {
         mainCam = Camera.main;
+        background = GameObject.Find("Scrolling Background");
     }
 
     // Update is called once per frame
@@ -31,7 +36,8 @@ public class CameraController : MonoBehaviour {
         }
 
         // set center of camera to center of the bounding box
-        mainCam.transform.position = new Vector3(bounds.center.x, bounds.center.y, -10f);
+        Vector3 newPos = new Vector3(bounds.center.x, bounds.center.y, -10f);
+        mainCam.transform.position = newPos;
 
         // calculate minimum required height
         float reqHeight = bounds.extents.x / mainCam.aspect;
@@ -45,6 +51,22 @@ public class CameraController : MonoBehaviour {
         float rate = targSize > mainCam.orthographicSize ? Time.deltaTime * 2f : Time.deltaTime;
         mainCam.orthographicSize = Mathf.Lerp(mainCam.orthographicSize, targSize, rate);
 
+        // find and set height for size of background quad
+        float bgHeight = mainCam.orthographicSize * 2f;
+        float bgWidth = bgHeight * mainCam.aspect;
+        background.transform.localScale = new Vector3(bgWidth, bgHeight, 1);
+
+        // set tiling of background texture
+        float tileX = bgWidth * backgroundScale;
+        float tileY = bgHeight * backgroundScale;
+        background.renderer.material.SetTextureScale("_MainTex", new Vector2(tileX, tileY));
+
+        // set offset of texture. assumes camera starts at origin
+        // have to subtract off half the tiling rate to make the texture grow outward from the center
+        // took me a while to figure out that part lol
+        float offsetX = newPos.x * backgroundScale - tileX / 2f;
+        float offsetY = newPos.y * backgroundScale - tileY / 2f;
+        background.renderer.material.SetTextureOffset("_MainTex", new Vector2(offsetX, offsetY));
 
     }
 
