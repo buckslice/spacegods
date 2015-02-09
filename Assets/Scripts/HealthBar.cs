@@ -1,28 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HealthBar : MonoBehaviour {
+public class HealthBar : MonoBehaviour 
+{
     private God god;
     private Vector3 screenPoint;
     private Texture2D texture;
     private GUIStyle style;
 
-    // Use this for initialization
-    void Start() {
+    // use this for initialization
+    void Start() 
+	{
         god = GetComponent<God>();
         texture = new Texture2D(1, 1);
         style = new GUIStyle();
     }
 
-    // Update is called once per frame
-    void Update() {
+    // update is called once per frame
+    void Update() 
+	{
         screenPoint = Camera.main.WorldToScreenPoint(transform.position);
         screenPoint.y = Screen.height - screenPoint.y;
     }
 
-    void OnGUI() {
+    void OnGUI() 
+	{
         // avoids editor errors
-        if (god == null) {
+        if (god == null) 
+		{
             return;
         }
 

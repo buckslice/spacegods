@@ -2,21 +2,28 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class StartButton : MonoBehaviour {
+public class StartButton : MonoBehaviour 
+{
 	public Button button;
 	public string scene_to_load;
-	// Use this for initialization
-	void Start () {
+
+	// use this for initialization
+	void Start () 
+	{
 		button.onClick.AddListener (() => whenClicked ());
 	}
-	void whenClicked(){
+
+	void whenClicked()
+	{
 		if (scene_to_load.Equals("ExitGame"))
 			Application.Quit ();
 		else
 			Application.LoadLevel (scene_to_load);
 	}
-	// Update is called once per frame
-	void Update () {
+
+	// update is called once per frame
+	void Update () 
+	{
 	
 	}
 }

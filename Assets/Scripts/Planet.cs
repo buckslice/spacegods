@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Planet : MonoBehaviour {
+public class Planet : MonoBehaviour
+{
+
 }

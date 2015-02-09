@@ -6,13 +6,16 @@ public class Menu : MonoBehaviour
 	public bool isQuit=false;
 	public bool isTutorial=false;
 	
-	void OnMouseUp(){
-		if (isQuit) {
-			//Quit game
+	void OnMouseUp()
+	{
+		if (isQuit) 
+		{
+			// quit game
 			Application.Quit();
 		}
-		else if (isTutorial){
-			//Go to tutorial page, which hasn't been written yet
+		else if (isTutorial)
+		{
+			// go to tutorial page, which hasn't been written yet
 		}
 		else {
 			//Load game
@@ -20,9 +23,11 @@ public class Menu : MonoBehaviour
 		}
 	}
 	
-	void Update(){
-		//Quit game if escape key is pressed
-		if (Input.GetKey(KeyCode.Escape)) { 
+	void Update()
+	{
+		// quit game if escape key is pressed
+		if (Input.GetKey(KeyCode.Escape)) 
+		{ 
 			Application.Quit();
 		}
 	}

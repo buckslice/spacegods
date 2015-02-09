@@ -1447,7 +1447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1726560a7d85c2b4e88bf28ea30de130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPlanets: 15
+  maxPlanets: 30
 --- !u!114 &1664334441
 MonoBehaviour:
   m_ObjectHideFlags: 0

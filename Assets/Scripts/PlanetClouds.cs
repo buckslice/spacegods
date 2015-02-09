@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlanetClouds : MonoBehaviour {
+public class PlanetClouds : MonoBehaviour 
+{
 	
 	public Sprite[] PossibleSprites;
 	
@@ -15,7 +16,8 @@ public class PlanetClouds : MonoBehaviour {
 		transform.GetComponent<SpriteRenderer>().sprite = sprite;
 	}
 	
-	void Update () {
+	void Update () 
+	{
 		
 	}
 }
