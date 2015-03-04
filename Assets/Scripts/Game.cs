@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Game : MonoBehaviour 
 {
 	public GUIText gameOverText;
+	private GameObject overlay;
     private Text text;
     private float timer = 4.99f;
     private int soundTimer = 4;
@@ -15,6 +16,7 @@ public class Game : MonoBehaviour
     private bool introFinished = false;
     private AudioSource song;
     private string winner;
+	private bool isPaused = false;
 
     // lazy singleton class
     public static Game instance { get; private set; }
@@ -33,6 +35,9 @@ public class Game : MonoBehaviour
         winner = "";
         text = GameObject.Find("CountdownText").GetComponent<Text>();
         song = Camera.main.GetComponent<AudioSource>();
+		overlay = GameObject.Find ("PauseOverlay");
+		overlay.SetActive (false);
+		overlay.renderer.enabled = true;
 	}
 	
 	// update is called once per frame
@@ -91,23 +96,52 @@ public class Game : MonoBehaviour
             timer -= Time.deltaTime / 1.25f;
         }
 
-		if (gameIsOver()) 
+		if (gameIsOver ()) 
 		{
-            if (winner == "" && players.Count > 0) 
+			if (winner == "" && players.Count > 0) 
 			{
-                winner = players[0].name;
-            }
-			gameOverText.text = "Game Over! " + winner + " wins!\nPress R to Restart\nPress Q to Quit";
-
-			if (Input.GetKeyDown (KeyCode.R))
-			{
-				Application.LoadLevel("Main");
+				winner = players [0].name;
 			}
-			if (Input.GetKeyDown (KeyCode.Q))
+			gameOverText.text = "Game Over! " + winner + " wins!\nPress R to Restart\nPress Q to Quit";
+			if (Input.GetKeyDown (KeyCode.R)) 
 			{
-				Application.LoadLevel(0);
+				Application.LoadLevel ("Main");
+			}
+			if (Input.GetKeyDown (KeyCode.Q)) 
+			{
+				Application.LoadLevel (0);
 			}
 		}
+		if (Input.GetKeyDown (KeyCode.P) && !isPaused)
+		{
+			Time.timeScale = 0;
+			isPaused = true;
+			gameOverText.text = "Game Paused";
+			overlay.SetActive(true);
+		}
+		else if (isPaused)
+		{
+			if (Input.GetKeyDown (KeyCode.R)) 
+			{
+				Time.timeScale = 1;
+				isPaused = false;
+				Application.LoadLevel ("Main");
+			}
+			if (Input.GetKeyDown (KeyCode.Q)) 
+			{
+				Time.timeScale = 1;
+				isPaused = false;
+				Application.LoadLevel (0);
+			}
+			if (Input.GetKeyDown(KeyCode.P))
+			{
+				Time.timeScale = 1;
+				isPaused = false;
+				overlay.SetActive(false);
+				gameOverText.text = "";
+			}
+		}
+
 	}
 
     public void addPlayer(GodController player) 
