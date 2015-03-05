@@ -5,7 +5,7 @@ public class CameraController : MonoBehaviour
 {
     public float targSize = 5f;
     public float minSize = 5f;
-    public float jumpSize = 8f;
+    public float jumpSize = 10f;
     public float backgroundScale = 1f / 25f;
 
     private Camera mainCam;
@@ -37,13 +37,14 @@ public class CameraController : MonoBehaviour
 			bounds.Encapsulate (b);
 		}
 
+
 		// set center of camera to center of the bounding box
 		Vector3 newPos = new Vector3 (bounds.center.x, bounds.center.y, -10f);
 		mainCam.transform.position = newPos;
 
-		// calculate minimum required height
-		float reqHeight = bounds.extents.x / mainCam.aspect;
-
+        // calculate minimum required height
+        float reqHeight = bounds.extents.x / mainCam.aspect;
+        
 		// set camera size
 		// never goes smaller than minSize and has to be at least the reqHeight
 		float targSize = Mathf.Max (minSize, (bounds.extents.y < reqHeight) ? reqHeight : bounds.extents.y);
@@ -52,6 +53,7 @@ public class CameraController : MonoBehaviour
 		// lerp quickly when camera is expanding and slowly when shrinking
 		float rate = targSize > mainCam.orthographicSize ? Time.deltaTime * 2f : Time.deltaTime;
 		mainCam.orthographicSize = Mathf.Lerp (mainCam.orthographicSize, targSize, rate);
+        //mainCam.orthographicSize = targSize;
 
 		// find and set height for size of background quad
 		float bgHeight = mainCam.orthographicSize * 2f;
