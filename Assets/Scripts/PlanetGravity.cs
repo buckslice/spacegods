@@ -70,7 +70,7 @@ public class PlanetGravity : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Player") {
-            myRigidBody.collider2D.sharedMaterial = noBounce;
+            myRigidBody.GetComponent<Collider2D>().sharedMaterial = noBounce;
         }
 
         if (collision.gameObject.tag == "Planet") {
