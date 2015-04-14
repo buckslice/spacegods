@@ -1,0 +1,118 @@
+Initialize engine version: 4.6.2f1 (bd99309c2ad7)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 560M    (ID=0x1251)
+    Vendor:   NVIDIA
+    VRAM:     3019 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\Assembly-UnityScript-firstpass.dll (this message is harmless)
+Loading C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\Assembly-UnityScript-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+- Completed reload, in  0.061 seconds
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+Platform assembly: C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Dropbox\workspaceUnity\SPACE GODS\quarter2_Data\Managed\System.dll (this message is harmless)
+Joystick disconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 707)
+
+Joystick disconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 707)
+
+Joystick reconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1321)
+
+Joystick reconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1321)
+
+Joystick connected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1349)
+
+Joystick disconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 707)
+
+Joystick reconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1321)
+
+Joystick connected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1349)
+
+Joystick disconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1256)
+
+Joystick reconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1321)
+
+UnloadTime: 3.587446 ms
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 7 unused Assets to reduce memory usage. Loaded Objects now: 154.
+Total: 2.271211 ms (FindLiveObjects: 0.008210 ms CreateObjectMapping: 0.009749 ms MarkObjects: 0.127261 ms  DeleteObjects: 1.720085 ms)
+
+UnloadTime: 0.520336 ms
+Unloading 1 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 185.
+Total: 0.758951 ms (FindLiveObjects: 0.010776 ms CreateObjectMapping: 0.013341 ms MarkObjects: 0.209366 ms  DeleteObjects: 0.010776 ms)
+
+UnloadTime: 0.450034 ms
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 8 unused Assets to reduce memory usage. Loaded Objects now: 263.
+Total: 8.248406 ms (FindLiveObjects: 0.011802 ms CreateObjectMapping: 0.009236 ms MarkObjects: 0.119051 ms  DeleteObjects: 7.722425 ms)
+
+UnloadTime: 0.627071 ms
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 96 unused Assets to reduce memory usage. Loaded Objects now: 294.
+Total: 0.715334 ms (FindLiveObjects: 0.016420 ms CreateObjectMapping: 0.011289 ms MarkObjects: 0.199103 ms  DeleteObjects: 0.080051 ms)
+
+Joystick disconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 707)
+
+Joystick reconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1321)
+
+Joystick disconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 707)
+
+Joystick reconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 1321)
+
+UnloadTime: 0.784096 ms
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 96 unused Assets to reduce memory usage. Loaded Objects now: 294.
+Total: 0.860556 ms (FindLiveObjects: 0.015394 ms CreateObjectMapping: 0.013855 ms MarkObjects: 0.318667 ms  DeleteObjects: 0.077485 ms)
+
+UnloadTime: 0.723544 ms
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 117 unused Assets to reduce memory usage. Loaded Objects now: 219.
+Total: 1.218736 ms (FindLiveObjects: 0.020526 ms CreateObjectMapping: 0.010263 ms MarkObjects: 0.288904 ms  DeleteObjects: 0.505967 ms)
+
+Joystick disconnected ("Controller (XBOX 360 For Windows)").
+ 
+(Filename:  Line: 707)
+
