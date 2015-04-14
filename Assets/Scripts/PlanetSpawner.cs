@@ -55,7 +55,7 @@ public class PlanetSpawner : MonoBehaviour
             }
 
             Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(x, y, 10f));
-			switch (Random.Range(1,4)) 
+			switch (Random.Range(1,9)) 
 			{ 
 				// spawn planets with different prefab, add more cases for each prefab
 				case 1:
@@ -66,6 +66,21 @@ public class PlanetSpawner : MonoBehaviour
 					break;
 				case 3:
 					planet = (GameObject)Instantiate(Resources.Load("BasicPlanet"), p, Quaternion.identity);
+					break;
+				case 4:
+					planet = (GameObject)Instantiate(Resources.Load("GoldPlanet"), p, Quaternion.identity);
+					break;
+				case 5:
+					planet = (GameObject)Instantiate(Resources.Load("LavaPlanet"), p, Quaternion.identity);
+					break;
+				case 6:
+					planet = (GameObject)Instantiate(Resources.Load("MetalPlanet"), p, Quaternion.identity);
+					break;
+				case 7:
+					planet = (GameObject)Instantiate(Resources.Load("RockyPlanet"), p, Quaternion.identity);
+					break;
+				case 8:
+					planet = (GameObject)Instantiate(Resources.Load("TropicalPlanet"), p, Quaternion.identity);
 					break;
 			}
 			// GameObject newPlanet = (GameObject)Instantiate(planet, p, Quaternion.identity);
