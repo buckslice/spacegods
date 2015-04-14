@@ -63,12 +63,12 @@ public class CameraController : MonoBehaviour
 		// set tiling of background texture
 		float tileX = bgWidth * backgroundScale;
 		float tileY = bgHeight * backgroundScale;
-		background.renderer.material.SetTextureScale ("_MainTex", new Vector2 (tileX, tileY));
+		background.GetComponent<Renderer>().material.SetTextureScale ("_MainTex", new Vector2 (tileX, tileY));
 
 		// set offset of texture; assumes camera starts at origin
         // have to subtract off half the tiling rate to make the texture grow outward from the center
         float offsetX = newPos.x * backgroundScale - tileX / 2f;
         float offsetY = newPos.y * backgroundScale - tileY / 2f;
-        background.renderer.material.SetTextureOffset("_MainTex", new Vector2(offsetX, offsetY));
+        background.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(offsetX, offsetY));
     }
 }

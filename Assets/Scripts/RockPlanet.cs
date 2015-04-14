@@ -11,6 +11,6 @@ public class RockPlanet : Planet {
 		float size = Random.Range(MIN_SIZE, MAX_SIZE);
 		float mass = Random.Range (MIN_MASS, MAX_MASS);
 		transform.localScale = Vector3.one * size;
-		rigidbody2D.mass = mass;
+		GetComponent<Rigidbody2D>().mass = mass;
 	}
 }

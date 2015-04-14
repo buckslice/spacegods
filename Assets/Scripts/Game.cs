@@ -37,7 +37,7 @@ public class Game : MonoBehaviour
         song = Camera.main.GetComponent<AudioSource>();
 		overlay = GameObject.Find ("PauseOverlay");
 		overlay.SetActive (false);
-		overlay.renderer.enabled = true;
+		overlay.GetComponent<Renderer>().enabled = true;
 	}
 	
 	// update is called once per frame

@@ -140,7 +140,7 @@ public class GodController : MonoBehaviour
                 float yHoldDistance = Input.GetAxis("Vertical_aim_360_" + player) * 2f;
                 Vector3 target = transform.position + Vector3.right * xHoldDistance + Vector3.up * yHoldDistance;
                 myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, .1f);
-                planetCollider.center = new Vector2(xHoldDistance, yHoldDistance);
+                planetCollider.offset = new Vector2(xHoldDistance, yHoldDistance);
             }
         }
 
@@ -236,6 +236,6 @@ public class GodController : MonoBehaviour
 
     public Bounds getCameraBounds() 
 	{
-        return model.renderer.bounds;
+        return model.GetComponent<Renderer>().bounds;
     }
 }
