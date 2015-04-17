@@ -65,7 +65,7 @@ public class PlanetSpawner : MonoBehaviour
 					planet = (GameObject)Instantiate(Resources.Load("IcyPlanet"), p, Quaternion.identity);
 					break;
 				case 3:
-					planet = (GameObject)Instantiate(Resources.Load("BasicPlanet"), p, Quaternion.identity);
+					planet = (GameObject)Instantiate(Resources.Load("IcyPlanet"), p, Quaternion.identity);
 					break;
 				case 4:
 					planet = (GameObject)Instantiate(Resources.Load("GoldPlanet"), p, Quaternion.identity);

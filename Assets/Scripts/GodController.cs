@@ -207,16 +207,15 @@ public class GodController : MonoBehaviour
                     planetCollider.enabled = true;
                     planetCollider.radius = myPlanet.GetComponent<CircleCollider2D>().radius;   // set our planetCollider equal to radius of planet
                 }
-            } 
-			else 
-			{
+            } else if (myPlanet != null) {
                 // since were using mainly circle colliders, the first contact point will probably be the only one
                 ContactPoint2D first = collision.contacts[0];
                 // if either are our planetCollider then we dont take damage
                 if (first.collider == planetCollider || first.otherCollider == planetCollider) 
 				{
                     AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-                } 
+                    myPlanet.GetComponent<Planet>().damage();
+                }
 				else if (invincible < 0) 
 				{   
 					// otherwise one of our gods colliders have been hit so we take damage
@@ -224,6 +223,8 @@ public class GodController : MonoBehaviour
                     god.health -= 20;
                     invincible = 25;
                 }
+            } else {
+                planetCollider.enabled = false;
             }
         }
 

@@ -20,7 +20,7 @@ public class CharacterSelector : MonoBehaviour {
         new string[] {"Odin",  "Athena",   "Michael Jordan", "Cthulu"}};
 
     // cooldown between joystick movements
-    private float moveCooldown = .20f;
+    private float moveCooldown = .25f;
 
     // joystick has to be pushed at least this far in certain direction
     private float minMag = .5f;
@@ -107,6 +107,7 @@ public class CharacterSelector : MonoBehaviour {
         //string[] connectedJoysticks = new string[] { "hi", "hi", "hi", "hi" };
         string[] connectedJoysticks = Input.GetJoystickNames();
         int currentNumberOfPlayers = connectedJoysticks.Length;
+        Debug.Log(currentNumberOfPlayers);
         bool playerNumChanged = false;
         for (int i = 0; i < connectedJoysticks.Length; i++) {
             if (connectedJoysticks[i] != "") {
