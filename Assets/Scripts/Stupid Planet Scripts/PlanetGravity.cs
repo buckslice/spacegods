@@ -77,7 +77,12 @@ public class PlanetGravity : MonoBehaviour {
             // only want one of the planets to play the sound so base it off random factor like x position
             if (transform.position.x > collision.transform.position.x) {
                 //AudioManager.instance.playSound("Collision", transform.position, 1f);
+				//Planet tempPlan = gameObject.GetComponent<Planet>();
+				//tempPlan.damage();
             }
+
+
+
         } else if (collision.gameObject.tag == "Sun") { // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
             --PlanetSpawner.planetNum;
