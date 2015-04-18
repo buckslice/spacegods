@@ -144,6 +144,10 @@ public class GodController : MonoBehaviour
             }
         }
 
+        if (myPlanet == null) {
+            planetCollider.enabled = false;
+        }
+
         if (usingJoysticks) 
 		{
             if (!oldTrigger && newTrigger) 
@@ -207,11 +211,12 @@ public class GodController : MonoBehaviour
                     planetCollider.enabled = true;
                     planetCollider.radius = myPlanet.GetComponent<CircleCollider2D>().radius;   // set our planetCollider equal to radius of planet
                 }
-            } else if (myPlanet != null) {
+            } else {
                 // since were using mainly circle colliders, the first contact point will probably be the only one
                 ContactPoint2D first = collision.contacts[0];
                 // if either are our planetCollider then we dont take damage
-                if (first.collider == planetCollider || first.otherCollider == planetCollider) 
+
+                if ((first.collider == planetCollider || first.otherCollider == planetCollider) && myPlanet != null) 
 				{
                     AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
                     myPlanet.GetComponent<Planet>().damage();
@@ -223,8 +228,6 @@ public class GodController : MonoBehaviour
                     god.health -= 20;
                     invincible = 25;
                 }
-            } else {
-                planetCollider.enabled = false;
             }
         }
 
