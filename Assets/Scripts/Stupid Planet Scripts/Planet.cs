@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Planet : MonoBehaviour {
-    public int health = 2;
+    private int health = 2;
     private float radius;
     private float mass;
     // maybe have planetType enum here
