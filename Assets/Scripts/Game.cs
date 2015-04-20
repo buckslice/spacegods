@@ -4,9 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
-    public GUIText gameOverText;
     private GameObject overlay;
-    private Text text;
+    private Text countDown;
+    private Text gameOverText;
     private float timer = 4.99f;
     private int soundTimer = 4;
     private int frames = 0;
@@ -28,8 +28,8 @@ public class Game : MonoBehaviour {
 
     // use this for initialization
     void Start() {
-        gameOverText.text = "";
-        text = GameObject.Find("CountdownText").GetComponent<Text>();
+        countDown = GameObject.Find("CountdownText").GetComponent<Text>();
+        gameOverText = GameObject.Find("GameOverText").GetComponent<Text>();
         song = Camera.main.GetComponent<AudioSource>();
         overlay = GameObject.Find("PauseOverlay");
         overlay.SetActive(false);
@@ -40,7 +40,7 @@ public class Game : MonoBehaviour {
         for (int i = 0; i < numPlayers; i++) {
             int player = PlayerPrefs.GetInt("Player" + i + " ");
             string choice = PlayerPrefs.GetString("Player" + player);
-            Debug.Log(player + " " + choice);
+            //Debug.Log(player + " " + choice);
             Object loadedGod = Resources.Load(choice);
             if (loadedGod == null) {
                 choice = "Zeus";    // classic
@@ -69,8 +69,8 @@ public class Game : MonoBehaviour {
                     songStart = true;
                 }
                 song.volume += .25f * Time.deltaTime;   // fade in volume
-                text.text = (t <= 0) ? "GO!" : t + "";
-                text.fontSize = 200 + (int)((timer - (int)timer) * 100f);
+                countDown.text = (t <= 0) ? "GO!" : t + "";
+                countDown.fontSize = 200 + (int)((timer - (int)timer) * 100f);
                 if (t != soundTimer && t > 0) {
                     // noises for the countdown numbers
                     AudioManager.instance.playSound("Collision", Vector3.zero, 1f);
@@ -79,7 +79,7 @@ public class Game : MonoBehaviour {
                 if (t <= 0 && !gameStart) {
                     // game starts here
                     AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
-                    text.color = Color.white;
+                    countDown.color = Color.white;
                     GameObject.Find("SCRIPTS").GetComponent<PlanetSpawner>().Begin();
                     foreach (GodController gc in players) {
                         gc.unlockInput();
@@ -88,14 +88,14 @@ public class Game : MonoBehaviour {
                 }
                 if (t <= 0 && frames > 5) {
                     // flicker text between yellow and white
-                    text.color = (text.color == Color.white) ? Color.yellow : Color.white;
+                    countDown.color = (countDown.color == Color.white) ? Color.yellow : Color.white;
                     frames = 0;
                 }
                 frames++;
 
                 if (t <= -1) {
                     // intro is over
-                    text.text = "";
+                    countDown.text = "";
                     introFinished = true;
                 }
             }

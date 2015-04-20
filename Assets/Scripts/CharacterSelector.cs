@@ -30,23 +30,27 @@ public class CharacterSelector : MonoBehaviour {
     private bool findingLost = false;
     private float gameStartCountdown;
     private Text countDown;
+    private GameObject overLay;
+    private AudioSource menuMusic;
 
     // Use this for initialization
     void Start() {
         // clear previous player preferences
         PlayerPrefs.DeleteAll();
-
+        menuMusic = GameObject.Find("Start Music").GetComponent<AudioSource>();
         len = 0;
         for (int i = 0; i < gods.Length; i++) {
             for (int j = 0; j < gods[i].Length; j++) {
-                Debug.Log(gods[i][j]);
+                //Debug.Log(gods[i][j]);
                 len++;
             }
         }
 
         // make sure it starts enabled in the inspector
         countDown = GameObject.Find("CountDown").GetComponent<Text>();
+        overLay = GameObject.Find("Overlay");
         countDown.enabled = false;
+        overLay.SetActive(false);
 
         images = new GameObject[len];
         int xL = gods.Length;
@@ -114,10 +118,7 @@ public class CharacterSelector : MonoBehaviour {
 
         // check for newly connected joysticks
         // for pretending likes theres more joysticks
-        //string[] connectedJoysticks = new string[] { "hi", "hi", "hi", "hi" };
         string[] connectedJoysticks = Input.GetJoystickNames();
-        int currentNumberOfPlayers = Mathf.Max(players.Count, connectedJoysticks.Length);
-        //Debug.Log(connectedJoysticks.Length);
         bool playerNumChanged = false;
         for (int i = 0; i < connectedJoysticks.Length; i++) {
             if (connectedJoysticks[i] != "" && connectedJoysticks.Length > players.Count) {
@@ -172,6 +173,13 @@ public class CharacterSelector : MonoBehaviour {
             }
         }
 
+        if (players.Count > 0) {
+            bool p1Cancel = Input.GetButtonDown("Cancel" + players[0].id);
+            if (p1Cancel && players[0].chosen == "") {
+                Application.LoadLevel("Menu");
+            }
+        }
+
         // need at least 2 players to start game
         bool allPlayersDecided = players.Count > 1;
         // process input for joysticks and move each player
@@ -204,11 +212,11 @@ public class CharacterSelector : MonoBehaviour {
                 } else if (y > minMag) {
                     p.y--;
                     if (p.y < 0) {
-                        p.y = (len - p.x) / gods[0].Length;
+                        p.y = (len - 1 - p.x) / gods[0].Length;
                     }
                 } else if (y < -minMag) {
                     p.y++;
-                    if (p.y > (len - p.x) / gods[0].Length) {
+                    if (p.y > (len - 1 - p.x) / gods[0].Length) {
                         p.y = 0;
                     }
                 } else {
@@ -236,13 +244,17 @@ public class CharacterSelector : MonoBehaviour {
             gameStartCountdown -= Time.deltaTime;
             countDown.enabled = true;
             countDown.text = "" + (int)(gameStartCountdown + 1);
+            overLay.SetActive(true);
+            menuMusic.volume = gameStartCountdown / 3f;
 
             if (gameStartCountdown < 0f) {
+                menuMusic.Stop();
+                Destroy(menuMusic.gameObject);
                 // save all the players choices
                 PlayerPrefs.SetInt("Number of players", players.Count);
-                for(int i = 0; i < players.Count; i++){
+                for (int i = 0; i < players.Count; i++) {
                     Player p = players[i];
-                    Debug.Log(p.id + " " + p.chosen);
+                    //Debug.Log(p.id + " " + p.chosen);
                     PlayerPrefs.SetInt("Player" + i + " ", p.id);
                     PlayerPrefs.SetString("Player" + p.id, p.chosen);
                 }
@@ -251,9 +263,10 @@ public class CharacterSelector : MonoBehaviour {
         } else {
             // stop countdown
             countDown.enabled = false;
+            overLay.SetActive(false);
             gameStartCountdown = 3f;
+            menuMusic.volume = 1f;
         }
-
     }
 }
 
