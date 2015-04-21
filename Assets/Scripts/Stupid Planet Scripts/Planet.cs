@@ -3,11 +3,27 @@ using System.Collections;
 
 public class Planet : MonoBehaviour {
     private int health = 2;
-    private float radius;
-    private float mass;
+    public float radius;
+    public float mass;
     // maybe have planetType enum here
+    private SpriteRenderer sr;
+    private float invulnTime;
+
+    public planetType type;
+
+    public enum planetType {
+        BASKETBALL,
+        GOLD,
+        ICY,
+        LAVA,
+        METAL,
+        ROCKY,
+        TROPICAL
+    }
 
     void Start() {
+        sr = transform.Find("Texture").GetComponent<SpriteRenderer>();
+
         // randomize size and mass
         switch (Random.Range(0, 3)) {
             case 0:             // small
@@ -36,15 +52,21 @@ public class Planet : MonoBehaviour {
     }
 
     void Update() {
+        invulnTime -= Time.deltaTime;
         if (health <= 0) {
             Destroy(gameObject);
+        } else if (health == 1) {
+            sr.color = Color.red;
         }
 
         // update planets based on their enum later
     }
 
     public void damage() {
-        health--;
+        if (invulnTime < 0f) {
+            health--;
+            invulnTime = 1f;
+        }
     }
     public int getHealth() {
         return health;

@@ -47,16 +47,16 @@ public class PlanetGravity : MonoBehaviour {
 
     void Update() {
         // destroy planet if 100f away from sun or within 2f of the sun
-		if ((gravitationTarget.position - transform.position).sqrMagnitude > 100 * 100 || (gravitationTarget.position - transform.position).sqrMagnitude < 2 * 2) {
+		if ((gravitationTarget.position - transform.position).sqrMagnitude > 100 * 100){
             --PlanetSpawner.planetNum;
             Destroy(gameObject);
         }
+        // change when hit sun collider
     }
 
     public void makeFalse() {
         Invoke("makeTooFalse", .001f);
     }
-
     public void makeTooFalse() {
         catchBool = false;
     }
@@ -80,8 +80,7 @@ public class PlanetGravity : MonoBehaviour {
 
             }
 
-            Planet tempPlan = gameObject.GetComponent<Planet>();
-            tempPlan.damage();
+            gameObject.GetComponent<Planet>().damage();
 
 
         } else if (collision.gameObject.tag == "Sun") { // kill planet if it hits sun

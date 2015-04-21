@@ -15,6 +15,7 @@ public class Game : MonoBehaviour {
     private bool introFinished = false;
     private AudioSource song;
     private int winner = 0;
+    private string winnerName;
     private bool isPaused = false;
 
     // lazy singleton class
@@ -80,7 +81,7 @@ public class Game : MonoBehaviour {
                     // game starts here
                     AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
                     countDown.color = Color.white;
-                    GameObject.Find("SCRIPTS").GetComponent<PlanetSpawner>().Begin();
+                    GameObject.Find("SCRIPTS").GetComponent<PlanetSpawner>().hasBegun = true;
                     foreach (GodController gc in players) {
                         gc.unlockInput();
                     }
@@ -104,14 +105,17 @@ public class Game : MonoBehaviour {
 
         if (gameIsOver()) {
             if (winner == 0 && players.Count > 0) {
+                winnerName = players[0].name;
                 winner = players[0].player;
             }
-            gameOverText.text = "Game Over!\nPlayer " + winner + " (" + players[0].name + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
-            if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
-                Application.LoadLevel("Main");
-            }
-            if (Input.GetKeyDown(KeyCode.Q) || Input.GetButtonDown("Cancel" + winner)) {
-                Application.LoadLevel(0);
+            if (winner != 0) {
+                gameOverText.text = "Game Over!\nPlayer " + winner + " (" + winnerName + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
+                if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
+                    Application.LoadLevel("Main");
+                }
+                if (Input.GetKeyDown(KeyCode.Q) || Input.GetButtonDown("Cancel" + winner)) {
+                    Application.LoadLevel(0);
+                }
             }
         }
         if (Input.GetKeyDown(KeyCode.P) && !isPaused) {
@@ -150,6 +154,9 @@ public class Game : MonoBehaviour {
 
     public bool gameIsOver() {
         // if there is only one god left
-        return players.Count <= 1;
+        if (Time.timeSinceLevelLoad > 5f) {
+            return players.Count <= 1;
+        }
+        return false;
     }
 }
