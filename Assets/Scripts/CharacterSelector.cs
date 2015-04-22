@@ -27,16 +27,30 @@ public class CharacterSelector : MonoBehaviour {
 
     private List<Player> players = new List<Player>();
     private int len = 0;
+    private bool findingLost = false;
+    private float gameStartCountdown;
+    private Text countDown;
+    private GameObject overLay;
+    private AudioSource menuMusic;
 
     // Use this for initialization
     void Start() {
+        // clear previous player preferences
+        PlayerPrefs.DeleteAll();
+        menuMusic = GameObject.Find("Start Music").GetComponent<AudioSource>();
         len = 0;
         for (int i = 0; i < gods.Length; i++) {
             for (int j = 0; j < gods[i].Length; j++) {
-                Debug.Log(gods[i][j]);
+                //Debug.Log(gods[i][j]);
                 len++;
             }
         }
+
+        // make sure it starts enabled in the inspector
+        countDown = GameObject.Find("CountDown").GetComponent<Text>();
+        overLay = GameObject.Find("Overlay");
+        countDown.enabled = false;
+        overLay.SetActive(false);
 
         images = new GameObject[len];
         int xL = gods.Length;
@@ -77,7 +91,7 @@ public class CharacterSelector : MonoBehaviour {
                 Vector3 bgPos = textBg.rectTransform.anchoredPosition3D;
                 textBg.rectTransform.anchoredPosition3D = new Vector3(bgPos.x, 0, bgPos.z);
 
-                // displays gods name
+                // gods name text
                 GameObject txtGO = new GameObject("text");
                 txtGO.transform.parent = imgGO.transform;
                 Text txt = txtGO.AddComponent<Text>();
@@ -104,13 +118,10 @@ public class CharacterSelector : MonoBehaviour {
 
         // check for newly connected joysticks
         // for pretending likes theres more joysticks
-        //string[] connectedJoysticks = new string[] { "hi", "hi", "hi", "hi" };
         string[] connectedJoysticks = Input.GetJoystickNames();
-        int currentNumberOfPlayers = connectedJoysticks.Length;
-        Debug.Log(currentNumberOfPlayers);
         bool playerNumChanged = false;
         for (int i = 0; i < connectedJoysticks.Length; i++) {
-            if (connectedJoysticks[i] != "") {
+            if (connectedJoysticks[i] != "" && connectedJoysticks.Length > players.Count) {
                 // check to see if connected joystick is new
                 bool isNew = true;
                 foreach (Player p in players) {
@@ -123,29 +134,64 @@ public class CharacterSelector : MonoBehaviour {
                 // add new player if new joystick is found
                 if (isNew) {
                     Player p = new Player(i + 1, images[0].transform, playerFont, playerSprite);
-                    p.refreshAnchors(currentNumberOfPlayers);
+                    //p.refreshAnchors(currentNumberOfPlayers);
                     players.Add(p);
                     playerNumChanged = true;
                 }
             }
         }
 
-        // remove players who have disconnected
-        List<Player> toRemove = players.FindAll(p => p.id > connectedJoysticks.Length || connectedJoysticks[p.id - 1] == "");
-        playerNumChanged = toRemove.Count > 0 ? true : playerNumChanged;
-        foreach (Player p in toRemove) {
-            players.Remove(p);
-            Destroy(p.img.gameObject);
+        // if true it means a controller has disconnected
+        // now we need to figure out which controller
+        // dont boot player until all other players have moved
+        if (players.Count > connectedJoysticks.Length) {
+            if (!findingLost) {
+                foreach (Player p in players) {
+                    p.hasMovedRecently = false;
+                }
+                findingLost = true;
+            } else {
+                List<Player> afks = players.FindAll(p => !p.hasMovedRecently);
+                if (afks.Count == 1) {
+                    Player toRemove = afks[0];
+                    players.Remove(toRemove);
+                    Destroy(toRemove.img.gameObject);
+                    findingLost = false;
+                    playerNumChanged = true;
+                }
+            }
         }
 
-        // process input for joysticks and move them
+        // if player number changed then resort player list based on id
+        // then set anchors based on which players are present
+        if (playerNumChanged) {
+            players.Sort((p1, p2) => p1.id.CompareTo(p2.id));
+
+            for (int i = 0; i < players.Count; i++) {
+                players[i].calculateAnchors(i + 1, players.Count);
+                players[i].refreshAnchors();
+            }
+        }
+
+        if (players.Count > 0) {
+            bool p1Cancel = Input.GetButtonDown("Cancel" + players[0].id);
+            if (p1Cancel && players[0].chosen == "") {
+                Application.LoadLevel("Menu");
+            }
+        }
+
+        // need at least 2 players to start game
+        bool allPlayersDecided = players.Count > 1;
+        // process input for joysticks and move each player
         foreach (Player p in players) {
 
             if (Input.GetButtonDown("Submit" + p.id)) {
                 p.setSelected(true);
+                p.hasMovedRecently = true;
             }
             if (Input.GetButtonDown("Cancel" + p.id)) {
                 p.setSelected(false);
+                p.hasMovedRecently = true;
             }
 
             // check to see if player is allowed to move again
@@ -166,32 +212,61 @@ public class CharacterSelector : MonoBehaviour {
                 } else if (y > minMag) {
                     p.y--;
                     if (p.y < 0) {
-                        p.y = (len - p.x) / gods[0].Length;
+                        p.y = (len - 1 - p.x) / gods[0].Length;
                     }
                 } else if (y < -minMag) {
                     p.y++;
-                    if (p.y > (len - p.x) / gods[0].Length) {
+                    if (p.y > (len - 1 - p.x) / gods[0].Length) {
                         p.y = 0;
                     }
                 } else {
                     moved = false;
                 }
-                if (moved) {
+                if (moved) {    // if successfully moved then set your parent and reset anchors
+                    p.hasMovedRecently = true;
                     // change parent of player selector
                     if (p.parentName != gods[p.y][p.x]) {
                         p.setParent(images[p.y * gods[0].Length + p.x].transform);
-                        p.refreshAnchors(currentNumberOfPlayers);
+                        p.refreshAnchors();
                     }
 
                     p.inputCooldown = Time.time + moveCooldown;
                 }
             }
 
-            if (playerNumChanged) {
-                p.refreshAnchors(currentNumberOfPlayers);
+            if (p.chosen == "") {
+                allPlayersDecided = false;
             }
         }
 
+        if (allPlayersDecided) {
+            // start countdown
+            gameStartCountdown -= Time.deltaTime;
+            countDown.enabled = true;
+            countDown.text = "" + (int)(gameStartCountdown + 1);
+            overLay.SetActive(true);
+            menuMusic.volume = gameStartCountdown / 3f;
+
+            if (gameStartCountdown < 0f) {
+                menuMusic.Stop();
+                Destroy(menuMusic.gameObject);
+                // save all the players choices
+                PlayerPrefs.SetInt("Number of players", players.Count);
+                for (int i = 0; i < players.Count; i++) {
+                    Player p = players[i];
+                    //Debug.Log(p.id + " " + p.chosen);
+                    PlayerPrefs.SetInt("Player" + i + " ", p.id);
+                    PlayerPrefs.SetString("Player" + p.id, p.chosen);
+                }
+                Application.LoadLevel("Main");
+            }
+        } else {
+            // stop countdown
+            countDown.enabled = false;
+            overLay.SetActive(false);
+            gameStartCountdown = 3f;
+            menuMusic.volume = 1f;
+        }
     }
 }
 
@@ -201,12 +276,15 @@ class Player {
     public string chosen = "";
 
     public float inputCooldown;
-    public int id;  //starting at 1
+    public int id;
+    public bool hasMovedRecently;
 
     public Image img;
     public Text txt;
     public Text btxt;
     public string parentName;
+
+    private Vector2 relativeAnchor;
 
     // should probably figure out a nicer color palette lol
     private static Color[] colors = new Color[] { 
@@ -258,9 +336,13 @@ class Player {
         parentName = parent.gameObject.name;
     }
 
-    public void refreshAnchors(int numPlayers) {
-        img.rectTransform.anchorMin = new Vector2(-.1f, 1f - (float)id / numPlayers);
-        img.rectTransform.anchorMax = new Vector2(0f, 1f - (float)(id - 1) / numPlayers);
+    public void calculateAnchors(int relativePosition, int numPlayers) {
+        relativeAnchor = new Vector2(1f - (float)relativePosition / numPlayers, 1f - (float)(relativePosition - 1) / numPlayers);
+    }
+
+    public void refreshAnchors() {
+        img.rectTransform.anchorMin = new Vector2(-0.1f, relativeAnchor.x);
+        img.rectTransform.anchorMax = new Vector2(0f, relativeAnchor.y);
         img.rectTransform.offsetMin = Vector2.zero;
         img.rectTransform.offsetMax = Vector3.zero;
 
@@ -278,7 +360,7 @@ class Player {
         btxt.rectTransform.offsetMax = new Vector2(0, 50);
 
         Vector3 btxtPos = txt.rectTransform.anchoredPosition3D;
-        btxt.rectTransform.anchoredPosition3D = new Vector3(btxtPos.x+2, -27, btxtPos.z);
+        btxt.rectTransform.anchoredPosition3D = new Vector3(btxtPos.x + 2, -27, btxtPos.z);
 
     }
 }

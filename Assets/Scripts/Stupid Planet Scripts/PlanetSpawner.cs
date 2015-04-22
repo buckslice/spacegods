@@ -4,26 +4,25 @@ using System.Collections;
 public class PlanetSpawner : MonoBehaviour 
 {
     private GameObject planet;
-    static public int planetNum;
-    public int maxPlanets = 25;
+    public static int planetNum = 0;
+    public float maxPlanets;
+    public float spawnInterval;
+    public bool hasBegun = false;
 
-    void Awake() 
-	{
-        planetNum = 0;
+    void Update() {
+        if(hasBegun){
+            if (spawnInterval < Time.time) {
+                SpawnPlanet();
+                spawnInterval = Time.time + 1f;
+            }
+
+            // increase maxPlanets by 1 every 5 seconds
+            // commented out for now (not sure if we want this)
+            //maxPlanets += Time.deltaTime/5f;
+        }
     }
 
-    // use this for initialization
-    void Start() 
-	{
-        // InvokeRepeating("SpawnPlanets", 1f, 1f);
-    }
-
-    public void Begin() 
-	{
-        InvokeRepeating("SpawnPlanets", 1f, 0.5f);
-    }
-
-    public void SpawnPlanets() 
+    private void SpawnPlanet() 
 	{
         if (planetNum < maxPlanets && !Game.instance.gameIsOver()) 
 		{
@@ -55,7 +54,7 @@ public class PlanetSpawner : MonoBehaviour
             }
 
             Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(x, y, 10f));
-			switch (Random.Range(1,9)) 
+			switch (Random.Range(1,8)) 
 			{ 
 				// spawn planets with different prefab, add more cases for each prefab
 				case 1:
@@ -65,7 +64,7 @@ public class PlanetSpawner : MonoBehaviour
 					planet = (GameObject)Instantiate(Resources.Load("IcyPlanet"), p, Quaternion.identity);
 					break;
 				case 3:
-					planet = (GameObject)Instantiate(Resources.Load("IcyPlanet"), p, Quaternion.identity);
+                    planet = (GameObject)Instantiate(Resources.Load("TropicalPlanet"), p, Quaternion.identity);
 					break;
 				case 4:
 					planet = (GameObject)Instantiate(Resources.Load("GoldPlanet"), p, Quaternion.identity);
@@ -79,14 +78,8 @@ public class PlanetSpawner : MonoBehaviour
 				case 7:
 					planet = (GameObject)Instantiate(Resources.Load("RockyPlanet"), p, Quaternion.identity);
 					break;
-				case 8:
-					planet = (GameObject)Instantiate(Resources.Load("TropicalPlanet"), p, Quaternion.identity);
-					break;
 			}
-			// GameObject newPlanet = (GameObject)Instantiate(planet, p, Quaternion.identity);
-			// newPlanet.transform.parent = gameObject.transform;
 			planet.transform.parent = gameObject.transform;
-            // newPlanet.GetComponent<CircleCollider2D>().isTrigger = true;
             ++planetNum;
         }
     }
