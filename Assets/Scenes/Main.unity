@@ -87,7 +87,7 @@ NavMeshSettings:
     cellSize: .166666657
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &717554944
+--- !u!4 &717554944 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 98c467743216f044cb846816f0671024, type: 2}
   m_PrefabInternal: {fileID: 1497991608}
@@ -270,7 +270,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 1068970522}
   m_Enabled: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
@@ -1591,8 +1591,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1243934482}
   m_RootOrder: 1
-  m_AnchorMin: {x: .100000001, y: .200000003}
-  m_AnchorMax: {x: .899999976, y: .800000012}
+  m_AnchorMin: {x: .100000001, y: .25}
+  m_AnchorMax: {x: .899999976, y: .75}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: .5, y: .5}
@@ -1618,7 +1618,7 @@ MonoBehaviour:
     m_MaxSize: 100
     m_Alignment: 4
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '
@@ -1667,7 +1667,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 98c467743216f044cb846816f0671024, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8200000, guid: 98c467743216f044cb846816f0671024, type: 2}
       propertyPath: m_audioClip
@@ -1722,9 +1722,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449acb889f887b648b5e28fda11bb50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targSize: 5
   minSize: 8
-  jumpSize: 5
+  jumpSize: 10
   backgroundScale: .0199999996
 --- !u!114 &1664334439
 MonoBehaviour:

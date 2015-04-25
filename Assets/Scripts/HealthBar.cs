@@ -49,6 +49,6 @@ public class HealthBar : MonoBehaviour
         // add gray bar to see how far off from maxHealth you are
         texture.SetPixel(0, 0, Color.gray);
         texture.Apply();
-        GUI.Box(new Rect(screenPoint.x -50 + god.health, screenPoint.y + yOff, god.getMaxHealth() - god.health, 5), GUIContent.none, style);
+        GUI.Box(new Rect(screenPoint.x -50 + god.health, screenPoint.y + yOff, god.maxHealth - god.health, 5), GUIContent.none, style);
     }
 }

@@ -83,7 +83,7 @@ public class Game : MonoBehaviour {
                     countDown.color = Color.white;
                     GameObject.Find("SCRIPTS").GetComponent<PlanetSpawner>().hasBegun = true;
                     foreach (GodController gc in players) {
-                        gc.unlockInput();
+                        gc.freezeInputs = false;
                     }
                     gameStart = true;
                 }
@@ -109,7 +109,8 @@ public class Game : MonoBehaviour {
                 winner = players[0].player;
             }
             if (winner != 0) {
-                gameOverText.text = "Game Over!\nPlayer " + winner + " (" + winnerName + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
+                //gameOverText.text = "Game Over!\nPlayer " + winner + " (" + winnerName + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
+                gameOverText.text = "Game Over!\n" + winnerName + " (P" + winner + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
                 if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
                     Application.LoadLevel("Main");
                 }

@@ -1,25 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum PlanetType {
+    BASKETBALL,
+    GOLD,
+    ICY,
+    LAVA,
+    METAL,
+    ROCKY,
+    TROPICAL
+}
+
 public class Planet : MonoBehaviour {
-    private int health = 2;
     public float radius;
     public float mass;
-    // maybe have planetType enum here
-    private SpriteRenderer sr;
+    public int health = 2;
+
+    public bool beingHeld = false;
+    public GodController lastHolder;
+
     private float invulnTime;
 
-    public planetType type;
+    private Transform texture;
+    private Transform shade;
+    private Vector3 origTextScale;
+    private Vector3 origShadeScale;
+    private SpriteRenderer sr;
+    public Rigidbody2D rb;
+    public CircleCollider2D cc;
 
-    public enum planetType {
-        BASKETBALL,
-        GOLD,
-        ICY,
-        LAVA,
-        METAL,
-        ROCKY,
-        TROPICAL
-    }
+    public PlanetType type;
 
     void Start() {
         sr = transform.Find("Texture").GetComponent<SpriteRenderer>();
@@ -42,24 +52,35 @@ public class Planet : MonoBehaviour {
                 break;
         }
 
-        Transform texture = transform.Find("Texture").transform;
-        texture.localScale = texture.localScale * radius;
-        Transform shade = transform.Find("Shade").transform;
-        shade.localScale = shade.localScale * radius;
-        
-        GetComponent<CircleCollider2D>().radius = radius;
-        GetComponent<Rigidbody2D>().mass = mass;
+        texture = transform.Find("Texture").transform;
+        shade = transform.Find("Shade").transform;
+        origTextScale = texture.localScale;
+        origShadeScale = shade.localScale;
+        cc = GetComponent<CircleCollider2D>();
+        rb = GetComponent<Rigidbody2D>();
+
+        updateVariables();
     }
 
     void Update() {
         invulnTime -= Time.deltaTime;
         if (health <= 0) {
-            Destroy(gameObject);
+            if (!beingHeld) {  // don't destroy if you are being held, god will do it
+                Destroy(gameObject);
+            }
         } else if (health == 1) {
             sr.color = Color.red;
         }
 
-        // update planets based on their enum later
+        // update planets based on their enum later?
+    }
+
+    public void updateVariables() {
+        texture.localScale = origTextScale * radius;
+        shade.localScale = origShadeScale * radius;
+
+        cc.radius = radius;
+        rb.mass = mass;
     }
 
     public void damage() {
@@ -67,8 +88,5 @@ public class Planet : MonoBehaviour {
             health--;
             invulnTime = 1f;
         }
-    }
-    public int getHealth() {
-        return health;
     }
 }

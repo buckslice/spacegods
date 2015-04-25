@@ -114,10 +114,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69cbd2e2eeae64f4b9baad02f0b36b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  god: 0
   health: 100
-  maxSpeed: 100
-  acceleration: 10
+  maxHealth: 0
+  maxSpeed: 30
+  acceleration: 1.25
   throwStrength: 20
+  counter: 0
+  special: 0
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
