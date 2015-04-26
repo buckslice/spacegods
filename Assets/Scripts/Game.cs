@@ -43,12 +43,12 @@ public class Game : MonoBehaviour {
             string choice = PlayerPrefs.GetString("Player" + player);
             //Debug.Log(player + " " + choice);
             Object loadedGod = Resources.Load(choice);
-            if (loadedGod == null) {
+            if (!loadedGod) {
                 choice = "Zeus";    // classic
                 loadedGod = Resources.Load(choice);
             }
-            Vector3 spawnLocation = new Vector3(20, 0, 0);
-            spawnLocation = Quaternion.Euler(0, 0, -i * (360f / numPlayers)) * spawnLocation;
+            Vector3 spawnLocation = new Vector3(-20, 0, 0);
+            spawnLocation = Quaternion.Euler(0, 0, i * (360f / numPlayers)) * spawnLocation;
 
             GameObject godPrefab = (GameObject)Instantiate(loadedGod, spawnLocation, Quaternion.identity);
             godPrefab.name = choice;

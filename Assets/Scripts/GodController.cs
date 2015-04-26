@@ -40,9 +40,14 @@ public class GodController : MonoBehaviour {
         planetCollider.enabled = false;
         sr = transform.Find("Model").GetComponent<SpriteRenderer>();
 
-        usingJoysticks = Input.GetJoystickNames().Length != 0;
+        usingJoysticks = true;
+        string[] joysticks = Input.GetJoystickNames();
+        if(joysticks.Length == 0 || (joysticks.Length == 1 && joysticks[0] == "")){
+            usingJoysticks = false;
+        }
+
         if (!usingJoysticks && player > 2) {
-            // temporary fix until we implement selection screen and stuff
+            // temporary fix until we implement more keyboard stuff
             player = 1;
         }
     }
@@ -56,12 +61,12 @@ public class GodController : MonoBehaviour {
 
         // making sure players cant press keyboard AND controller for speed boost
         float dx, dy;
-        if (!usingJoysticks) {
-            dx = Input.GetAxis("Horizontal" + player);
-            dy = Input.GetAxis("Vertical" + player);
-        } else {
+        if (usingJoysticks) {
             dx = Input.GetAxis("Horizontal_360_" + player);
             dy = Input.GetAxis("Vertical_360_" + player);
+        } else {
+            dx = Input.GetAxis("Horizontal" + player);
+            dy = Input.GetAxis("Vertical" + player);
         }
 
         if (freezeInputs) {
@@ -94,8 +99,8 @@ public class GodController : MonoBehaviour {
             if (myPlanet.health > 0) {
                 bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + player);
 
-                float xAim = Input.GetAxis("Horizontal_aim_360_" + player);
-                float yAim = Input.GetAxis("Vertical_aim_360_" + player);
+                float xAim = usingJoysticks ? Input.GetAxis("Horizontal_aim_360_" + player) : isFlipped ? -1f : 1f;
+                float yAim = usingJoysticks ? Input.GetAxis("Vertical_aim_360_" + player) : 0f;
                 Vector2 aim = new Vector2(xAim, yAim).normalized;
 
                 if (fireInput) {    // throw planet

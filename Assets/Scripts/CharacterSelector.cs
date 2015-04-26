@@ -16,8 +16,8 @@ public class CharacterSelector : MonoBehaviour {
     public Font playerFont;
 
     private string[][] gods = new string[2][] {
-        new string[] {"Zeus",  "Poseidon", "Anubis", "Thor"},
-        new string[] {"Odin",  "Athena",   "Michael Jordan", "Cthulu"}};
+        new string[] {"Zeus","Poseidon","Anubis","Thor"},
+        new string[] {"Odin","Athena","Michael Jordan","Cthulu"}};
 
     // cooldown between joystick movements
     private float moveCooldown = .25f;
@@ -32,6 +32,10 @@ public class CharacterSelector : MonoBehaviour {
     private Text countDown;
     private GameObject overLay;
     private AudioSource menuMusic;
+
+    // for keyboard testing
+    private int keyboardPlayer1 = 0;
+    private int keyboardPlayer2 = 0;
 
     // Use this for initialization
     void Start() {
@@ -117,8 +121,39 @@ public class CharacterSelector : MonoBehaviour {
     void Update() {
 
         // check for newly connected joysticks
-        // for pretending likes theres more joysticks
+        // if no joysticks it will have one entry ""
         string[] connectedJoysticks = Input.GetJoystickNames();
+        // KEYBOARD TESTING MODE (this is so filthy dont look)
+        if (connectedJoysticks.Length == 0 || (connectedJoysticks.Length == 1 && connectedJoysticks[0] == "")) {
+            if (Input.GetKey(KeyCode.Backspace)) {
+                string choice = Input.inputString;
+                if (choice != "") {
+                    if (keyboardPlayer1 <= 0 || keyboardPlayer1 > 8) {
+                        int.TryParse(choice[0].ToString(), out keyboardPlayer1);
+                    } else {
+                        int.TryParse(choice[0].ToString(), out keyboardPlayer2);
+
+                        if (keyboardPlayer2 > 0 && keyboardPlayer2 < 8) {
+                            menuMusic.Stop();
+                            Destroy(menuMusic.gameObject);
+                            PlayerPrefs.DeleteAll();
+                            PlayerPrefs.SetInt("Number of players", 2);
+                            PlayerPrefs.SetInt("Player0 ", 1);
+                            PlayerPrefs.SetInt("Player1 ", 2);
+
+                            PlayerPrefs.SetString("Player1", images[keyboardPlayer1 - 1].name);
+                            PlayerPrefs.SetString("Player2", images[keyboardPlayer2 - 1].name);
+                            Application.LoadLevel("Main");
+                        }
+                    }
+                }
+            } else {    // reset if you let go
+                keyboardPlayer1 = 0;
+                keyboardPlayer2 = 0;
+            }
+        }
+
+        // NORMAL JOYSTICK MODE
         bool playerNumChanged = false;
         for (int i = 0; i < connectedJoysticks.Length; i++) {
             if (connectedJoysticks[i] != "" && connectedJoysticks.Length > players.Count) {
