@@ -5,10 +5,9 @@ using UnityEngine.UI;
 
 public class CharacterSelector : MonoBehaviour {
 
-
     //private string gods[]
     public Sprite[] godSprites;
-    public GameObject[] images;
+    private GodGameObject[] godGameObjects;
 
     public Sprite nameBackground;
     public Sprite playerSprite;
@@ -17,7 +16,20 @@ public class CharacterSelector : MonoBehaviour {
 
     private string[][] gods = new string[2][] {
         new string[] {"Zeus","Poseidon","Anubis","Thor"},
-        new string[] {"Odin","Athena","Michael Jordan","Cthulu"}};
+        new string[] {"Odin","Athena","Michael Jordan","Cthulu"}
+    };
+
+    private string[] godInfo = new string[]{
+        "Charges planets the longer he holds them.",
+        "Freezes players with thrown ice planets.",
+        "Can throw planets through the sun.",
+        "Deflects a shot every 10 seconds.",
+        "Strength increases as health decreases.",
+        "Slowly regenerates health.",
+        "Find the basketballs. Show them how to slam.",
+        //"Can't throw. Hitting players damages them."
+        "can't throw. extra health. extra mass. damages players on collision."
+    };
 
     // cooldown between joystick movements
     private float moveCooldown = .25f;
@@ -41,7 +53,14 @@ public class CharacterSelector : MonoBehaviour {
     void Start() {
         // clear previous player preferences
         PlayerPrefs.DeleteAll();
-        menuMusic = GameObject.Find("Start Music").GetComponent<AudioSource>();
+        GameObject menuMusicObject = GameObject.Find("Start Music");
+        if (!menuMusicObject) {
+            GameObject startMusicGO = (GameObject)Instantiate(Resources.Load("Start Music"));
+            startMusicGO.name = "Start Music";
+            menuMusic = startMusicGO.GetComponent<AudioSource>();
+        } else {
+            menuMusic = menuMusicObject.GetComponent<AudioSource>();
+        }
         len = 0;
         for (int i = 0; i < gods.Length; i++) {
             for (int j = 0; j < gods[i].Length; j++) {
@@ -50,13 +69,13 @@ public class CharacterSelector : MonoBehaviour {
             }
         }
 
-        // make sure it starts enabled in the inspector
+        // make sure it starts enabled in the inspector (can't Find disabled objects (thanks unity (thanks obama)))
         countDown = GameObject.Find("CountDown").GetComponent<Text>();
         overLay = GameObject.Find("Overlay");
         countDown.enabled = false;
         overLay.SetActive(false);
 
-        images = new GameObject[len];
+        godGameObjects = new GodGameObject[len];
         int xL = gods.Length;
         for (int y = 0; y < xL; y++) {
             int yL = gods[0].Length;
@@ -64,14 +83,20 @@ public class CharacterSelector : MonoBehaviour {
                 if (x >= gods[y].Length) {
                     break;
                 }
+                int godCoord1D = y * yL + x;
+
+                GodGameObject thisGod = new GodGameObject();
+                godGameObjects[godCoord1D] = thisGod;
+
                 // add gods image
                 GameObject imgGO = new GameObject();
-                images[y * yL + x] = imgGO;
                 imgGO.name = gods[y][x];
                 imgGO.transform.parent = gameObject.transform;
+                thisGod.go = imgGO;
                 Image img = imgGO.AddComponent<Image>();
-                if (godSprites != null && godSprites.Length > y * yL + x) {
-                    img.sprite = godSprites[y * yL + x];
+                thisGod.image = img;
+                if (godSprites != null && godSprites.Length > godCoord1D) {
+                    img.sprite = godSprites[godCoord1D];
                 }
                 //img.preserveAspect = true;
                 float p = .05f;
@@ -113,6 +138,23 @@ public class CharacterSelector : MonoBehaviour {
                 Vector3 txtPos = txt.rectTransform.anchoredPosition3D;
                 txt.rectTransform.anchoredPosition3D = new Vector3(txtPos.x, 0, txtPos.z);
 
+                // gods info text
+                GameObject infoGO = new GameObject("info");
+                thisGod.info = infoGO;
+                infoGO.transform.parent = imgGO.transform;
+                Text info = infoGO.AddComponent<Text>();
+                info.text = godInfo[godCoord1D];
+                info.font = font;
+                info.color = new Color32(200, 255, 255, 255);
+                info.rectTransform.anchorMin = Vector2.zero;
+                info.rectTransform.anchorMax = Vector2.one;
+                info.rectTransform.offsetMax = Vector2.zero;
+                info.rectTransform.offsetMin = new Vector2(0f, 25);
+                info.resizeTextForBestFit = true;
+                info.resizeTextMinSize = 10;
+                info.resizeTextMaxSize = 30;
+                infoGO.SetActive(false);
+
             }
         }
     }
@@ -141,8 +183,8 @@ public class CharacterSelector : MonoBehaviour {
                             PlayerPrefs.SetInt("Player0 ", 1);
                             PlayerPrefs.SetInt("Player1 ", 2);
 
-                            PlayerPrefs.SetString("Player1", images[keyboardPlayer1 - 1].name);
-                            PlayerPrefs.SetString("Player2", images[keyboardPlayer2 - 1].name);
+                            PlayerPrefs.SetString("Player1", godGameObjects[keyboardPlayer1 - 1].go.name);
+                            PlayerPrefs.SetString("Player2", godGameObjects[keyboardPlayer2 - 1].go.name);
                             Application.LoadLevel("Main");
                         }
                     }
@@ -168,7 +210,7 @@ public class CharacterSelector : MonoBehaviour {
 
                 // add new player if new joystick is found
                 if (isNew) {
-                    Player p = new Player(i + 1, images[0].transform, playerFont, playerSprite);
+                    Player p = new Player(i + 1, godGameObjects[0].go.transform, playerFont, playerSprite);
                     //p.refreshAnchors(currentNumberOfPlayers);
                     players.Add(p);
                     playerNumChanged = true;
@@ -219,6 +261,9 @@ public class CharacterSelector : MonoBehaviour {
         bool allPlayersDecided = players.Count > 1;
         // process input for joysticks and move each player
         foreach (Player p in players) {
+            int curRowLength = gods[p.y].Length;
+            int regRowLength = gods[0].Length;
+
 
             if (Input.GetButtonDown("Submit" + p.id)) {
                 p.setSelected(true);
@@ -229,6 +274,10 @@ public class CharacterSelector : MonoBehaviour {
                 p.hasMovedRecently = true;
             }
 
+            if (Input.GetButton("Y" + p.id)) {
+                godGameObjects[p.x + p.y * regRowLength].checkingInfo = true;
+            }
+
             // check to see if player is allowed to move again
             if (p.inputCooldown < Time.time && p.chosen == "") {
                 float x = Input.GetAxis("Horizontal_360_" + p.id);
@@ -236,22 +285,22 @@ public class CharacterSelector : MonoBehaviour {
                 bool moved = true;
                 if (x > minMag) {
                     p.x++;
-                    if (p.x >= gods[p.y].Length) {
+                    if (p.x >= curRowLength) {
                         p.x = 0;
                     }
                 } else if (x < -minMag) {
                     p.x--;
                     if (p.x < 0) {
-                        p.x = gods[p.y].Length - 1;
+                        p.x = curRowLength - 1;
                     }
                 } else if (y > minMag) {
                     p.y--;
                     if (p.y < 0) {
-                        p.y = (len - 1 - p.x) / gods[0].Length;
+                        p.y = (len - 1 - p.x) / regRowLength;
                     }
                 } else if (y < -minMag) {
                     p.y++;
-                    if (p.y > (len - 1 - p.x) / gods[0].Length) {
+                    if (p.y > (len - 1 - p.x) / regRowLength) {
                         p.y = 0;
                     }
                 } else {
@@ -261,7 +310,7 @@ public class CharacterSelector : MonoBehaviour {
                     p.hasMovedRecently = true;
                     // change parent of player selector
                     if (p.parentName != gods[p.y][p.x]) {
-                        p.setParent(images[p.y * gods[0].Length + p.x].transform);
+                        p.setParent(godGameObjects[p.y * regRowLength + p.x].go.transform);
                         p.refreshAnchors();
                     }
 
@@ -272,6 +321,11 @@ public class CharacterSelector : MonoBehaviour {
             if (p.chosen == "") {
                 allPlayersDecided = false;
             }
+        }
+
+        // update info checking
+        for (int i = 0; i < godGameObjects.Length; i++) {
+            godGameObjects[i].update();
         }
 
         if (allPlayersDecided) {
@@ -286,6 +340,7 @@ public class CharacterSelector : MonoBehaviour {
                 menuMusic.Stop();
                 Destroy(menuMusic.gameObject);
                 // save all the players choices
+                PlayerPrefs.DeleteAll();
                 PlayerPrefs.SetInt("Number of players", players.Count);
                 for (int i = 0; i < players.Count; i++) {
                     Player p = players[i];
@@ -321,7 +376,7 @@ class Player {
 
     private Vector2 relativeAnchor;
 
-    // should probably figure out a nicer color palette lol
+    // should probably use a nicer color palette lol
     private static Color[] colors = new Color[] { 
         Color.red, Color.yellow, Color.green, Color.blue, Color.magenta, Color.cyan, Color.grey, Color.black };
 
@@ -338,20 +393,21 @@ class Player {
         txt = new GameObject("Player " + id + " text").AddComponent<Text>();
         txt.font = f;
         txt.text = "P" + id;
+        //txt.color = colors[id - 1];
         txt.alignment = TextAnchor.MiddleCenter;
         txt.resizeTextForBestFit = true;
         txt.resizeTextMinSize = 10;
         txt.resizeTextMaxSize = 50;
 
         // black background text to add contrast
-        btxt = new GameObject("Player " + id + " btext").AddComponent<Text>();
-        btxt.color = Color.black;
-        btxt.font = f;
-        btxt.text = "P" + id;
-        btxt.alignment = TextAnchor.MiddleCenter;
-        btxt.resizeTextForBestFit = true;
-        btxt.resizeTextMinSize = 10;
-        btxt.resizeTextMaxSize = 50;
+        //btxt = new GameObject("Player " + id + " btext").AddComponent<Text>();
+        //btxt.color = colors[id - 1] * .75f;
+        //btxt.font = f;
+        //btxt.text = "P" + id;
+        //btxt.alignment = TextAnchor.MiddleCenter;
+        //btxt.resizeTextForBestFit = true;
+        //btxt.resizeTextMinSize = 10;
+        //btxt.resizeTextMaxSize = 50;
 
         setSelected(false);
         setParent(parent);
@@ -360,12 +416,13 @@ class Player {
     public void setSelected(bool b) {
         img.color = new Color(img.color.r, img.color.g, img.color.b, b ? 1 : .3f);
         img.fillCenter = b;
+        //txt.color = b ? Color.white : colors[id - 1];
         chosen = b ? parentName : "";
     }
 
     public void setParent(Transform parent) {
         img.transform.SetParent(parent);
-        btxt.transform.SetParent(img.transform);
+        //btxt.transform.SetParent(img.transform);
         txt.transform.SetParent(img.transform);
 
         parentName = parent.gameObject.name;
@@ -389,13 +446,34 @@ class Player {
         Vector3 txtPos = txt.rectTransform.anchoredPosition3D;
         txt.rectTransform.anchoredPosition3D = new Vector3(txtPos.x, -25, txtPos.z);
 
-        btxt.rectTransform.anchorMin = new Vector3(0f, 1f);
-        btxt.rectTransform.anchorMax = new Vector3(1f, 1f);
-        btxt.rectTransform.offsetMin = Vector2.zero;
-        btxt.rectTransform.offsetMax = new Vector2(0, 50);
+        //btxt.rectTransform.anchorMin = new Vector3(0f, 1f);
+        //btxt.rectTransform.anchorMax = new Vector3(1f, 1f);
+        //btxt.rectTransform.offsetMin = Vector2.zero;
+        //btxt.rectTransform.offsetMax = new Vector2(0, 50);
 
-        Vector3 btxtPos = txt.rectTransform.anchoredPosition3D;
-        btxt.rectTransform.anchoredPosition3D = new Vector3(btxtPos.x + 2, -27, btxtPos.z);
+        //Vector3 btxtPos = txt.rectTransform.anchoredPosition3D;
+        //btxt.rectTransform.anchoredPosition3D = new Vector3(btxtPos.x + 2, -26, btxtPos.z);
 
     }
+}
+
+// small class to hold and save some variables to avoid GetComponent calls
+class GodGameObject {
+    public GameObject go;
+    public Image image;
+    public GameObject info;
+    public bool checkingInfo = false;
+
+    public void update() {
+        if (checkingInfo) {
+            image.color = new Color(.3f, .3f, .3f, 1f);
+            info.SetActive(true);
+        } else {
+            image.color = Color.white;
+            info.SetActive(false);
+        }
+
+        checkingInfo = false;
+    }
+
 }
