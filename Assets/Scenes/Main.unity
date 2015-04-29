@@ -135,7 +135,7 @@ GameObject:
   - 33: {fileID: 833345669}
   m_Layer: 0
   m_Name: RightWall
-  m_TagString: Untagged
+  m_TagString: Boundary
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1690,7 +1690,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!1 &1452947028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1850,7 +1850,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 98c467743216f044cb846816f0671024, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8200000, guid: 98c467743216f044cb846816f0671024, type: 2}
       propertyPath: m_audioClip
@@ -1931,9 +1931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1726560a7d85c2b4e88bf28ea30de130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPlanets: 30
-  spawnInterval: 0
-  hasBegun: 0
+  maxPlanets: 20
 --- !u!114 &1664334441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2023,7 +2021,7 @@ GameObject:
   - 33: {fileID: 1975060816}
   m_Layer: 0
   m_Name: TopWall
-  m_TagString: Untagged
+  m_TagString: Boundary
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2151,7 +2149,7 @@ GameObject:
   - 33: {fileID: 2033655296}
   m_Layer: 0
   m_Name: LeftWall
-  m_TagString: Untagged
+  m_TagString: Boundary
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2225,7 +2223,7 @@ GameObject:
   - 33: {fileID: 2086181873}
   m_Layer: 0
   m_Name: BottomWall
-  m_TagString: Untagged
+  m_TagString: Boundary
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

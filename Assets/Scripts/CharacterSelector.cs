@@ -175,7 +175,7 @@ public class CharacterSelector : MonoBehaviour {
                     } else {
                         int.TryParse(choice[0].ToString(), out keyboardPlayer2);
 
-                        if (keyboardPlayer2 > 0 && keyboardPlayer2 < 8) {
+                        if (keyboardPlayer2 > 0 && keyboardPlayer2 < 9) {
                             menuMusic.Stop();
                             Destroy(menuMusic.gameObject);
                             PlayerPrefs.DeleteAll();

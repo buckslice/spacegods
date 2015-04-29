@@ -81,7 +81,6 @@ public class Game : MonoBehaviour {
                     // game starts here
                     AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
                     countDown.color = Color.white;
-                    GameObject.Find("SCRIPTS").GetComponent<PlanetSpawner>().hasBegun = true;
                     foreach (GodController gc in players) {
                         gc.freezeInputs = false;
                     }
@@ -152,7 +151,9 @@ public class Game : MonoBehaviour {
     public void removePlayer(GodController player) {
         players.Remove(player);
     }
-
+	public bool hasBegun(){
+		return introFinished;
+	}
     public bool gameIsOver() {
         // if there is only one god left
         if (Time.timeSinceLevelLoad > 5f) {
