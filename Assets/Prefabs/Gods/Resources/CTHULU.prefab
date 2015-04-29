@@ -32,7 +32,7 @@ GameObject:
   - 58: {fileID: 5806810}
   - 114: {fileID: 11404558}
   m_Layer: 0
-  m_Name: Chtulhu
+  m_Name: CTHULU
   m_TagString: God
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
