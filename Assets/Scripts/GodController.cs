@@ -167,7 +167,7 @@ public class GodController : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D collision) {
 		if (collision.gameObject.tag == "God" && collision.gameObject.name == "Cthulu") {
 			float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass; 
-			god.health -= damage * .5f;
+			god.damage(damage * .5f);
 
 
 		}
