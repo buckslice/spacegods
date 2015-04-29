@@ -42,7 +42,7 @@ public class GodController : MonoBehaviour {
 
         usingJoysticks = true;
         string[] joysticks = Input.GetJoystickNames();
-        if(joysticks.Length == 0 || (joysticks.Length == 1 && joysticks[0] == "")){
+        if (joysticks.Length == 0 || (joysticks.Length == 1 && joysticks[0] == "")) {
             usingJoysticks = false;
         }
 
@@ -104,7 +104,7 @@ public class GodController : MonoBehaviour {
                 Vector2 aim = new Vector2(xAim, yAim).normalized;
 
                 if (fireInput) {    // throw planet
-					throwPlanet(aim);
+                    throwPlanet(aim);
                 } else {    // move planet where aiming for blocking
                     float holdDistance = 3.5f;
                     Vector2 holdPos = aim * holdDistance;
@@ -152,7 +152,7 @@ public class GodController : MonoBehaviour {
                     // this needs testing for sure to find good balance
                     myPlanet.changeMass(Time.deltaTime / 10f);
                     myRigidbody.mass += Time.deltaTime / 10f;
-					myPlanet.changeRadius(Time.deltaTime / 10f);
+                    myPlanet.changeRadius(Time.deltaTime / 10f);
                     planetCollider.radius = myPlanet.getRadius();
                     myPlanet.updateVariables();
                 }
@@ -165,74 +165,73 @@ public class GodController : MonoBehaviour {
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
-		if (collision.gameObject.tag == "God" && collision.gameObject.name == "Cthulu") {
-			float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass; 
-			god.damage(damage * .5f);
+        if (collision.gameObject.tag == "God" && collision.gameObject.name == "Cthulu") {
+            float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass;
+            god.damage(damage * .5f);
 
 
-		}
+        }
         if (collision.gameObject.tag == "Planet") {
             // since were using mainly circle colliders, the first contact point will probably be the only one
             ContactPoint2D first = collision.contacts[0];
             // if either are our planetCollider then we dont take damage
             if ((first.collider == planetCollider || first.otherCollider == planetCollider) && myPlanet) {
-            	AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
+                AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
                 myPlanet.damage();
-				return;
+                return;
             } else if (invincible > .5f) {
-				switch (god.god) {
-				case Gods.THOR:
-					if (god.getCounter () > 10f) {
-						god.resetCounter();
-						invincible = 0f;
-						//myRigidbody.AddForce(-collision.relativeVelocity);
-						return;
-					}
-					break;
-					}
+                switch (god.god) {
+                    case Gods.THOR:
+                        if (god.getCounter() > 10f) {
+                            god.resetCounter();
+                            invincible = 0f;
+                            //myRigidbody.AddForce(-collision.relativeVelocity);
+                            return;
+                        }
+                        break;
+                }
 
-			// otherwise one of our gods colliders have been hit so we take damage
-			AudioManager.instance.playSound("GodHurt", transform.position, 1f);
-			float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass();
+                // otherwise one of our gods colliders have been hit so we take damage
+                AudioManager.instance.playSound("GodHurt", transform.position, 1f);
+                float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass();
 
-			god.damage (damage * .5f);
-			invincible = 0f;
+                god.damage(damage * .5f);
+                invincible = 0f;
             }
         }
     }
 
     void OnTriggerStay2D(Collider2D col) {
-		bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + player) < 0.0 : Input.GetButton("Fire" + player);
-		if (col.tag == "Sun") {
-            god.damage (Time.deltaTime * 10f);
+        bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + player) < 0.0 : Input.GetButton("Fire" + player);
+        if (col.tag == "Sun") {
+            god.damage(Time.deltaTime * 10f);
+        } else if (col.tag == "Planet" && inputFire && !myPlanet) {
+            bool canCatch = col.gameObject.GetComponent<Planet>().state == PlanetState.ORBITING || timeSinceTryCatch < .25f;
+            if (releaseButtonFire && canCatch) {
+                holdPlanet(col.gameObject.GetComponent<Planet>());
+            }
         }
-		else if (col.tag == "Planet" && inputFire && !myPlanet) {
-			bool canCatch = col.gameObject.GetComponent<Planet>().state == PlanetState.ORBITING || timeSinceTryCatch < .25f;
-			if(releaseButtonFire && canCatch){
-				holdPlanet(col.gameObject.GetComponent<Planet>());
-			}
-		}
     }
-	private void holdPlanet(Planet planet){
-		myPlanet = planet;
-		myPlanet.lastHolder = this;
-		myPlanet.state = PlanetState.HELD;
-		myPlanet.rb.simulated = false;  // disable planets physics
-		myRigidbody.mass += myPlanet.rb.mass; // add planets mass to your own
-		myPlanet.transform.parent = transform;
-		planetCollider.radius = myPlanet.getRadius();   // set our planetCollider equal to radius of planet
-		planetCollider.enabled = true;
-	}
+    private void holdPlanet(Planet planet) {
+        myPlanet = planet;
+        myPlanet.lastHolder = this;
+        myPlanet.state = PlanetState.HELD;
+        myPlanet.rb.simulated = false;  // disable planets physics
+        myRigidbody.mass += myPlanet.rb.mass; // add planets mass to your own
+        myPlanet.transform.parent = transform;
+        planetCollider.radius = myPlanet.getRadius();   // set our planetCollider equal to radius of planet
+        planetCollider.enabled = true;
+    }
 
-	private void throwPlanet(Vector2 aim){
-		releaseButtonFire = false;
-		myPlanet.state = PlanetState.THROWN;
-		myPlanet.transform.parent = null;
-		myPlanet.rb.simulated = true;  //reenable planets physics
-		myPlanet.rb.velocity = myRigidbody.velocity + aim * god.throwStrength;
-		myRigidbody.mass -= myPlanet.rb.mass; // subtract off planets mass
-		planetCollider.enabled = false;
-		myPlanet = null;
-	}
+    private void throwPlanet(Vector2 aim) {
+        releaseButtonFire = false;
+        myPlanet.state = PlanetState.THROWN;
+        myPlanet.transform.parent = null;
+        myPlanet.rb.simulated = true;  //reenable planets physics
+        myPlanet.rb.velocity = myRigidbody.velocity + aim * god.throwStrength;
+        myRigidbody.mass -= myPlanet.rb.mass; // subtract off planets mass
+        planetCollider.enabled = false;
+        myPlanet = null;
+    }
 }
 

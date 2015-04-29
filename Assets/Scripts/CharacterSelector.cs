@@ -371,7 +371,7 @@ class Player {
 
     public Image img;
     public Text txt;
-    public Text btxt;
+    //public Text btxt;
     public string parentName;
 
     private Vector2 relativeAnchor;
