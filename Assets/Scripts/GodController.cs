@@ -203,12 +203,12 @@ public class GodController : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D col) {
 		bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + player) < 0.0 : Input.GetButton("Fire" + player);
-
 		if (col.tag == "Sun") {
             god.damage (Time.deltaTime * 10f);
         }
 		else if (col.tag == "Planet" && inputFire && !myPlanet) {
-			if(releaseButtonFire){
+			bool canCatch = col.gameObject.GetComponent<Planet>().state == PlanetState.ORBITING || timeSinceTryCatch < .25f;
+			if(releaseButtonFire && canCatch){
 				holdPlanet(col.gameObject.GetComponent<Planet>());
 			}
 		}
