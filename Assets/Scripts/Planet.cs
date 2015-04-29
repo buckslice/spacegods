@@ -30,9 +30,11 @@ public class Planet : MonoBehaviour {
 
     private Transform texture;
     private Transform shade;
+	private Transform cracked;
     private Vector3 origTextScale;
     private Vector3 origShadeScale;
-    private SpriteRenderer sr;
+	private Vector3 origCrackedScale;
+	private SpriteRenderer crackedsr;
     public Rigidbody2D rb;
     public CircleCollider2D cc;
     public PhysicsMaterial2D noBounce;
@@ -72,7 +74,7 @@ public class Planet : MonoBehaviour {
     }
 
     private void initializeVariables() {
-		sr = transform.Find("Texture").GetComponent<SpriteRenderer>();
+
 		state = PlanetState.ORBITING;
 		health = 2;
 		
@@ -96,8 +98,11 @@ public class Planet : MonoBehaviour {
 		
 		texture = transform.Find("Texture").transform;
 		shade = transform.Find("Shade").transform;
+		cracked = transform.Find("Cracked").transform;
+		crackedsr = cracked.GetComponent<SpriteRenderer> ();
 		origTextScale = texture.localScale;
 		origShadeScale = shade.localScale;
+		origCrackedScale = cracked.localScale;
 		gravitationTarget = GameObject.Find("Sun").transform;
 		
 		// add some random velocity tangent to the direction of gravity
@@ -121,6 +126,7 @@ public class Planet : MonoBehaviour {
 		invulnTime -= Time.deltaTime;
 		texture.localScale = origTextScale * radius;
 		shade.localScale = origShadeScale * radius;
+		cracked.localScale = origCrackedScale * radius;
 		cc.radius = radius;
 		rb.mass = mass;
 	}
@@ -137,8 +143,8 @@ public class Planet : MonoBehaviour {
 			case PlanetState.ORBITING:
 				break;
 		}
-		if (health == 1) {
-			sr.color = Color.red;
+		if (health <= 1) {
+			crackedsr.enabled = true;
 		}
 	}
     public void damage() {

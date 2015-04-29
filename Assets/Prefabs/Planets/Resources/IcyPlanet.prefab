@@ -50,6 +50,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &149760
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 474760}
+  - 212: {fileID: 21286040}
+  m_Layer: 0
+  m_Name: Cracked
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &428760
 Transform:
   m_ObjectHideFlags: 1
@@ -62,6 +78,7 @@ Transform:
   m_Children:
   - {fileID: 428764}
   - {fileID: 428766}
+  - {fileID: 474760}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &428764
@@ -88,6 +105,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 428760}
   m_RootOrder: 1
+--- !u!4 &474760
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149760}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: .400000006, y: .400000006, z: 1}
+  m_Children: []
+  m_Father: {fileID: 428760}
+  m_RootOrder: 2
 --- !u!50 &5028766
 Rigidbody2D:
   m_ObjectHideFlags: 1
@@ -128,12 +157,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravity: 1
-  beingHeld: 0
   lastHolder: {fileID: 0}
   rb: {fileID: 5028766}
   cc: {fileID: 5828766}
   noBounce: {fileID: 6200000, guid: dd9a104c2a0808541b97cde73ff20cfd, type: 2}
   type: 2
+  state: 0
 --- !u!212 &21228764
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -186,6 +215,32 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 49e93a08aed8f8b408aa78074a8f259f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: .65882355}
+--- !u!212 &21286040
+SpriteRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149760}
+  m_Enabled: 0
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_ImportantGI: 0
+  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: da62c0b426595354e80629603e67554a, type: 3}
+  m_Color: {r: .760784388, g: .890196145, b: 1, a: .588235319}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
