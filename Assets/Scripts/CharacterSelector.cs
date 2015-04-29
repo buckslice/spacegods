@@ -16,7 +16,7 @@ public class CharacterSelector : MonoBehaviour {
 
     private string[][] gods = new string[2][] {
         new string[] {"Zeus","Poseidon","Anubis","Thor"},
-        new string[] {"Odin","Athena","Michael Jordan","Cthulu"}
+        new string[] {"Odin","Athena","Michael Jordan","Cthulhu"}
     };
 
     private string[] godInfo = new string[]{
@@ -27,7 +27,6 @@ public class CharacterSelector : MonoBehaviour {
         "Strength increases as health decreases.",
         "Slowly regenerates health.",
         "Find the basketballs. Show them how to slam.",
-        //"Can't throw. Hitting players damages them."
         "can't throw. extra health. extra mass. damages players on collision."
     };
 
@@ -48,6 +47,7 @@ public class CharacterSelector : MonoBehaviour {
     // for keyboard testing
     private int keyboardPlayer1 = 0;
     private int keyboardPlayer2 = 0;
+    private bool usingKeyboard;
 
     // Use this for initialization
     void Start() {
@@ -157,43 +157,26 @@ public class CharacterSelector : MonoBehaviour {
 
             }
         }
+
+        // add two players for keyboard mode if no controllers are connected
+        string[] connectedJoysticks = Input.GetJoystickNames();
+        if (connectedJoysticks.Length == 0 || (connectedJoysticks.Length == 1 && connectedJoysticks[0] == "")) {
+            usingKeyboard = true;
+            players.Add(new Player(1, godGameObjects[0].go.transform, playerFont, playerSprite));
+            players.Add(new Player(2, godGameObjects[0].go.transform, playerFont, playerSprite));
+
+            players[0].calculateAnchors(1, 2);
+            players[0].refreshAnchors();
+            players[1].calculateAnchors(2, 2);
+            players[1].refreshAnchors();
+            moveCooldown = .15f;
+        }
     }
 
     // Update is called once per frame
     void Update() {
-
         // check for newly connected joysticks
-        // if no joysticks it will have one entry ""
         string[] connectedJoysticks = Input.GetJoystickNames();
-        // KEYBOARD TESTING MODE (this is so filthy dont look)
-        if (connectedJoysticks.Length == 0 || (connectedJoysticks.Length == 1 && connectedJoysticks[0] == "")) {
-            if (Input.GetKey(KeyCode.Backspace)) {
-                string choice = Input.inputString;
-                if (choice != "") {
-                    if (keyboardPlayer1 <= 0 || keyboardPlayer1 > 8) {
-                        int.TryParse(choice[0].ToString(), out keyboardPlayer1);
-                    } else {
-                        int.TryParse(choice[0].ToString(), out keyboardPlayer2);
-
-                        if (keyboardPlayer2 > 0 && keyboardPlayer2 < 9) {
-                            menuMusic.Stop();
-                            Destroy(menuMusic.gameObject);
-                            PlayerPrefs.DeleteAll();
-                            PlayerPrefs.SetInt("Number of players", 2);
-                            PlayerPrefs.SetInt("Player0 ", 1);
-                            PlayerPrefs.SetInt("Player1 ", 2);
-
-                            PlayerPrefs.SetString("Player1", godGameObjects[keyboardPlayer1 - 1].go.name);
-                            PlayerPrefs.SetString("Player2", godGameObjects[keyboardPlayer2 - 1].go.name);
-                            Application.LoadLevel("Main");
-                        }
-                    }
-                }
-            } else {    // reset if you let go
-                keyboardPlayer1 = 0;
-                keyboardPlayer2 = 0;
-            }
-        }
 
         // NORMAL JOYSTICK MODE
         bool playerNumChanged = false;
@@ -221,7 +204,7 @@ public class CharacterSelector : MonoBehaviour {
         // if true it means a controller has disconnected
         // now we need to figure out which controller
         // dont boot player until all other players have moved
-        if (players.Count > connectedJoysticks.Length) {
+        if (players.Count > connectedJoysticks.Length && !usingKeyboard) {
             if (!findingLost) {
                 foreach (Player p in players) {
                     p.hasMovedRecently = false;
@@ -241,7 +224,7 @@ public class CharacterSelector : MonoBehaviour {
 
         // if player number changed then resort player list based on id
         // then set anchors based on which players are present
-        if (playerNumChanged) {
+        if (playerNumChanged && !usingKeyboard) {
             players.Sort((p1, p2) => p1.id.CompareTo(p2.id));
 
             for (int i = 0; i < players.Count; i++) {
@@ -264,24 +247,27 @@ public class CharacterSelector : MonoBehaviour {
             int curRowLength = gods[p.y].Length;
             int regRowLength = gods[0].Length;
 
-
-            if (Input.GetButtonDown("Submit" + p.id)) {
-                p.setSelected(true);
-                p.hasMovedRecently = true;
+            if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) {
+                p.setSelected(p.chosen == "");
+            } else {
+                if (Input.GetButtonDown("Submit" + p.id)) {
+                    p.setSelected(true);
+                    p.hasMovedRecently = true;
+                }
+                if (Input.GetButtonDown("Cancel" + p.id)) {
+                    p.setSelected(false);
+                    p.hasMovedRecently = true;
+                }
             }
-            if (Input.GetButtonDown("Cancel" + p.id)) {
-                p.setSelected(false);
-                p.hasMovedRecently = true;
-            }
 
-            if (Input.GetButton("Y" + p.id)) {
+            if (Input.GetButton("Y" + p.id) || Input.GetKey(KeyCode.Y)) {
                 godGameObjects[p.x + p.y * regRowLength].checkingInfo = true;
             }
 
             // check to see if player is allowed to move again
             if (p.inputCooldown < Time.time && p.chosen == "") {
-                float x = Input.GetAxis("Horizontal_360_" + p.id);
-                float y = Input.GetAxis("Vertical_360_" + p.id);
+                float x = Input.GetAxis("Horizontal" + (usingKeyboard ? "" : "_360_") + p.id);
+                float y = Input.GetAxis("Vertical" + (usingKeyboard ? "" : "_360_") + p.id);
                 bool moved = true;
                 if (x > minMag) {
                     p.x++;
@@ -365,13 +351,14 @@ class Player {
     public int y = 0;
     public string chosen = "";
 
+    // should have extended event system probably, but this works good enough
     public float inputCooldown;
+
     public int id;
     public bool hasMovedRecently;
 
     public Image img;
     public Text txt;
-    //public Text btxt;
     public string parentName;
 
     private Vector2 relativeAnchor;
@@ -399,16 +386,6 @@ class Player {
         txt.resizeTextMinSize = 10;
         txt.resizeTextMaxSize = 50;
 
-        // black background text to add contrast
-        //btxt = new GameObject("Player " + id + " btext").AddComponent<Text>();
-        //btxt.color = colors[id - 1] * .75f;
-        //btxt.font = f;
-        //btxt.text = "P" + id;
-        //btxt.alignment = TextAnchor.MiddleCenter;
-        //btxt.resizeTextForBestFit = true;
-        //btxt.resizeTextMinSize = 10;
-        //btxt.resizeTextMaxSize = 50;
-
         setSelected(false);
         setParent(parent);
     }
@@ -422,7 +399,6 @@ class Player {
 
     public void setParent(Transform parent) {
         img.transform.SetParent(parent);
-        //btxt.transform.SetParent(img.transform);
         txt.transform.SetParent(img.transform);
 
         parentName = parent.gameObject.name;
@@ -445,15 +421,6 @@ class Player {
 
         Vector3 txtPos = txt.rectTransform.anchoredPosition3D;
         txt.rectTransform.anchoredPosition3D = new Vector3(txtPos.x, -25, txtPos.z);
-
-        //btxt.rectTransform.anchorMin = new Vector3(0f, 1f);
-        //btxt.rectTransform.anchorMax = new Vector3(1f, 1f);
-        //btxt.rectTransform.offsetMin = Vector2.zero;
-        //btxt.rectTransform.offsetMax = new Vector2(0, 50);
-
-        //Vector3 btxtPos = txt.rectTransform.anchoredPosition3D;
-        //btxt.rectTransform.anchoredPosition3D = new Vector3(btxtPos.x + 2, -26, btxtPos.z);
-
     }
 }
 

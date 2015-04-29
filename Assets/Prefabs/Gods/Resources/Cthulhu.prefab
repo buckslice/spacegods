@@ -35,7 +35,7 @@ GameObject:
   - 58: {fileID: 5811472}
   - 122: {fileID: 12202008}
   m_Layer: 0
-  m_Name: CTHULU
+  m_Name: Cthulhu
   m_TagString: God
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
