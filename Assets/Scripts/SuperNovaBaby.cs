@@ -17,14 +17,18 @@ public class SuperNovaBaby : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        sprite.Rotate(0, 0, Time.deltaTime * 5f);
-        growth += Time.deltaTime;
-        float rate = Mathf.Pow(1.1f, growth - timeUntilShitGetsReal);
-        transform.localScale = Vector3.one + Vector3.one * rate;
-        circCol.radius = 3f - (.5f / (1f + rate));
-
-        system.startLifetime = 5f + rate;
-        system.startSpeed = .5f + rate;
-        system.startSize = 5f + rate * 2f;
+		SuperNova ();
     }
+
+	private void SuperNova(){
+		sprite.Rotate(0, 0, Time.deltaTime * 5f);
+		growth += Time.deltaTime;
+		float rate = Mathf.Pow(1.1f, growth - timeUntilShitGetsReal);
+		transform.localScale = Vector3.one + Vector3.one * rate;
+		circCol.radius = 3f - (.5f / (1f + rate));
+		
+		system.startLifetime = 5f + rate;
+		system.startSpeed = .5f + rate;
+		system.startSize = 5f + rate * 2f;
+	}
 }

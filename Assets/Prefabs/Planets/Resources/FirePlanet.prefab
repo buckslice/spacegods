@@ -128,12 +128,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravity: 1
-  beingHeld: 0
   lastHolder: {fileID: 0}
   rb: {fileID: 5000000}
   cc: {fileID: 5800000}
   noBounce: {fileID: 6200000, guid: dd9a104c2a0808541b97cde73ff20cfd, type: 2}
   type: 3
+  state: 0
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

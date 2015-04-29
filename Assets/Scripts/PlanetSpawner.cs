@@ -10,9 +10,10 @@ public class PlanetSpawner : MonoBehaviour {
 
     void Update() {
         if (Game.instance.hasBegun()) {
-            if (spawnTime < Time.time) {
+            if (spawnTime < Time.timeSinceLevelLoad) {
+				//Time.time doesn't work for restart
                 spawnPlanet();
-                spawnTime = Time.time + spawnSpeed;
+				spawnTime = Time.timeSinceLevelLoad + spawnSpeed;
             }
 
             // increase maxPlanets by 1 every 5 seconds
