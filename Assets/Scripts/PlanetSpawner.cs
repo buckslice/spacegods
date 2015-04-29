@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlanetSpawner : MonoBehaviour 
-{
+public class PlanetSpawner : MonoBehaviour {
     private GameObject planet;
     public static int planetNum = 0;
     public float maxPlanets;
+    public float spawnSpeed = .25f;
+    private float spawnTime;
+
     void Update() {
-        if(Game.instance.hasBegun()){
-			spawnPlanet();
+        if (Game.instance.hasBegun()) {
+            if (spawnTime < Time.time) {
+                spawnPlanet();
+                spawnTime = Time.time + spawnSpeed;
+            }
 
             // increase maxPlanets by 1 every 5 seconds
             // commented out for now (not sure if we want this)
@@ -16,16 +21,13 @@ public class PlanetSpawner : MonoBehaviour
         }
     }
 
-    private void spawnPlanet() 
-	{
-        if (planetNum < maxPlanets && !Game.instance.gameIsOver()) 
-		{
+    private void spawnPlanet() {
+        if (planetNum < maxPlanets && !Game.instance.gameIsOver()) {
             float x = 0f;
             float y = 0f;
 
             // with Random.Range for integers the max is exclusive for some reason
-            switch (Random.Range(1, 5)) 
-			{
+            switch (Random.Range(1, 5)) {
                 case 1:
                     x = -0.1f;
                     y = Random.Range(0f, 1f);
@@ -48,35 +50,34 @@ public class PlanetSpawner : MonoBehaviour
             }
 
             Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(x, y, 10f));
-			switch (Random.Range(1,9)) 
-			{ 
-				// spawn planets with different prefab, add more cases for each prefab
-				case 1:
-					planet = (GameObject)Instantiate(Resources.Load("BasketballPlanet"), p, Quaternion.identity);
-					break;
-				case 2:
-					planet = (GameObject)Instantiate(Resources.Load("IcyPlanet"), p, Quaternion.identity);
-					break;
-				case 3:
+            switch (Random.Range(1, 9)) {
+                // spawn planets with different prefab, add more cases for each prefab
+                case 1:
+                    planet = (GameObject)Instantiate(Resources.Load("BasketballPlanet"), p, Quaternion.identity);
+                    break;
+                case 2:
+                    planet = (GameObject)Instantiate(Resources.Load("IcyPlanet"), p, Quaternion.identity);
+                    break;
+                case 3:
                     planet = (GameObject)Instantiate(Resources.Load("TropicalPlanet"), p, Quaternion.identity);
-					break;
-				case 4:
-					planet = (GameObject)Instantiate(Resources.Load("GoldPlanet"), p, Quaternion.identity);
-					break;
-				case 5:
-					planet = (GameObject)Instantiate(Resources.Load("LavaPlanet"), p, Quaternion.identity);
-					break;
-				case 6:
-					planet = (GameObject)Instantiate(Resources.Load("MetalPlanet"), p, Quaternion.identity);
-					break;
-				case 7:
-					planet = (GameObject)Instantiate(Resources.Load("RockyPlanet"), p, Quaternion.identity);
-					break;
-				case 8:
-					planet = (GameObject)Instantiate(Resources.Load("FirePlanet"), p, Quaternion.identity);
-					break;
-			}
-			planet.transform.parent = gameObject.transform;
+                    break;
+                case 4:
+                    planet = (GameObject)Instantiate(Resources.Load("GoldPlanet"), p, Quaternion.identity);
+                    break;
+                case 5:
+                    planet = (GameObject)Instantiate(Resources.Load("LavaPlanet"), p, Quaternion.identity);
+                    break;
+                case 6:
+                    planet = (GameObject)Instantiate(Resources.Load("MetalPlanet"), p, Quaternion.identity);
+                    break;
+                case 7:
+                    planet = (GameObject)Instantiate(Resources.Load("RockyPlanet"), p, Quaternion.identity);
+                    break;
+                case 8:
+                    planet = (GameObject)Instantiate(Resources.Load("FirePlanet"), p, Quaternion.identity);
+                    break;
+            }
+            planet.transform.parent = gameObject.transform;
             ++planetNum;
         }
     }
