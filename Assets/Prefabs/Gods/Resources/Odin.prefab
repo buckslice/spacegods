@@ -32,6 +32,8 @@ GameObject:
   - 58: {fileID: 5810998}
   - 114: {fileID: 11467700}
   - 58: {fileID: 5837352}
+  - 58: {fileID: 5892454}
+  - 122: {fileID: 12237662}
   m_Layer: 0
   m_Name: Odin
   m_TagString: God
@@ -89,7 +91,7 @@ CircleCollider2D:
   m_Material: {fileID: 6200000, guid: fe6710b41c756a1499d0d985926e71f1, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -.100000001, y: 1}
+  m_Offset: {x: 0, y: 1}
   serializedVersion: 2
   m_Radius: 1
 --- !u!58 &5837352
@@ -102,9 +104,22 @@ CircleCollider2D:
   m_Material: {fileID: 6200000, guid: fe6710b41c756a1499d0d985926e71f1, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -.100000001, y: -1}
+  m_Offset: {x: 0, y: -1}
   serializedVersion: 2
   m_Radius: 1
+--- !u!58 &5892454
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178774}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 3
 --- !u!114 &11410552
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -117,12 +132,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   god: 4
-  health: 100
-  maxHealth: 0
+  maxHealth: 100
   maxSpeed: 30
   acceleration: 1.25
   throwStrength: 20
-  counter: 0
   special: 0
 --- !u!114 &11423266
 MonoBehaviour:
@@ -170,6 +183,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4e334405b66e0b40ab26508cae6bf6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!122 &12237662
+Halo:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178774}
+  m_Enabled: 1
+  m_Color:
+    serializedVersion: 2
+    rgba: 4286611584
+  m_Size: 3
 --- !u!212 &21264472
 SpriteRenderer:
   m_ObjectHideFlags: 1

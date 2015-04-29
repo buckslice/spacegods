@@ -8,7 +8,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 475844}
-  - 114: {fileID: 11475844}
   - 58: {fileID: 5875848}
   - 50: {fileID: 5075848}
   - 114: {fileID: 11453766}
@@ -44,7 +43,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 475848}
   - 212: {fileID: 21275848}
-  - 114: {fileID: 11475848}
   m_Layer: 0
   m_Name: Shade
   m_TagString: Untagged
@@ -129,36 +127,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a58fd349b92d8454caebc31e44f128b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0
-  mass: 0
+  gravity: 1
+  beingHeld: 0
+  lastHolder: {fileID: 0}
+  rb: {fileID: 5075848}
+  cc: {fileID: 5875848}
+  noBounce: {fileID: 6200000, guid: dd9a104c2a0808541b97cde73ff20cfd, type: 2}
   type: 5
---- !u!114 &11475844
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 175844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5abf7b75949b84245a272eda8a9782cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gravity: 20
-  collision: {fileID: 8300000, guid: f3ed097d7c4f8d0478e91135781c3b8e, type: 3}
-  explosion: {fileID: 8300000, guid: cee22c80f6190e343a2294263d9d1dcb, type: 3}
-  noBounce: {fileID: 0}
-  catchBool: 0
---- !u!114 &11475848
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 175848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b7102781c0d2be4f98b67d3793749a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &21275846
 SpriteRenderer:
   m_ObjectHideFlags: 1

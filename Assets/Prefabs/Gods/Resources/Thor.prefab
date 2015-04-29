@@ -14,6 +14,8 @@ GameObject:
   - 58: {fileID: 5800000}
   - 58: {fileID: 5800002}
   - 114: {fileID: 11400000}
+  - 58: {fileID: 5832390}
+  - 122: {fileID: 12278408}
   m_Layer: 0
   m_Name: Thor
   m_TagString: God
@@ -103,6 +105,19 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -1}
   serializedVersion: 2
   m_Radius: 1
+--- !u!58 &5832390
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 3
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -126,12 +141,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   god: 3
-  health: 100
-  maxHealth: 0
+  maxHealth: 100
   maxSpeed: 30
   acceleration: 1.25
   throwStrength: 20
-  counter: 0
   special: 0
 --- !u!114 &11400004
 MonoBehaviour:
@@ -145,6 +158,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: 3
+  freezeInputs: 1
+--- !u!122 &12278408
+Halo:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_Color:
+    serializedVersion: 2
+    rgba: 4286611584
+  m_Size: 3
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

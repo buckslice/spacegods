@@ -6,15 +6,9 @@ public class PlanetSpawner : MonoBehaviour
     private GameObject planet;
     public static int planetNum = 0;
     public float maxPlanets;
-    public float spawnInterval;
-    public bool hasBegun = false;
-
     void Update() {
-        if(hasBegun){
-            if (spawnInterval < Time.time) {
-                SpawnPlanet();
-                spawnInterval = Time.time + 1f;
-            }
+        if(Game.instance.hasBegun()){
+			spawnPlanet();
 
             // increase maxPlanets by 1 every 5 seconds
             // commented out for now (not sure if we want this)
@@ -22,7 +16,7 @@ public class PlanetSpawner : MonoBehaviour
         }
     }
 
-    private void SpawnPlanet() 
+    private void spawnPlanet() 
 	{
         if (planetNum < maxPlanets && !Game.instance.gameIsOver()) 
 		{
@@ -54,7 +48,7 @@ public class PlanetSpawner : MonoBehaviour
             }
 
             Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(x, y, 10f));
-			switch (Random.Range(1,8)) 
+			switch (Random.Range(1,9)) 
 			{ 
 				// spawn planets with different prefab, add more cases for each prefab
 				case 1:
@@ -77,6 +71,9 @@ public class PlanetSpawner : MonoBehaviour
 					break;
 				case 7:
 					planet = (GameObject)Instantiate(Resources.Load("RockyPlanet"), p, Quaternion.identity);
+					break;
+				case 8:
+					planet = (GameObject)Instantiate(Resources.Load("FirePlanet"), p, Quaternion.identity);
 					break;
 			}
 			planet.transform.parent = gameObject.transform;

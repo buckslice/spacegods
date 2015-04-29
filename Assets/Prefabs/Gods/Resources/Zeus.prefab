@@ -29,8 +29,11 @@ GameObject:
   - 50: {fileID: 5000000}
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400000}
-  - 58: {fileID: 5800000}
+  - 58: {fileID: 5863444}
   - 114: {fileID: 11400004}
+  - 58: {fileID: 5821784}
+  - 58: {fileID: 5854846}
+  - 122: {fileID: 12265230}
   m_Layer: 0
   m_Name: Zeus
   m_TagString: God
@@ -78,7 +81,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!58 &5800000
+--- !u!58 &5821784
 CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -88,9 +91,35 @@ CircleCollider2D:
   m_Material: {fileID: 6200000, guid: fe6710b41c756a1499d0d985926e71f1, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -.100000001, y: -.200000003}
+  m_Offset: {x: 0, y: -1}
   serializedVersion: 2
-  m_Radius: 1.39999998
+  m_Radius: 1
+--- !u!58 &5854846
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 3
+--- !u!58 &5863444
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_Material: {fileID: 6200000, guid: fe6710b41c756a1499d0d985926e71f1, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 1}
+  serializedVersion: 2
+  m_Radius: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -103,6 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: 1
+  freezeInputs: 1
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -115,12 +145,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   god: 0
-  health: 100
-  maxHealth: 0
+  maxHealth: 100
   maxSpeed: 30
   acceleration: 1.25
   throwStrength: 20
-  counter: 0
   special: 0
 --- !u!114 &11400004
 MonoBehaviour:
@@ -155,6 +183,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4e334405b66e0b40ab26508cae6bf6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!122 &12265230
+Halo:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_Color:
+    serializedVersion: 2
+    rgba: 4286611584
+  m_Size: 3
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
