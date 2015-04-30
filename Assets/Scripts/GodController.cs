@@ -95,6 +95,24 @@ public class GodController : MonoBehaviour {
         planetCollider.enabled = false;
         myPlanet = null;
     }
+	private void blockWithPlanet(Vector2 aim){
+		float holdDistance = 3.5f;
+		Vector2 holdPos = aim * holdDistance;
+		Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
+		myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
+		planetCollider.offset = holdPos;
+	}
+
+	private void destroyDeadHeldPlanet(){
+		if (god.god == Gods.SHIVA){
+			god.damage(-myPlanet.rb.mass * 10f);
+		}
+		myRigidbody.mass -= myPlanet.rb.mass;
+		planetCollider.enabled = false;
+		Destroy(myPlanet.gameObject);
+		myPlanet = null;
+		--PlanetSpawner.planetNum;
+	}
 
 	private void handleThrow(){
 		newTrigger = Input.GetAxis("Fire_360_" + player) < 0.0;
@@ -109,23 +127,10 @@ public class GodController : MonoBehaviour {
 				if (fireInput) {    // throw planet
 					throwPlanet(aim);
 				} else {    // move planet where aiming for blocking
-					float holdDistance = 3.5f;
-					Vector2 holdPos = aim * holdDistance;
-					Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
-					myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
-					planetCollider.offset = holdPos;
-					
+					blockWithPlanet(aim);
 				}
 			} else {    //planet died before it was thrown
-				if (god.god == Gods.SHIVA){
-					god.damage(-myPlanet.rb.mass * 10f);
-				}
-				myRigidbody.mass -= myPlanet.rb.mass;
-				planetCollider.enabled = false;
-				Destroy(myPlanet.gameObject);
-				myPlanet = null;
-				--PlanetSpawner.planetNum;
-
+				destroyDeadHeldPlanet();
 			}
 		}
 	}
@@ -219,37 +224,42 @@ public class GodController : MonoBehaviour {
 	}
 	private void handleGodPassives(){
 		switch (god.god) {
-		case Gods.THOR:
-			if (god.getCounter() > 10f) {
-				sr.color = Color.grey;
-			} else {
-				sr.color = Color.white;
-			}
-			break;
-			
-		case Gods.MICHAEL_JORDAN:
-			if (myPlanet) {
-				if (myPlanet.type == PlanetType.BASKETBALL) {
-					god.throwStrength = 60f;
+			case Gods.THOR:
+				if (god.getCounter() > 10f) {
+					sr.color = Color.grey;
 				} else {
-					god.throwStrength = 20f;
+					sr.color = Color.white;
 				}
-			}
-			break;
-			
-		case Gods.ZEUS:
-			if (myPlanet) {
-				// this needs testing for sure to find good balance
-				myPlanet.changeMass(Time.deltaTime / 10f);
-				myRigidbody.mass += Time.deltaTime / 10f;
-				myPlanet.changeRadius(Time.deltaTime / 10f);
-				planetCollider.radius = myPlanet.getRadius();
-			}
-			break;
-			
-		default:
-			break;
-			
+				break;
+				
+			case Gods.MICHAEL_JORDAN:
+				if (myPlanet) {
+					if (myPlanet.type == PlanetType.BASKETBALL) {
+						god.throwStrength = 60f;
+					} else {
+						god.throwStrength = 20f;
+					}
+				}
+				break;
+				
+			case Gods.ZEUS:
+				if (myPlanet) {
+					// this needs testing for sure to find good balance
+					myPlanet.changeMass(Time.deltaTime / 10f);
+					myRigidbody.mass += Time.deltaTime / 10f;
+					myPlanet.changeRadius(Time.deltaTime / 10f);
+					planetCollider.radius = myPlanet.getRadius();
+				}
+				break;
+			case Gods.SUN_WUKONG:
+				bool inputFire = (usingJoysticks) ? Input.GetAxis ("Fire_360_" + player) < 0.0 : Input.GetButton ("Fire" + player);
+				if(!myPlanet && inputFire){
+					//passive goes here
+				}
+				break;
+			default:
+				break;
+				
 		}
 	}
 

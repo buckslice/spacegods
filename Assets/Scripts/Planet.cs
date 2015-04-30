@@ -183,10 +183,10 @@ public class Planet : MonoBehaviour {
             }
             switch (state) {
                 case PlanetState.THROWN:
-                    gameObject.GetComponent<Planet>().damage();
+                    this.damage();
                     break;
                 case PlanetState.HELD:
-                    gameObject.GetComponent<Planet>().damage();
+                    this.damage();
                     break;
                 case PlanetState.ORBITING:
                     break;

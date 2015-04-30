@@ -11,7 +11,8 @@ public enum Gods {
     MICHAEL_JORDAN,
     CTHULU,
 	HERMES,
-	SHIVA
+	SHIVA,
+	SUN_WUKONG
 }
 
 public class God : MonoBehaviour {
