@@ -44,9 +44,6 @@ public class CharacterSelector : MonoBehaviour {
     private GameObject overLay;
     private AudioSource menuMusic;
 
-    // for keyboard testing
-    private int keyboardPlayer1 = 0;
-    private int keyboardPlayer2 = 0;
     private bool usingKeyboard;
 
     // Use this for initialization

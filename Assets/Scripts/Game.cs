@@ -71,7 +71,7 @@ public class Game : MonoBehaviour {
 			int player = PlayerPrefs.GetInt("Player" + i + " ");
 			string choice = PlayerPrefs.GetString("Player" + player);
 			//Debug.Log(player + " " + choice);
-			Object loadedGod = Resources.Load(choice);
+			Object loadedGod = Resources.Load("Gods/" + choice);
 			if (!loadedGod) {
 				choice = "Zeus";    // classic
 				loadedGod = Resources.Load(choice);
