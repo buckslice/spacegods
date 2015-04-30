@@ -178,7 +178,7 @@ public class GodController : MonoBehaviour {
 	}
 
 	private void handleGodCollision(Collision2D collision){
-		if (collision.gameObject.tag == "God" && collision.gameObject.name == "Cthulu") {
+		if (collision.gameObject.tag == "God" && collision.gameObject.name == "Cthulhu") {
 			float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass;
 			god.damage(damage * .5f);
 		}
@@ -255,11 +255,13 @@ public class GodController : MonoBehaviour {
 		}
 	}
 	private void handlePlanetCatch(Collider2D col){
-		bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + player) < 0.0 : Input.GetButton("Fire" + player);
-		if (col.tag == "Planet" && inputFire && !myPlanet) {
-			bool canCatch = col.gameObject.GetComponent<Planet>().lastHolder == this || col.gameObject.GetComponent<Planet>().state == PlanetState.ORBITING || timeSinceTryCatch < .25f;
-			if (releaseButtonFire && canCatch) {
-				holdPlanet(col.gameObject.GetComponent<Planet>());
+		if (name != "Cthulhu") {
+			bool inputFire = (usingJoysticks) ? Input.GetAxis ("Fire_360_" + player) < 0.0 : Input.GetButton ("Fire" + player);
+			if (col.tag == "Planet" && inputFire && !myPlanet) {
+				bool canCatch = col.gameObject.GetComponent<Planet> ().lastHolder == this || col.gameObject.GetComponent<Planet> ().state == PlanetState.ORBITING || timeSinceTryCatch < .25f;
+				if (releaseButtonFire && canCatch) {
+					holdPlanet (col.gameObject.GetComponent<Planet> ());
+				}
 			}
 		}
 	}
