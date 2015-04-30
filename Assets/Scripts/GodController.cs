@@ -117,11 +117,15 @@ public class GodController : MonoBehaviour {
 					
 				}
 			} else {    //planet died before it was thrown
+				if (god.god == Gods.SHIVA){
+					god.damage(-myPlanet.rb.mass * 10f);
+				}
 				myRigidbody.mass -= myPlanet.rb.mass;
 				planetCollider.enabled = false;
 				Destroy(myPlanet.gameObject);
 				myPlanet = null;
 				--PlanetSpawner.planetNum;
+
 			}
 		}
 	}

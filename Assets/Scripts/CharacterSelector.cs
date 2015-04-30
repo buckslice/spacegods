@@ -17,7 +17,7 @@ public class CharacterSelector : MonoBehaviour {
     private string[][] gods = new string[3][] {
         new string[] {"Zeus","Poseidon","Anubis","Thor"},
         new string[] {"Odin","Athena","Michael Jordan","Cthulhu"},
-		new string[] {"Hermes"}
+		new string[] {"Hermes", "Shiva"}
     };
 
     private string[] godInfo = new string[]{
@@ -29,7 +29,8 @@ public class CharacterSelector : MonoBehaviour {
         "Slowly regenerates health.",
         "Find the basketballs. Show them how to slam.",
         "can't throw. extra health. extra mass. damages players on collision.",
-		"Fast but fragile."
+		"Fast but fragile.",
+		"Destroyer of Worlds, gains health when a planet dies while he is holding it"
     };
 
     // cooldown between joystick movements
