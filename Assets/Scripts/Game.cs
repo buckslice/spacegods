@@ -7,14 +7,14 @@ public class Game : MonoBehaviour {
     private GameObject overlay;
     private Text countDown;
     private Text gameOverText;
-    private float timer = 4.99f;
-    private int soundTimer = 4;
-    private int frames = 0;
+    private float timer;
+    private int soundTimer;
+    private int frames;
     private bool songStart = false;
     private bool gameStart = false;
     private bool introFinished = false;
     private AudioSource song;
-    private int winner = 0;
+    private int winner;
     private string winnerName;
     private bool isPaused = false;
 
@@ -34,9 +34,9 @@ public class Game : MonoBehaviour {
 
     // update is called once per frame
     void Update() {
-		handleIntro();
+		handleIntro ();
 		handleWinner ();
-		handlePause();
+		handlePause ();
     }
 
     public void addPlayer(GodController player) {
@@ -58,6 +58,10 @@ public class Game : MonoBehaviour {
     }
 
 	private void initializeVariables(){
+		timer = 4.99f;
+		soundTimer = 4;
+		frames = 0;
+		winner = 0;
 		countDown = GameObject.Find("CountdownText").GetComponent<Text>();
 		gameOverText = GameObject.Find("GameOverText").GetComponent<Text>();
 		song = Camera.main.GetComponent<AudioSource>();
@@ -110,7 +114,7 @@ public class Game : MonoBehaviour {
 					AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
 					countDown.color = Color.white;
 					foreach (GodController gc in players) {
-						gc.freezeInputs = false;
+						gc.unlock();
 					}
 					gameStart = true;
 				}

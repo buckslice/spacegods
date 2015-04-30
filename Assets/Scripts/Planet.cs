@@ -22,7 +22,7 @@ public class Planet : MonoBehaviour {
     private float radius;
     private float mass;
     private int health;
-    public float gravity = 1f;  // should make sun class eventually and move this there
+    private float gravity;  // should make sun class eventually and move this there
     private Transform gravitationTarget;
     public GodController lastHolder;
 
@@ -61,6 +61,39 @@ public class Planet : MonoBehaviour {
 
         rb.AddForce(g * rb.mass);
     }
+	void OnCollisionEnter2D(Collision2D collision) {
+		if (collision.gameObject.tag == "Player") {
+			cc.sharedMaterial = noBounce;
+		} else if (collision.gameObject.tag == "Planet") {
+			// only want one of the planets to play the sound so base it off random factor like x position
+			if (transform.position.x > collision.transform.position.x) {
+				//AudioManager.instance.playSound("Collision", transform.position, 1f);
+			}
+			switch (state) {
+			case PlanetState.THROWN:
+				this.damage();
+				break;
+			case PlanetState.HELD:
+				this.damage();
+				break;
+			case PlanetState.ORBITING:
+				break;
+			}
+			
+		} else if (collision.gameObject.tag == "Boundary") {
+			--PlanetSpawner.planetNum;
+			Destroy(gameObject);
+		}
+	}
+	
+	
+	void OnTriggerEnter2D(Collider2D collider) {
+		if (collider.tag == "Sun") { // kill planet if it hits sun
+			//AudioManager.instance.playSound("Explosion0", transform.position, .25f);
+			--PlanetSpawner.planetNum;
+			Destroy(gameObject);
+		}
+	}
 
     private float ToAngle(float x, float y) {
         if (x == 0)
@@ -77,7 +110,7 @@ public class Planet : MonoBehaviour {
 
 		state = PlanetState.ORBITING;
 		health = 2;
-		
+		gravity = 20f;
 		// randomize size and mass
 		switch (Random.Range(0, 3)) {
 		case 0:             // small
@@ -147,6 +180,7 @@ public class Planet : MonoBehaviour {
 			crackedsr.enabled = true;
 		}
 	}
+
     public void damage() {
         if (invulnTime < 0f) {
             health--;
@@ -173,37 +207,5 @@ public class Planet : MonoBehaviour {
         mass += change;
     }
 
-    void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.tag == "Player") {
-            cc.sharedMaterial = noBounce;
-        } else if (collision.gameObject.tag == "Planet") {
-            // only want one of the planets to play the sound so base it off random factor like x position
-            if (transform.position.x > collision.transform.position.x) {
-                //AudioManager.instance.playSound("Collision", transform.position, 1f);
-            }
-            switch (state) {
-                case PlanetState.THROWN:
-                    this.damage();
-                    break;
-                case PlanetState.HELD:
-                    this.damage();
-                    break;
-                case PlanetState.ORBITING:
-                    break;
-            }
-
-        } else if (collision.gameObject.tag == "Boundary") {
-            --PlanetSpawner.planetNum;
-            Destroy(gameObject);
-        }
-    }
-
-
-    void OnTriggerEnter2D(Collider2D collider) {
-        if (collider.tag == "Sun") { // kill planet if it hits sun
-            //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
-            --PlanetSpawner.planetNum;
-            Destroy(gameObject);
-        }
-    }
+    
 }

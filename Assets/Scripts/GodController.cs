@@ -13,18 +13,18 @@ public class GodController : MonoBehaviour {
     private SpriteRenderer sr;
 
     // compare trigger values in previous frame
-    private bool oldTrigger = false;
-    private bool newTrigger = false;
-    private bool releaseButtonFire = true;
+    private bool oldTrigger;
+    private bool newTrigger;
+    private bool releaseButtonFire;
     private float timeSinceTryCatch;
 
     // track the original orientation of the model for turning
     private float flipX;
     private float modelPosX;
-    private bool isFlipped = false; // true when facing right; false when facing left
+    private bool isFlipped; // true when facing right; false when facing left
 
-    public bool freezeInputs = true;
-    private bool usingJoysticks = true;
+    private bool freezeInputs;
+    private bool usingJoysticks;
 
     private float invincible;
 
@@ -54,6 +54,12 @@ public class GodController : MonoBehaviour {
 
 	private void initializeVariables(){
 		Game.instance.addPlayer(this);
+		freezeInputs = true;
+		releaseButtonFire = true;
+		usingJoysticks = true;
+		oldTrigger = false;
+		newTrigger = false;
+		isFlipped = false;
 		model = transform.Find("Model");
 		myRigidbody = GetComponent<Rigidbody2D>();
 		god = GetComponent<God>();
@@ -62,8 +68,6 @@ public class GodController : MonoBehaviour {
 		planetCollider = gameObject.AddComponent<CircleCollider2D>();
 		planetCollider.enabled = false;
 		sr = model.GetComponent<SpriteRenderer>();
-		
-		usingJoysticks = true;
 		string[] joysticks = Input.GetJoystickNames();
 		if (joysticks.Length == 0 || (joysticks.Length == 1 && joysticks[0] == "")) {
 			usingJoysticks = false;
@@ -278,6 +282,10 @@ public class GodController : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void unlock(){
+		freezeInputs = false;
 	}
 }
 
