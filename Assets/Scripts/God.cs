@@ -9,7 +9,8 @@ public enum Gods {
     ODIN,
     ATHENA,
     MICHAEL_JORDAN,
-    CTHULU
+    CTHULU,
+	HERMES
 }
 
 public class God : MonoBehaviour {

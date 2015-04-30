@@ -14,9 +14,10 @@ public class CharacterSelector : MonoBehaviour {
     public Font font;
     public Font playerFont;
 
-    private string[][] gods = new string[2][] {
+    private string[][] gods = new string[3][] {
         new string[] {"Zeus","Poseidon","Anubis","Thor"},
-        new string[] {"Odin","Athena","Michael Jordan","Cthulhu"}
+        new string[] {"Odin","Athena","Michael Jordan","Cthulhu"},
+		new string[] {"Hermes"}
     };
 
     private string[] godInfo = new string[]{
@@ -27,7 +28,8 @@ public class CharacterSelector : MonoBehaviour {
         "Strength increases as health decreases.",
         "Slowly regenerates health.",
         "Find the basketballs. Show them how to slam.",
-        "can't throw. extra health. extra mass. damages players on collision."
+        "can't throw. extra health. extra mass. damages players on collision.",
+		"Fast but fragile."
     };
 
     // cooldown between joystick movements
@@ -43,10 +45,6 @@ public class CharacterSelector : MonoBehaviour {
     private Text countDown;
     private GameObject overLay;
     private AudioSource menuMusic;
-
-    // for keyboard testing
-    private int keyboardPlayer1 = 0;
-    private int keyboardPlayer2 = 0;
     private bool usingKeyboard;
 
     // Use this for initialization
