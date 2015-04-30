@@ -343,6 +343,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 47d8ace11bf6dfa419720c6e638aa3d6, type: 3}
   - {fileID: 21300000, guid: 29c5f1d939173f7489ae104d3c29e5f9, type: 3}
   - {fileID: 21300000, guid: 5d6a103d7536a1d49955f5d3b9ad8e1d, type: 3}
+  - {fileID: 21300000, guid: c0e348a0c0640ea4eaca2c6d8bc5604c, type: 3}
+  - {fileID: 21300000, guid: 8074a8e316c63d646a2ddcdab47f31d6, type: 3}
+  - {fileID: 21300000, guid: 0f6d2b412efaaa94587c6badc7ff6b86, type: 3}
   nameBackground: {fileID: 21300000, guid: e788c6d739f5ed648b724f35844e4b3e, type: 3}
   playerSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   font: {fileID: 12800000, guid: 8ec042392177a1c4fb0cd6c44e28d886, type: 3}

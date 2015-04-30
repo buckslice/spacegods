@@ -14,9 +14,10 @@ public class CharacterSelector : MonoBehaviour {
     public Font font;
     public Font playerFont;
 
-    private string[][] gods = new string[2][] {
+    private string[][] gods = new string[3][] {
         new string[] {"Zeus","Poseidon","Anubis","Thor"},
-        new string[] {"Odin","Athena","Michael Jordan","Cthulhu"}
+        new string[] {"Odin","Athena","Michael Jordan","Cthulhu"},
+		new string[] {"Hermes", "Shiva", "Sun-Wukong"}
     };
 
     private string[] godInfo = new string[]{
@@ -27,7 +28,10 @@ public class CharacterSelector : MonoBehaviour {
         "Strength increases as health decreases.",
         "Slowly regenerates health.",
         "Find the basketballs. Show them how to slam.",
-        "can't throw. extra health. extra mass. damages players on collision."
+        "can't throw. extra health. extra mass. damages players on collision.",
+		"Fast but fragile.",
+		"Destroyer of Worlds, gains health when a planet dies while he is holding it",
+		"Chinese Trickster God, can pretend to be holding a planet"
     };
 
     // cooldown between joystick movements
@@ -43,7 +47,6 @@ public class CharacterSelector : MonoBehaviour {
     private Text countDown;
     private GameObject overLay;
     private AudioSource menuMusic;
-
     private bool usingKeyboard;
 
     // Use this for initialization

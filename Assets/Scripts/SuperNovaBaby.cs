@@ -7,9 +7,10 @@ public class SuperNovaBaby : MonoBehaviour {
     private ParticleSystem system;
     private Transform sprite;
     private CircleCollider2D circCol;
-    private float growth = 0f;
+    private float growth;
     // Use this for initialization
     void Start() {
+		growth = 0f;
         circCol = GetComponent<CircleCollider2D>();
         system = GetComponent<ParticleSystem>();
         sprite = transform.Find("sprite").transform;
