@@ -291,8 +291,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 16700555}
   m_RootOrder: 2
-  m_AnchorMin: {x: .100000001, y: .100000001}
-  m_AnchorMax: {x: .899999976, y: .800000012}
+  m_AnchorMin: {x: .150000006, y: .100000001}
+  m_AnchorMax: {x: .850000024, y: .850000024}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: .5, y: .5}
@@ -411,7 +411,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 16700555}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: .800000012}
+  m_AnchorMin: {x: 0, y: .850000024}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
