@@ -144,12 +144,15 @@ public class Game : MonoBehaviour {
 			}
 			if (winner != 0) {
 					//gameOverText.text = "Game Over!\nPlayer " + winner + " (" + winnerName + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
-					gameOverText.text = "Game Over!\n" + winnerName + " (P" + winner + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
+					gameOverText.text = "Game Over!\n" + winnerName + " (P" + winner + ") wins!\nWinner Press A to Restart\nor Press B to Quit\nor Press Y to Change Gods";
 					if (Input.GetKeyDown (KeyCode.R) || Input.GetButtonDown ("Submit" + winner)) {
 							Application.LoadLevel ("Main");
 					}
 					if (Input.GetKeyDown (KeyCode.Q) || Input.GetButtonDown ("Cancel" + winner)) {
 							Application.LoadLevel (0);
+					}
+					if (Input.GetKeyDown (KeyCode.Y) || Input.GetButton("Y" + winner)) {
+							Application.LoadLevel ("Character Selection");
 					}
 			}
 		}
