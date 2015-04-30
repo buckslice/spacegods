@@ -13,6 +13,7 @@ public class Game : MonoBehaviour {
     private bool songStart = false;
     private bool gameStart = false;
     private bool introFinished = false;
+	private AudioSource[] songs;
     private AudioSource song;
     private int winner;
     private string winnerName;
@@ -64,7 +65,8 @@ public class Game : MonoBehaviour {
 		winner = 0;
 		countDown = GameObject.Find("CountdownText").GetComponent<Text>();
 		gameOverText = GameObject.Find("GameOverText").GetComponent<Text>();
-		song = Camera.main.GetComponent<AudioSource>();
+		songs = Camera.main.GetComponents<AudioSource>();
+		song = songs[Random.Range(0, songs.Length)];
 		overlay = GameObject.Find("PauseOverlay");
 		overlay.SetActive(false);
 		overlay.GetComponent<Renderer>().enabled = true;

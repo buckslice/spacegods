@@ -22,16 +22,16 @@ public class CharacterSelector : MonoBehaviour {
 
     private string[] godInfo = new string[]{
         "Charges planets the longer he holds them.",
-        "Freezes players with thrown ice planets.",
+        "Freezes players by throwing ice planets.",
         "Can throw planets through the sun.",
-        "Deflects a shot every 10 seconds.",
+        "Deflects a thrown planet every 10 seconds.",
         "Strength increases as health decreases.",
         "Slowly regenerates health.",
         "Find the basketballs. Show them how to slam.",
-        "can't throw. extra health. extra mass. damages players on collision.",
+        "Can't throw. Extra health. Extra mass. Damages players on collision.",
 		"Fast but fragile.",
-		"Destroyer of Worlds, gains health when a planet dies while he is holding it",
-		"Chinese Trickster God, can pretend to be holding a planet"
+		"Destroyer of Worlds: gains health when a planet dies while he is holding it.",
+		"Chinese Trickster God: can pretend to be holding a planet."
     };
 
     // cooldown between joystick movements

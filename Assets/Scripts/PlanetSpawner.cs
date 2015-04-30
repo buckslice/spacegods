@@ -61,7 +61,7 @@ public class PlanetSpawner : MonoBehaviour {
     private void spawnPlanet() {
         int numberOfPlanetTypes = System.Enum.GetValues(typeof(PlanetType)).Length;
         if (planetSprites.Length < numberOfPlanetTypes) {
-            Debug.Log("Not enough planet sprites defined");
+            Debug.Log("Not enough planet sprites defined.");
             return;
         }
 
