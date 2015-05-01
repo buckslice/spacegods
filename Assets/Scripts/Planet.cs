@@ -30,6 +30,7 @@ public class Planet : MonoBehaviour {
     private Vector3 origTextScale;
     private Vector3 origShadeScale;
     private Vector3 origCrackedScale;
+	public bool freeze = false;
     private SpriteRenderer crackedsr;
     public SpriteRenderer sr;
     public Rigidbody2D rb;
@@ -39,6 +40,7 @@ public class Planet : MonoBehaviour {
     public PlanetState state;
 	public bool held = false;
 	public float maxSpeed = 200f;
+
 
     void Awake() {
         // only need to do these once
