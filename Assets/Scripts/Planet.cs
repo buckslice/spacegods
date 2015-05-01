@@ -37,6 +37,8 @@ public class Planet : MonoBehaviour {
     public PhysicsMaterial2D noBounce;
     public PlanetType type;
     public PlanetState state;
+	public bool held = false;
+	public float maxSpeed = 200f;
 
     void Awake() {
         // only need to do these once
@@ -127,6 +129,10 @@ public class Planet : MonoBehaviour {
     }
 
     void FixedUpdate() {
+
+		if (rb.velocity.magnitude > maxSpeed){
+			rb.velocity = rb.velocity.normalized * maxSpeed;
+		}
         // realistic gravity (scales with distance)
         Vector3 dist = (gravitationTarget.position - transform.position) / 10f;
         Vector3 g = Mathf.Max(gravity / dist.sqrMagnitude, gravity / 10f) * dist.normalized;
@@ -161,7 +167,14 @@ public class Planet : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D collider) {
         if (collider.tag == "Sun") { // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
-            PlanetSpawner.current.returnPlanet(gameObject);
+			if (held == true){
+				if (lastHolder.gameObject.name != "Anubis"){
+            	PlanetSpawner.current.returnPlanet(gameObject);
+				}
+			}
+			else{
+				PlanetSpawner.current.returnPlanet(gameObject);
+			}
         }
     }
 

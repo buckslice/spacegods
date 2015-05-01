@@ -82,6 +82,7 @@ public class GodController : MonoBehaviour {
     private void holdPlanet(Planet planet) {
         myPlanet = planet;
         myPlanet.lastHolder = this;
+		myPlanet.held = true;
         myPlanet.state = PlanetState.HELD;
         myPlanet.rb.simulated = false;  // disable planets physics
         myRigidbody.mass += myPlanet.rb.mass; // add planets mass to your own
