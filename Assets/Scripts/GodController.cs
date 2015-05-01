@@ -4,6 +4,11 @@ using System.Collections;
 public class GodController : MonoBehaviour {
     // player number, used for input
     public int player = 0;
+	//how long a player will be frozen for
+	public float freeze_time = 5f;
+
+	//original speed of god.
+	private float original_speed;
 
     private God god;
     private Transform model;
@@ -27,10 +32,11 @@ public class GodController : MonoBehaviour {
     private bool usingJoysticks;
 
     private float invincible;
-
+	private float freeze_counter = 0f;
     // use this for initialization
     void Start() {
         initializeVariables();
+		original_speed = god.maxSpeed;
     }
 
     // update is called once per frame
@@ -40,6 +46,17 @@ public class GodController : MonoBehaviour {
         handleThrow();
         updateVariables();
         handleGodPassives();
+		if (freeze_counter < 1f) {
+			freeze_counter = 0f;
+			god.maxSpeed = original_speed;
+			
+		}
+		if (freeze_counter>0f){
+			freeze_counter-=Time.deltaTime;
+			god.maxSpeed = 0f;
+		}
+
+
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
@@ -168,6 +185,9 @@ public class GodController : MonoBehaviour {
 					invincible = 0f;
 				}
 				}
+			if(collision.gameObject.GetComponent<Planet>().freeze == true && collision.gameObject.name != "Posiedon"){
+				freeze_counter = freeze_time;
+			}
         }
     }
 
@@ -277,6 +297,13 @@ public class GodController : MonoBehaviour {
 				if(!myPlanet && inputFire){
 					//passive goes here
 				}
+				break;
+			case Gods.POSEIDON:
+				if(myPlanet){
+					if(myPlanet.type == PlanetType.ICY){
+					myPlanet.freeze = true;
+						}
+					}
 				break;
 			default:
 				break;
