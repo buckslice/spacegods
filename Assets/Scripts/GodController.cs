@@ -150,11 +150,24 @@ public class GodController : MonoBehaviour {
 
                 // otherwise one of our gods colliders have been hit so we take damage
                 AudioManager.instance.playSound("GodHurt", transform.position, 1f);
-                float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass();
-
-                god.damage(damage * .5f);
-                invincible = 0f;
-            }
+				if(collision.gameObject.GetComponent<Planet>().held == true){
+				if (collision.gameObject.GetComponent<Planet>().lastHolder.gameObject.name == "Odin"){
+                	float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass()* (1/(god.getCurrentHealth()/100));
+                	god.damage(damage * .5f);
+                	invincible = 0f;
+				}
+				else{
+					float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass();
+					god.damage(damage * .5f);
+					invincible = 0f;
+				}
+				}
+				else{
+					float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass();
+					god.damage(damage * .5f);
+					invincible = 0f;
+				}
+				}
         }
     }
 
