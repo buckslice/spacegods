@@ -44,10 +44,10 @@ public class CharacterSelector : MonoBehaviour {
     private int len = 0;
     private bool findingLost = false;
     private float gameStartCountdown;
+    private bool usingKeyboard;
     private Text countDown;
     private GameObject overLay;
     private AudioSource menuMusic;
-    private bool usingKeyboard;
 
     // Use this for initialization
     void Start() {

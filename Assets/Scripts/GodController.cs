@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GodController : MonoBehaviour {
     // player number, used for input
-    public int player = 0;
+    private int player = 0;
 
     private God god;
     private Transform model;
@@ -305,5 +305,13 @@ public class GodController : MonoBehaviour {
 	public void unlock(){
 		freezeInputs = false;
 	}
+
+    public void setPlayer(int player) {
+        this.player = player;
+    }
+
+    public int getPlayer() {
+        return player;
+    }
 }
 
