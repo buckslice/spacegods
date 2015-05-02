@@ -315,7 +315,9 @@ public class GodController : MonoBehaviour {
             }
         }
     }
-
+	public God getGod(){
+		return god;
+	}
     public void unlock() {
         freezeInputs = false;
     }

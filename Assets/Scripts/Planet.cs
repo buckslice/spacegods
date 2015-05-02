@@ -153,6 +153,7 @@ public class Planet : MonoBehaviour {
 				thrownParticles.Stop();
                 break;
             case PlanetState.ORBITING:
+				lastHolder = null;
 				thrownParticles.Stop();
                 break;
         }
@@ -198,14 +199,10 @@ public class Planet : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D collider) {
         if (collider.tag == "Sun") { // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
-			if (lastHolder){
-				if (lastHolder.gameObject.name != "Anubis"){
-            		PlanetSpawner.current.returnPlanet(gameObject);
-				}
+			if (lastHolder && lastHolder.getGod().god == Gods.ANUBIS){
+				return;
 			}
-			else{
-				PlanetSpawner.current.returnPlanet(gameObject);
-			}
+			PlanetSpawner.current.returnPlanet(gameObject);
         }
     }
 
