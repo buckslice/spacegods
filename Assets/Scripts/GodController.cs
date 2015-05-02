@@ -197,7 +197,7 @@ public class GodController : MonoBehaviour {
 	}
 	
 	private void checkForDeath() {
-		if (god.getCurrentHealth() <= 0) {
+		if (god.getCurrentHealth() <= 0 && !Game.instance.gameIsOver()) {
 			Game.instance.removePlayer(this);
 			Destroy(gameObject);
 		}

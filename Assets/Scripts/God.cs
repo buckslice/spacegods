@@ -36,6 +36,7 @@ public class God : MonoBehaviour {
 
     void Update() {
         counter += Time.deltaTime;
+		normalizeHealth ();
     }
 	public void changeHealth(float damage){
 		currentHealth -= damage;
@@ -55,4 +56,14 @@ public class God : MonoBehaviour {
     public float getStartingThrowStrength() {
         return startingThrowStrength;
     }
+
+	private void normalizeHealth(){
+		if (currentHealth < 0) {
+			currentHealth = 0;		
+		}
+
+		if (currentHealth > maxHealth) {
+			currentHealth = maxHealth;		
+		}
+	}
 }
