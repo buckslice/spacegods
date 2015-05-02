@@ -115,6 +115,7 @@ public class Planet : MonoBehaviour {
         shade.localScale = origShadeScale * cc.radius;
         cracked.localScale = origCrackedScale * cc.radius;
 		thrownParticles.startSize = cc.radius * 5f;
+		particles.startSize = cc.radius * 2f;
 		if (particleTimer > 0f) {
 			particleTimer += Time.deltaTime;	
 		}
