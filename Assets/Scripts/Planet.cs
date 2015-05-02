@@ -149,6 +149,7 @@ public class Planet : MonoBehaviour {
                 }
                 break;
             case PlanetState.HELD:
+				thrownTimer = 0f;
 				thrownParticles.Stop();
                 break;
             case PlanetState.ORBITING:

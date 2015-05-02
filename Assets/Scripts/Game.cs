@@ -113,7 +113,7 @@ public class Game : MonoBehaviour {
                 }
                 song.volume += .25f * Time.deltaTime;   // fade in volume
                 countDown.text = (t <= 0) ? "GO!" : t + "";
-                countDown.fontSize = 200 + (int)((timer - (int)timer) * 100f);
+                countDown.fontSize = 300 + (int)((timer - (int)timer) * 200f);
                 if (t != soundTimer && t > 0) {
                     // noises for the countdown numbers
                     AudioManager.instance.playSound("Collision", Vector3.zero, 1f);
