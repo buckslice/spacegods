@@ -21,7 +21,7 @@ public class Planet : MonoBehaviour {
     private float gravity = 20f;
     private Transform gravitationTarget;
     public GodController lastHolder;
-
+	private float thrownTimer;
     private float invulnTime;
 	private float particleTimer;
     private Transform texture;
@@ -40,6 +40,7 @@ public class Planet : MonoBehaviour {
     public PlanetState state;
 	public float maxSpeed = 200f;
 	public ParticleSystem particles;
+	private ParticleSystem thrownParticles;
 
     void Awake() {
         // only need to do these once
@@ -48,6 +49,7 @@ public class Planet : MonoBehaviour {
         cracked = transform.Find("Cracked").transform;
 		shadesr = shade.GetComponent<SpriteRenderer> ();
         crackedsr = cracked.GetComponent<SpriteRenderer>();
+		thrownParticles = texture.GetComponent<ParticleSystem> ();
         sr = texture.GetComponent<SpriteRenderer>();
         origTextScale = texture.localScale;
         origShadeScale = shade.localScale;
@@ -62,9 +64,10 @@ public class Planet : MonoBehaviour {
         state = PlanetState.ORBITING;
         health = 2;
 		particleTimer = 0f;
+		thrownTimer = 0f;
         crackedsr.enabled = false;
         invulnTime = -1f;
-
+		sr.enabled = shadesr.enabled = rb.simulated = true;
         // randomize size and mass
         switch (Random.Range(0, 3)) {
             case 0:             // small
@@ -111,19 +114,32 @@ public class Planet : MonoBehaviour {
         texture.localScale = origTextScale * cc.radius;
         shade.localScale = origShadeScale * cc.radius;
         cracked.localScale = origCrackedScale * cc.radius;
+		thrownParticles.startSize = cc.radius * 5f;
 		if (particleTimer > 0f) {
 			particleTimer += Time.deltaTime;	
+		}
+		if (thrownTimer > 0f) {
+			thrownTimer += Time.deltaTime;	
 		}
     }
 
     private void handlePlanetStates() {
         switch (state) {
             case PlanetState.THROWN:
+				thrownParticles.Play ();
+				if(thrownTimer == 0f){
+					thrownTimer = 0.001f;
+				}else{
+					if(thrownTimer > 2f){
+						state = PlanetState.ORBITING;
+						thrownTimer = 0f;
+					}
+				}
                 if (health <= 0) {
                     // don't destroy if you are being held, god will do it
 					if(particleTimer == 0f){
 						particleTimer = 0.001f;
-						sr.enabled = crackedsr.enabled = shadesr.enabled = rb.simulated = false;
+						sr.enabled = shadesr.enabled = rb.simulated = false;
 						particles.Play();
 					}
 					if(particleTimer > 1.5f){
@@ -132,13 +148,13 @@ public class Planet : MonoBehaviour {
                 }
                 break;
             case PlanetState.HELD:
+				thrownParticles.Stop();
                 break;
             case PlanetState.ORBITING:
+				thrownParticles.Stop();
                 break;
         }
-        if (health == 1) {
-            crackedsr.enabled = true;
-        }
+		crackedsr.enabled = health == 1;
     }
 
     void FixedUpdate() {
