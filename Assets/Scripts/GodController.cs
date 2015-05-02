@@ -4,11 +4,6 @@ using System.Collections;
 public class GodController : MonoBehaviour {
     // player number, used for input
     private int player = 0;
-	//how long a player will be frozen for
-	public float freeze_time = 5f;
-
-	//original speed of god.
-	private float original_speed;
 
     private God god;
     private Transform model;
@@ -29,14 +24,14 @@ public class GodController : MonoBehaviour {
     private bool isFlipped; // true when facing right; false when facing left
 
     private bool freezeInputs;
+    private float frozenTime = 10f;
     private bool usingJoysticks;
 
     private float invincible;
-	private float freeze_counter = 0f;
+
     // use this for initialization
     void Start() {
         initializeVariables();
-		original_speed = god.maxSpeed;
     }
 
     // update is called once per frame
@@ -46,17 +41,6 @@ public class GodController : MonoBehaviour {
         handleThrow();
         updateVariables();
         handleGodPassives();
-		if (freeze_counter < 1f) {
-			freeze_counter = 0f;
-			god.maxSpeed = original_speed;
-			
-		}
-		if (freeze_counter>0f){
-			freeze_counter-=Time.deltaTime;
-			god.maxSpeed = 0f;
-		}
-
-
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
@@ -69,37 +53,36 @@ public class GodController : MonoBehaviour {
         handlePlanetCatch(col);
     }
 
-	private void initializeVariables(){
-		Game.instance.addPlayer(this);
-		freezeInputs = true;
-		releaseButtonFire = true;
-		usingJoysticks = true;
-		oldTrigger = false;
-		newTrigger = false;
-		isFlipped = false;
-		model = transform.Find("Model");
-		myRigidbody = GetComponent<Rigidbody2D>();
-		god = GetComponent<God>();
-		flipX = model.localScale.x;
-		modelPosX = model.localPosition.x;
-		planetCollider = gameObject.AddComponent<CircleCollider2D>();
-		planetCollider.enabled = false;
-		sr = model.GetComponent<SpriteRenderer>();
-		string[] joysticks = Input.GetJoystickNames();
-		if (joysticks.Length == 0 || (joysticks.Length == 1 && joysticks[0] == "")) {
-			usingJoysticks = false;
-		}
-		
-		if (!usingJoysticks && player > 2) {
-			// temporary fix until we implement more keyboard stuff
-			player = 1;
-		}
-	}
+    private void initializeVariables() {
+        Game.instance.addPlayer(this);
+        freezeInputs = true;
+        releaseButtonFire = true;
+        usingJoysticks = true;
+        oldTrigger = false;
+        newTrigger = false;
+        isFlipped = false;
+        model = transform.Find("Model");
+        myRigidbody = GetComponent<Rigidbody2D>();
+        god = GetComponent<God>();
+        flipX = model.localScale.x;
+        modelPosX = model.localPosition.x;
+        planetCollider = gameObject.AddComponent<CircleCollider2D>();
+        planetCollider.enabled = false;
+        sr = model.GetComponent<SpriteRenderer>();
+        string[] joysticks = Input.GetJoystickNames();
+        if (joysticks.Length == 0 || (joysticks.Length == 1 && joysticks[0] == "")) {
+            usingJoysticks = false;
+        }
+
+        if (!usingJoysticks && player > 2) {
+            // temporary fix until we implement more keyboard stuff
+            player = 1;
+        }
+    }
 
     private void holdPlanet(Planet planet) {
         myPlanet = planet;
         myPlanet.lastHolder = this;
-		myPlanet.held = true;
         myPlanet.state = PlanetState.HELD;
         myPlanet.rb.simulated = false;  // disable planets physics
         myRigidbody.mass += myPlanet.rb.mass; // add planets mass to your own
@@ -118,23 +101,23 @@ public class GodController : MonoBehaviour {
         planetCollider.enabled = false;
         myPlanet = null;
     }
-	private void blockWithPlanet(Vector2 aim){
-		float holdDistance = 3.5f;
-		Vector2 holdPos = aim * holdDistance;
-		Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
-		myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
-		planetCollider.offset = holdPos;
-	}
+    private void blockWithPlanet(Vector2 aim) {
+        float holdDistance = 3f; // should be halo radius
+        Vector2 holdPos = aim * holdDistance;
+        Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
+        myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
+        planetCollider.offset = holdPos;
+    }
 
-	private void destroyDeadHeldPlanet(){
-		if (god.god == Gods.SHIVA){
-			god.damage(-myPlanet.rb.mass * 10f);
-		}
-		myRigidbody.mass -= myPlanet.rb.mass;
-		planetCollider.enabled = false;
+    private void destroyDeadHeldPlanet() {
+        if (god.god == Gods.SHIVA) {
+            god.changeHealth(-myPlanet.rb.mass * 10f);
+        }
+        myRigidbody.mass -= myPlanet.rb.mass;
+        planetCollider.enabled = false;
         PlanetSpawner.current.returnPlanet(myPlanet.gameObject);
-		myPlanet = null;
-	}
+        myPlanet = null;
+    }
 
     private void updateVariables() {
         timeSinceTryCatch = (usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + player)) ? 0 : timeSinceTryCatch;
@@ -142,6 +125,11 @@ public class GodController : MonoBehaviour {
         oldTrigger = newTrigger;
         timeSinceTryCatch += Time.deltaTime;
         invincible += Time.deltaTime;
+        frozenTime -= Time.deltaTime;
+        if (frozenTime < 0f) {
+            freezeInputs = false;
+            sr.color = Color.white;
+        }
     }
 
     private void handlePlanetCollision(Collision2D collision) {
@@ -165,173 +153,171 @@ public class GodController : MonoBehaviour {
                         break;
                 }
 
+                Planet planetThatHitMe = collision.gameObject.GetComponent<Planet>();
+                if (planetThatHitMe.lastHolder == this) {
+                    return;
+                }
                 // otherwise one of our gods colliders have been hit so we take damage
                 AudioManager.instance.playSound("GodHurt", transform.position, 1f);
-				if(collision.gameObject.GetComponent<Planet>().held == true){
-				if (collision.gameObject.GetComponent<Planet>().lastHolder.gameObject.name == "Odin"){
-                	float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass()* (1/(god.getCurrentHealth()/100));
-                	god.damage(damage * .5f);
-                	invincible = 0f;
-				}
-				else{
-					float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass();
-					god.damage(damage * .5f);
-					invincible = 0f;
-				}
-				}
-				else{
-					float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Planet>().getMass();
-					god.damage(damage * .5f);
-					invincible = 0f;
-				}
-				}
-			if(collision.gameObject.GetComponent<Planet>().freeze == true && collision.gameObject.name != "Posiedon"){
-				freeze_counter = freeze_time;
-			}
+                float damage = collision.relativeVelocity.magnitude * planetThatHitMe.getMass();
+                god.changeHealth(damage * .5f);
+                invincible = 0f;
+
+                if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.POSEIDON && planetThatHitMe.type == PlanetType.ICY) {
+                    freezeInputs = true;
+                    sr.color = Color.blue;
+                    frozenTime = 3f;
+                }
+            }
         }
     }
 
-	private void handleThrow(){
-		newTrigger = Input.GetAxis("Fire_360_" + player) < 0.0;
-		if (myPlanet) {     // if your god is holding a planet
-			if (myPlanet.getHealth() > 0) {
-				bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + player);
-				
-				float xAim = usingJoysticks ? Input.GetAxis("Horizontal_aim_360_" + player) : isFlipped ? -1f : 1f;
-				float yAim = usingJoysticks ? Input.GetAxis("Vertical_aim_360_" + player) : 0f;
-				Vector2 aim = new Vector2(xAim, yAim).normalized;
-				
-				if (fireInput) {    // throw planet
-					throwPlanet(aim);
-				} else {    // move planet where aiming for blocking
-					blockWithPlanet(aim);
-				}
-			} else {    //planet died before it was thrown
-				destroyDeadHeldPlanet();
-			}
-		}
-	}
+    private void handleThrow() {
+        newTrigger = Input.GetAxis("Fire_360_" + player) < 0.0;
+        if (myPlanet) {     // if your god is holding a planet
+            if (myPlanet.getHealth() > 0) {
+                bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + player);
 
-	private void checkForDeath(){
-		if (god.getCurrentHealth() <= 0) {
-			Game.instance.removePlayer(this);
-			Destroy(gameObject);
-		}
-	}
-   
-	private void handleVelocityAndOrientation(){
-		// making sure players cant press keyboard AND controller for speed boost
-		float dx, dy;
-		if (usingJoysticks) {
-			dx = Input.GetAxis("Horizontal_360_" + player);
-			dy = Input.GetAxis("Vertical_360_" + player);
-		} else {
-			dx = Input.GetAxis("Horizontal" + player);
-			dy = Input.GetAxis("Vertical" + player);
-		}
-		
-		if (freezeInputs) {
-			dx = dy = 0;
-		}
-		
-		// target is maxspeed (in meters/s) * inputs
-		// lerp torwards that by the gods accel "factor" (not in meters2 but whatever)
-		// gods mass is still ignored here, need to use rigidbody.addforce if we want that
-		Vector2 targetVelocity = new Vector2(dx, dy) * god.maxSpeed;
-		myRigidbody.velocity = Vector2.Lerp(myRigidbody.velocity, targetVelocity, god.acceleration * Time.deltaTime);
-		
-		// limit velocity to maxSpeed of god
-		if (myRigidbody.velocity.sqrMagnitude > god.maxSpeed * god.maxSpeed) {
-			myRigidbody.velocity = myRigidbody.velocity.normalized * god.maxSpeed;
-		}
-		
-		// flips sprite based on last horizontal movement direction
-		// as well as the default flip orientation of gods sprite
-		if (!Mathf.Approximately(dx, 0f) || !Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + player), 0f)) {
-			isFlipped = Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + player), 0f) ? dx < 0 :
-				Input.GetAxis("Horizontal_aim_360_" + player) < 0f;
-			int flip = isFlipped ? -1 : 1;
-			model.localScale = new Vector3(flipX * flip, model.localScale.y, model.localScale.z);
-			model.localPosition = new Vector3(modelPosX * flip, model.localPosition.y, model.localPosition.z);
-		}
-	}
+                float xAim = usingJoysticks ? Input.GetAxis("Horizontal_aim_360_" + player) : isFlipped ? -1f : 1f;
+                float yAim = usingJoysticks ? Input.GetAxis("Vertical_aim_360_" + player) : 0f;
+                Vector2 aim = new Vector2(xAim, yAim).normalized;
 
-	private void handleGodCollision(Collision2D collision){
-		if (collision.gameObject.tag == "God" && collision.gameObject.name == "Cthulhu") {
-			float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass;
-			god.damage(damage * .5f);
-		}
-	}
+                if (fireInput) {    // throw planet
+                    throwPlanet(aim);
+                } else {    // move planet where aiming for blocking
+                    blockWithPlanet(aim);
+                }
+            } else {    //planet died before it was thrown
+                destroyDeadHeldPlanet();
+            }
+        }
+    }
 
-	private void handleGodPassives(){
-		switch (god.god) {
-			case Gods.THOR:
-				if (god.getCounter() > 10f) {
-					sr.color = Color.grey;
-				} else {
-					sr.color = Color.white;
-				}
-				break;
-				
-			case Gods.MICHAEL_JORDAN:
-				if (myPlanet) {
-					if (myPlanet.type == PlanetType.BASKETBALL) {
-						god.throwStrength = 60f;
-					} else {
-						god.throwStrength = 20f;
-					}
-				}
-				break;
-				
-			case Gods.ZEUS:
-				if (myPlanet) {
-					// this needs testing for sure to find good balance
-					myPlanet.changeMass(Time.deltaTime / 10f);
-					myRigidbody.mass += Time.deltaTime / 10f;
-					myPlanet.changeRadius(Time.deltaTime / 10f);
-					planetCollider.radius = myPlanet.getRadius();
-				}
-				break;
-			case Gods.SUN_WUKONG:
-				bool inputFire = (usingJoysticks) ? Input.GetAxis ("Fire_360_" + player) < 0.0 : Input.GetButton ("Fire" + player);
-				if(!myPlanet && inputFire){
-					//passive goes here
-				}
-				break;
-			case Gods.POSEIDON:
-				if(myPlanet){
-					if(myPlanet.type == PlanetType.ICY){
-					myPlanet.freeze = true;
-						}
-					}
-				break;
-			default:
-				break;
-				
-		}
-	}
+    private void checkForDeath() {
+        if (god.getCurrentHealth() <= 0) {
+            Game.instance.removePlayer(this);
+            Destroy(gameObject);
+        }
+    }
 
-	private void handleSunDamage(Collider2D col){
-		if (col.tag == "Sun") {
-			god.damage(Time.deltaTime * 10f);
-		}
-	}
+    private void handleVelocityAndOrientation() {
+        // making sure players cant press keyboard AND controller for speed boost
+        float dx = 0f, dy = 0f;
+        if (!freezeInputs) {
+            if (usingJoysticks) {
+                dx = Input.GetAxis("Horizontal_360_" + player);
+                dy = Input.GetAxis("Vertical_360_" + player);
+            } else {
+                dx = Input.GetAxis("Horizontal" + player);
+                dy = Input.GetAxis("Vertical" + player);
+            }
+        }
 
-	private void handlePlanetCatch(Collider2D col){
-		if (name != "Cthulhu") {
-			bool inputFire = (usingJoysticks) ? Input.GetAxis ("Fire_360_" + player) < 0.0 : Input.GetButton ("Fire" + player);
-			if (col.tag == "Planet" && inputFire && !myPlanet) {
-				bool canCatch = col.gameObject.GetComponent<Planet> ().lastHolder == this || col.gameObject.GetComponent<Planet> ().state == PlanetState.ORBITING || timeSinceTryCatch < .25f;
-				if (releaseButtonFire && canCatch) {
-					holdPlanet (col.gameObject.GetComponent<Planet> ());
-				}
-			}
-		}
-	}
+        // target is maxspeed (in meters/s) * inputs
+        // lerp torwards that by the gods accel "factor" (not in meters2 but whatever)
+        // gods mass is still ignored here, need to use rigidbody.addforce if we want that
+        Vector2 targetVelocity = new Vector2(dx, dy) * god.maxSpeed;
+        myRigidbody.velocity = Vector2.Lerp(myRigidbody.velocity, targetVelocity, god.acceleration * Time.deltaTime);
 
-	public void unlock(){
-		freezeInputs = false;
-	}
+        // limit velocity to maxSpeed of god
+        if (myRigidbody.velocity.sqrMagnitude > god.maxSpeed * god.maxSpeed) {
+            myRigidbody.velocity = myRigidbody.velocity.normalized * god.maxSpeed;
+        }
+
+        // flips sprite based on last horizontal movement direction
+        // as well as the default flip orientation of gods sprite
+        if (!Mathf.Approximately(dx, 0f) || !Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + player), 0f)) {
+            isFlipped = Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + player), 0f) ? dx < 0 :
+                Input.GetAxis("Horizontal_aim_360_" + player) < 0f;
+            int flip = isFlipped ? -1 : 1;
+            model.localScale = new Vector3(flipX * flip, model.localScale.y, model.localScale.z);
+            model.localPosition = new Vector3(modelPosX * flip, model.localPosition.y, model.localPosition.z);
+        }
+    }
+
+    private void handleGodCollision(Collision2D collision) {
+        if (collision.gameObject.tag == "God" && collision.gameObject.name == "Cthulhu") {
+            float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass;
+            god.changeHealth(damage * .5f);
+        }
+    }
+
+    private void handleGodPassives() {
+        switch (god.god) {
+            case Gods.THOR:
+                if (god.getCounter() > 10f) {
+                    sr.color = Color.grey;
+                } else {
+                    sr.color = Color.white;
+                }
+                break;
+
+            case Gods.MICHAEL_JORDAN:
+                if (myPlanet) {
+                    if (myPlanet.type == PlanetType.BASKETBALL) {
+                        god.throwStrength = god.getStartingThrowStrength() * 3f;
+                    } else {
+                        god.throwStrength = god.getStartingThrowStrength();
+                    }
+                }
+                break;
+
+            case Gods.ZEUS:
+                if (myPlanet) {
+                    // this needs testing for sure to find good balance
+                    myPlanet.changeMass(Time.deltaTime / 10f);
+                    myRigidbody.mass += Time.deltaTime / 10f;
+                    myPlanet.changeRadius(Time.deltaTime / 10f);
+                    planetCollider.radius = myPlanet.getRadius();
+                }
+                break;
+            case Gods.SUN_WUKONG:
+                bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + player) < 0.0 : Input.GetButton("Fire" + player);
+                if (!myPlanet && inputFire) {
+                    //passive goes here
+                }
+                break;
+
+            case Gods.ODIN:
+                float r = god.getCurrentHealth() / god.maxHealth;
+                god.throwStrength = god.getStartingThrowStrength() * (3f - r * 2f);
+                sr.color = new Color(1f, r, r);
+                break;
+            case Gods.POSEIDON:
+                break;
+            case Gods.ATHENA:
+                if (god.getCurrentHealth() < god.maxHealth / 2f) {
+                    god.changeHealth(-5f * Time.deltaTime);
+                }
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    private void handleSunDamage(Collider2D col) {
+        if (col.tag == "Sun") {
+            god.changeHealth(Time.deltaTime * 10f);
+        }
+    }
+
+    private void handlePlanetCatch(Collider2D col) {
+        if (name != "Cthulhu") {
+            bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + player) < 0.0 : Input.GetButton("Fire" + player);
+            if (col.tag == "Planet" && inputFire && !myPlanet) {
+                Planet planet = col.gameObject.GetComponent<Planet>();
+                bool canCatch = planet.lastHolder == this || planet.state == PlanetState.ORBITING || timeSinceTryCatch < .25f;
+                if (releaseButtonFire && canCatch) {
+                    holdPlanet(planet);
+                }
+            }
+        }
+    }
+
+    public void unlock() {
+        freezeInputs = false;
+    }
 
     public void setPlayer(int player) {
         this.player = player;

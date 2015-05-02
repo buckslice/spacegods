@@ -157,6 +157,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11467234, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
+      propertyPath: timeUntilShitGetsReal
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
+      propertyPath: InitialModule.maxNumParticles
+      value: 1000
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
   m_IsPrefabParent: 0
@@ -702,7 +710,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 98c467743216f044cb846816f0671024, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 98c467743216f044cb846816f0671024, type: 2}

@@ -165,7 +165,6 @@ MonoBehaviour:
   noBounce: {fileID: 6200000, guid: dd9a104c2a0808541b97cde73ff20cfd, type: 2}
   type: 0
   state: 0
-  held: 0
   maxSpeed: 200
 --- !u!198 &19871678
 ParticleSystem:

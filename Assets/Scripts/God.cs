@@ -23,19 +23,21 @@ public class God : MonoBehaviour {
     public float maxSpeed;
     public float acceleration;
     public float throwStrength;
+    private float startingThrowStrength;
     private float counter;   // counter variable
     public bool special;    // event variable 
 
     // use this for initialization
     void Start() {
 		currentHealth = maxHealth;
+        startingThrowStrength = throwStrength;
 		counter = 0.0f;
     }
 
     void Update() {
         counter += Time.deltaTime;
     }
-	public void damage(float damage){
+	public void changeHealth(float damage){
 		currentHealth -= damage;
 	}
 
@@ -49,4 +51,8 @@ public class God : MonoBehaviour {
 	public float getCounter(){
 		return counter;
 	}
+
+    public float getStartingThrowStrength() {
+        return startingThrowStrength;
+    }
 }

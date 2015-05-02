@@ -142,7 +142,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc1542dbe7344c54ea6e783a16aacecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: 1
 --- !u!114 &11441074
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -156,9 +155,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   god: 8
   maxHealth: 50
-  maxSpeed: 60
-  acceleration: 2.5
-  throwStrength: 10
+  maxSpeed: 50
+  acceleration: 2
+  throwStrength: 5
   special: 0
 --- !u!114 &11465976
 MonoBehaviour:

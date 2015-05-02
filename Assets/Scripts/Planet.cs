@@ -30,7 +30,6 @@ public class Planet : MonoBehaviour {
     private Vector3 origTextScale;
     private Vector3 origShadeScale;
     private Vector3 origCrackedScale;
-	public bool freeze = false;
     private SpriteRenderer crackedsr;
     public SpriteRenderer sr;
     public Rigidbody2D rb;
@@ -38,9 +37,7 @@ public class Planet : MonoBehaviour {
     public PhysicsMaterial2D noBounce;
     public PlanetType type;
     public PlanetState state;
-	public bool held = false;
 	public float maxSpeed = 200f;
-
 
     void Awake() {
         // only need to do these once
@@ -169,7 +166,7 @@ public class Planet : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D collider) {
         if (collider.tag == "Sun") { // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
-			if (held == true){
+			if (lastHolder){
 				if (lastHolder.gameObject.name != "Anubis"){
             	PlanetSpawner.current.returnPlanet(gameObject);
 				}
