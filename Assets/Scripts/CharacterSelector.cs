@@ -15,23 +15,23 @@ public class CharacterSelector : MonoBehaviour {
     public Font playerFont;
 
     private string[][] gods = new string[3][] {
-        new string[] {"Zeus","Poseidon","Anubis","Thor"},
-        new string[] {"Odin","Athena","Michael Jordan","Cthulhu"},
-		new string[] {"Hermes", "Shiva", "Sun-Wukong"}
+        new string[] {"ZEUS","POSEIDON","ANUBIS","THOR"},
+        new string[] {"ODIN","ATHENA","MICHAEL JORDAN","CTHULHU"},
+		new string[] {"HERMES", "SHIVA", "SUN-WUKONG"}
     };
 
     private string[] godInfo = new string[]{
-        "Charges planets the longer he holds them.",
-        "Freezes players by throwing ice planets.",
-        "Can throw planets through the sun.",
-        "Deflects a thrown planet every 10 seconds.",
-        "Strength increases as health decreases.",
-        "Slowly regenerates health.",
-        "Find the basketballs. Show them how to slam.",
-        "Can't throw. Extra health. Extra mass. Damages players on collision.",
-		"Fast but fragile.",
-		"Destroyer of Worlds: gains health when a planet dies while he is holding it.",
-		"Chinese Trickster God: can pretend to be holding a planet."
+        "CHARGES PLANETS THE LONGER HE HOLDS THEM.",
+        "FREEZES PLAYERS BY THROWING ICE PLANETS.",
+        "CAN THROW PLANETS THROUGH THE SUN.",
+        "DEFLECTS A THROWN PLANET EVERY 10 SECONDS.",
+        "STRENGTH INCREASES AS HEALTH DECREASES.",
+        "REGENERATES HEALTH WHEN BELOW 50%",
+        "FIND THE BASKETBALLS. SHOW THEM HOW TO SLAM.",
+        "CAN'T THROW. EXTRA HEALTH AND MASS. DAMAGES PLAYERS ON COLLISION.",
+        "VERY FAST, BUT FRAGILE AND WEAK.",
+        "GAINS HEALTH WHEN A PLANET DIES IN HIS HANDS",
+        "CHINESE TRICKSTER GOD: CAN PRETEND TO HOLD A PLANET"
     };
 
     // cooldown between joystick movements
@@ -111,7 +111,7 @@ public class CharacterSelector : MonoBehaviour {
                 GameObject minipanel = new GameObject("panel");
                 minipanel.transform.parent = imgGO.transform;
                 Image textBg = minipanel.AddComponent<Image>();
-                textBg.type = Image.Type.Sliced;
+                //textBg.type = Image.Type.Sliced;
                 textBg.sprite = nameBackground;
                 textBg.rectTransform.anchorMin = Vector2.zero;
                 textBg.rectTransform.anchorMax = new Vector2(1f, 0f);
@@ -359,6 +359,7 @@ class Player {
 
     public Image img;
     public Text txt;
+    public Text btxt;
     public string parentName;
 
     private Vector2 relativeAnchor;
@@ -379,12 +380,21 @@ class Player {
         // text that indicates player number
         txt = new GameObject("Player " + id + " text").AddComponent<Text>();
         txt.font = f;
-        txt.text = "P" + id;
+        txt.text = "" + id;
         //txt.color = colors[id - 1];
         txt.alignment = TextAnchor.MiddleCenter;
         txt.resizeTextForBestFit = true;
         txt.resizeTextMinSize = 10;
         txt.resizeTextMaxSize = 50;
+
+        btxt = new GameObject("Player " + id + " btext").AddComponent<Text>();
+        btxt.font = f;
+        btxt.text = "" + id;
+        btxt.color = Color.black;
+        btxt.alignment = TextAnchor.MiddleCenter;
+        btxt.resizeTextForBestFit = true;
+        btxt.resizeTextMinSize = 10;
+        btxt.resizeTextMaxSize = 50;
 
         setSelected(false);
         setParent(parent);
@@ -399,6 +409,7 @@ class Player {
 
     public void setParent(Transform parent) {
         img.transform.SetParent(parent);
+        btxt.transform.SetParent(img.transform);
         txt.transform.SetParent(img.transform);
 
         parentName = parent.gameObject.name;
@@ -414,13 +425,15 @@ class Player {
         img.rectTransform.offsetMin = Vector2.zero;
         img.rectTransform.offsetMax = Vector3.zero;
 
-        txt.rectTransform.anchorMin = new Vector3(0f, 1f);
+        txt.rectTransform.anchorMin = new Vector3(0f, .5f);
         txt.rectTransform.anchorMax = new Vector3(1f, 1f);
         txt.rectTransform.offsetMin = Vector2.zero;
-        txt.rectTransform.offsetMax = new Vector2(0, 50);
+        txt.rectTransform.offsetMax = Vector2.zero;
 
-        Vector3 txtPos = txt.rectTransform.anchoredPosition3D;
-        txt.rectTransform.anchoredPosition3D = new Vector3(txtPos.x, -25, txtPos.z);
+        btxt.rectTransform.anchorMin = new Vector3(0f, .5f);
+        btxt.rectTransform.anchorMax = new Vector3(1f, 1f);
+        btxt.rectTransform.offsetMin = new Vector2(2, -3);
+        btxt.rectTransform.offsetMax = new Vector2(2, -2);
     }
 }
 
