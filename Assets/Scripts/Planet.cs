@@ -23,7 +23,7 @@ public class Planet : MonoBehaviour {
     public GodController lastHolder;
 
     private float invulnTime;
-
+	private float particleTimer;
     private Transform texture;
     private Transform shade;
     private Transform cracked;
@@ -31,6 +31,7 @@ public class Planet : MonoBehaviour {
     private Vector3 origShadeScale;
     private Vector3 origCrackedScale;
     private SpriteRenderer crackedsr;
+	private SpriteRenderer shadesr;
     public SpriteRenderer sr;
     public Rigidbody2D rb;
     public CircleCollider2D cc;
@@ -38,12 +39,14 @@ public class Planet : MonoBehaviour {
     public PlanetType type;
     public PlanetState state;
 	public float maxSpeed = 200f;
+	public ParticleSystem particles;
 
     void Awake() {
         // only need to do these once
         texture = transform.Find("Texture").transform;
         shade = transform.Find("Shade").transform;
         cracked = transform.Find("Cracked").transform;
+		shadesr = shade.GetComponent<SpriteRenderer> ();
         crackedsr = cracked.GetComponent<SpriteRenderer>();
         sr = texture.GetComponent<SpriteRenderer>();
         origTextScale = texture.localScale;
@@ -58,6 +61,7 @@ public class Planet : MonoBehaviour {
     public void initializeVariables() {
         state = PlanetState.ORBITING;
         health = 2;
+		particleTimer = 0f;
         crackedsr.enabled = false;
         invulnTime = -1f;
 
@@ -107,6 +111,9 @@ public class Planet : MonoBehaviour {
         texture.localScale = origTextScale * cc.radius;
         shade.localScale = origShadeScale * cc.radius;
         cracked.localScale = origCrackedScale * cc.radius;
+		if (particleTimer > 0f) {
+			particleTimer += Time.deltaTime;	
+		}
     }
 
     private void handlePlanetStates() {
@@ -114,7 +121,14 @@ public class Planet : MonoBehaviour {
             case PlanetState.THROWN:
                 if (health <= 0) {
                     // don't destroy if you are being held, god will do it
-                    PlanetSpawner.current.returnPlanet(gameObject);
+					if(particleTimer == 0f){
+						particleTimer = 0.001f;
+						sr.enabled = crackedsr.enabled = shadesr.enabled = rb.simulated = false;
+						particles.Play();
+					}
+					if(particleTimer > 1.5f){
+                    	PlanetSpawner.current.returnPlanet(gameObject);
+					}
                 }
                 break;
             case PlanetState.HELD:
@@ -122,7 +136,7 @@ public class Planet : MonoBehaviour {
             case PlanetState.ORBITING:
                 break;
         }
-        if (health <= 1) {
+        if (health == 1) {
             crackedsr.enabled = true;
         }
     }
@@ -168,7 +182,7 @@ public class Planet : MonoBehaviour {
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
 			if (lastHolder){
 				if (lastHolder.gameObject.name != "Anubis"){
-            	PlanetSpawner.current.returnPlanet(gameObject);
+            		PlanetSpawner.current.returnPlanet(gameObject);
 				}
 			}
 			else{
