@@ -129,8 +129,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   god: 7
   maxHealth: 100
-  maxSpeed: 30
-  acceleration: 1.25
+  maxSpeed: 20
+  acceleration: 1
   throwStrength: 20
   special: 0
 --- !u!114 &11424454
@@ -155,8 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc1542dbe7344c54ea6e783a16aacecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: 1
-  freezeInputs: 1
 --- !u!114 &11442828
 MonoBehaviour:
   m_ObjectHideFlags: 1

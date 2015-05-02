@@ -9,7 +9,7 @@ public enum Gods {
     ODIN,
     ATHENA,
     MICHAEL_JORDAN,
-    CTHULU,
+    CTHULHU,
 	HERMES,
 	SHIVA,
 	SUN_WUKONG
