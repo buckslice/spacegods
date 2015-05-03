@@ -14,8 +14,8 @@ public enum Gods {
 	SUN_WUKONG
 }
 
-public class God : MonoBehaviour {
-
+public class God : MonoBehaviour 
+{
     public Gods god;
     public float maxHealth;
 	private float currentHealth;
@@ -24,44 +24,53 @@ public class God : MonoBehaviour {
     public float throwStrength;
     private float startingThrowStrength;
     private float counter;   // counter variable
-    public bool special;    // event variable 
+    public bool special;     // event variable 
 
     // use this for initialization
-    void Start() {
+    void Start() 
+	{
 		currentHealth = maxHealth;
         startingThrowStrength = throwStrength;
 		counter = 0.0f;
     }
 
-    void Update() {
+    void Update() 
+	{
         counter += Time.deltaTime;
 		normalizeHealth ();
     }
-	public void changeHealth(float damage){
+	public void changeHealth(float damage)
+	{
 		currentHealth -= damage;
 	}
 
-	public float getCurrentHealth(){
+	public float getCurrentHealth()
+	{
 		return currentHealth;
 	}
 
-	public void resetCounter(){
+	public void resetCounter()
+	{
 		counter = 0.0f;
 	}
-	public float getCounter(){
+	public float getCounter()
+	{
 		return counter;
 	}
 
-    public float getStartingThrowStrength() {
+    public float getStartingThrowStrength() 
+	{
         return startingThrowStrength;
     }
 
-	private void normalizeHealth(){
-		if (currentHealth < 0) {
+	private void normalizeHealth()
+	{
+		if (currentHealth < 0) 
+		{
 			currentHealth = 0;		
 		}
-
-		if (currentHealth > maxHealth) {
+		if (currentHealth > maxHealth) 
+		{
 			currentHealth = maxHealth;		
 		}
 	}

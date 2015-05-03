@@ -26,3 +26,4 @@ public class AudioManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(clips[name], pos, vol);
     }
 }
+

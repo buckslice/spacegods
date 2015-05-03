@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class CharacterSelector : MonoBehaviour {
-
-    //private string gods[]
+public class CharacterSelector : MonoBehaviour 
+{
     public Sprite[] godSprites;
     private GodGameObject[] godGameObjects;
 
@@ -20,18 +19,18 @@ public class CharacterSelector : MonoBehaviour {
 		new string[] {"HERMES", "SHIVA", "SUN-WUKONG"}
     };
 
-    private string[] godInfo = new string[]{
-        "CHARGES PLANETS THE LONGER HE HOLDS THEM.",
-        "FREEZES PLAYERS BY THROWING ICE PLANETS.",
-        "CAN THROW PLANETS THROUGH THE SUN.",
-        "DEFLECTS A THROWN PLANET EVERY 10 SECONDS.",
-        "STRENGTH INCREASES AS HEALTH DECREASES.",
-        "REGENERATES HEALTH WHEN BELOW 50%",
+    private string[] godInfo = new string[] {
+        "CHARGES PLANETS THE LONGER HE HOLDS THEM",
+        "FREEZES PLAYERS BY THROWING ICE PLANETS",
+        "CAN THROW PLANETS THROUGH THE SUN",
+        "DEFLECTS A THROWN PLANET EVERY 10 SECONDS",
+        "STRENGTH INCREASES AS HEALTH DECREASES",
+        "REGENERATES HEALTH WHEN IT IS BELOW 50%",
         "FIND THE BASKETBALLS. SHOW THEM HOW TO SLAM.",
-        "CAN'T THROW. EXTRA HEALTH AND MASS. DAMAGES PLAYERS ON COLLISION.",
-        "VERY FAST, BUT FRAGILE AND WEAK.",
+        "CAN'T THROW, BUT DAMAGES PLAYERS ON COLLISION",
+        "VERY FAST, BUT FRAGILE AND WEAK",
         "GAINS HEALTH WHEN A PLANET DIES IN HIS HANDS",
-        "CHINESE TRICKSTER GOD: CAN PRETEND TO HOLD A PLANET"
+        "CAN PRETEND TO HOLD A PLANET"
     };
 
     // cooldown between joystick movements
@@ -49,27 +48,33 @@ public class CharacterSelector : MonoBehaviour {
     private GameObject overLay;
     private AudioSource menuMusic;
 
-    // Use this for initialization
-    void Start() {
+    // use this for initialization
+    void Start() 
+	{
         // clear previous player preferences
         PlayerPrefs.DeleteAll();
         GameObject menuMusicObject = GameObject.Find("Start Music");
-        if (!menuMusicObject) {
+        if (!menuMusicObject) 
+		{
             GameObject startMusicGO = (GameObject)Instantiate(Resources.Load("Start Music"));
             startMusicGO.name = "Start Music";
             menuMusic = startMusicGO.GetComponent<AudioSource>();
-        } else {
+        } 
+		else 
+		{
             menuMusic = menuMusicObject.GetComponent<AudioSource>();
         }
         len = 0;
-        for (int i = 0; i < gods.Length; i++) {
-            for (int j = 0; j < gods[i].Length; j++) {
+        for (int i = 0; i < gods.Length; i++) 
+		{
+            for (int j = 0; j < gods[i].Length; j++) 
+			{
                 //Debug.Log(gods[i][j]);
                 len++;
             }
         }
 
-        // make sure it starts enabled in the inspector (can't Find disabled objects (thanks unity (thanks obama)))
+        // make sure it starts enabled in the inspector
         countDown = GameObject.Find("CountDown").GetComponent<Text>();
         overLay = GameObject.Find("Overlay");
         countDown.enabled = false;
@@ -77,10 +82,13 @@ public class CharacterSelector : MonoBehaviour {
 
         godGameObjects = new GodGameObject[len];
         int xL = gods.Length;
-        for (int y = 0; y < xL; y++) {
+        for (int y = 0; y < xL; y++) 
+		{
             int yL = gods[0].Length;
-            for (int x = 0; x < yL; x++) {
-                if (x >= gods[y].Length) {
+            for (int x = 0; x < yL; x++) 
+			{
+                if (x >= gods[y].Length) 
+				{
                     break;
                 }
                 int godCoord1D = y * yL + x;
@@ -88,14 +96,15 @@ public class CharacterSelector : MonoBehaviour {
                 GodGameObject thisGod = new GodGameObject();
                 godGameObjects[godCoord1D] = thisGod;
 
-                // add gods image
+				// add god image
                 GameObject imgGO = new GameObject();
                 imgGO.name = gods[y][x];
                 imgGO.transform.parent = gameObject.transform;
                 thisGod.go = imgGO;
                 Image img = imgGO.AddComponent<Image>();
                 thisGod.image = img;
-                if (godSprites != null && godSprites.Length > godCoord1D) {
+                if (godSprites != null && godSprites.Length > godCoord1D) 
+				{
                     img.sprite = godSprites[godCoord1D];
                 }
                 //img.preserveAspect = true;
@@ -120,7 +129,7 @@ public class CharacterSelector : MonoBehaviour {
                 Vector3 bgPos = textBg.rectTransform.anchoredPosition3D;
                 textBg.rectTransform.anchoredPosition3D = new Vector3(bgPos.x, 0, bgPos.z);
 
-                // gods name text
+                // god name text
                 GameObject txtGO = new GameObject("text");
                 txtGO.transform.parent = imgGO.transform;
                 Text txt = txtGO.AddComponent<Text>();
@@ -138,7 +147,7 @@ public class CharacterSelector : MonoBehaviour {
                 Vector3 txtPos = txt.rectTransform.anchoredPosition3D;
                 txt.rectTransform.anchoredPosition3D = new Vector3(txtPos.x, 0, txtPos.z);
 
-                // gods info text
+                // god info text
                 GameObject infoGO = new GameObject("info");
                 thisGod.info = infoGO;
                 infoGO.transform.parent = imgGO.transform;
@@ -154,13 +163,13 @@ public class CharacterSelector : MonoBehaviour {
                 info.resizeTextMinSize = 10;
                 info.resizeTextMaxSize = 30;
                 infoGO.SetActive(false);
-
             }
         }
 
         // add two players for keyboard mode if no controllers are connected
         string[] connectedJoysticks = Input.GetJoystickNames();
-        if (connectedJoysticks.Length == 0 || (connectedJoysticks.Length == 1 && connectedJoysticks[0] == "")) {
+        if (connectedJoysticks.Length == 0 || (connectedJoysticks.Length == 1 && connectedJoysticks[0] == "")) 
+		{
             usingKeyboard = true;
             players.Add(new Player(1, godGameObjects[0].go.transform, playerFont, playerSprite));
             players.Add(new Player(2, godGameObjects[0].go.transform, playerFont, playerSprite));
@@ -173,26 +182,32 @@ public class CharacterSelector : MonoBehaviour {
         }
     }
 
-    // Update is called once per frame
-    void Update() {
+    // update is called once per frame
+    void Update() 
+	{
         // check for newly connected joysticks
         string[] connectedJoysticks = Input.GetJoystickNames();
 
         // NORMAL JOYSTICK MODE
         bool playerNumChanged = false;
-        for (int i = 0; i < connectedJoysticks.Length; i++) {
-            if (connectedJoysticks[i] != "" && connectedJoysticks.Length > players.Count) {
+        for (int i = 0; i < connectedJoysticks.Length; i++) 
+		{
+            if (connectedJoysticks[i] != "" && connectedJoysticks.Length > players.Count) 
+			{
                 // check to see if connected joystick is new
                 bool isNew = true;
-                foreach (Player p in players) {
-                    if (p.id == i + 1) {
+                foreach (Player p in players) 
+				{
+                    if (p.id == i + 1) 
+					{
                         isNew = false;
                         break;
                     }
                 }
 
                 // add new player if new joystick is found
-                if (isNew) {
+                if (isNew) 
+				{
                     Player p = new Player(i + 1, godGameObjects[0].go.transform, playerFont, playerSprite);
                     //p.refreshAnchors(currentNumberOfPlayers);
                     players.Add(p);
@@ -204,15 +219,21 @@ public class CharacterSelector : MonoBehaviour {
         // if true it means a controller has disconnected
         // now we need to figure out which controller
         // dont boot player until all other players have moved
-        if (players.Count > connectedJoysticks.Length && !usingKeyboard) {
-            if (!findingLost) {
-                foreach (Player p in players) {
+        if (players.Count > connectedJoysticks.Length && !usingKeyboard) 
+		{
+            if (!findingLost) 
+			{
+                foreach (Player p in players) 
+				{
                     p.hasMovedRecently = false;
                 }
                 findingLost = true;
-            } else {
+            } 
+			else 
+			{
                 List<Player> afks = players.FindAll(p => !p.hasMovedRecently);
-                if (afks.Count == 1) {
+                if (afks.Count == 1) 
+				{
                     Player toRemove = afks[0];
                     players.Remove(toRemove);
                     Destroy(toRemove.img.gameObject);
@@ -224,97 +245,126 @@ public class CharacterSelector : MonoBehaviour {
 
         // if player number changed then resort player list based on id
         // then set anchors based on which players are present
-        if (playerNumChanged && !usingKeyboard) {
+        if (playerNumChanged && !usingKeyboard) 
+		{
             players.Sort((p1, p2) => p1.id.CompareTo(p2.id));
-
-            for (int i = 0; i < players.Count; i++) {
+            for (int i = 0; i < players.Count; i++) 
+			{
                 players[i].calculateAnchors(i + 1, players.Count);
                 players[i].refreshAnchors();
             }
         }
 
-        if (players.Count > 0) {
+        if (players.Count > 0) 
+		{
             bool p1Cancel = Input.GetButtonDown("Cancel" + players[0].id);
-            if (p1Cancel && players[0].chosen == "") {
+            if (p1Cancel && players[0].chosen == "") 
+			{
                 Application.LoadLevel("Menu");
             }
         }
 
-        // need at least 2 players to start game
+        // need at least two players to start game
         bool allPlayersDecided = players.Count > 1;
         // process input for joysticks and move each player
-        foreach (Player p in players) {
+        foreach (Player p in players) 
+		{
             int curRowLength = gods[p.y].Length;
             int regRowLength = gods[0].Length;
 
-            if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) {
+            if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) 
+			{
                 p.setSelected(p.chosen == "");
-            } else {
-                if (Input.GetButtonDown("Submit" + p.id)) {
+            } 
+			else 
+			{
+                if (Input.GetButtonDown("Submit" + p.id)) 
+				{
                     p.setSelected(true);
                     p.hasMovedRecently = true;
                 }
-                if (Input.GetButtonDown("Cancel" + p.id)) {
+                if (Input.GetButtonDown("Cancel" + p.id)) 
+				{
                     p.setSelected(false);
                     p.hasMovedRecently = true;
                 }
             }
 
-            if (Input.GetButton("Y" + p.id) || Input.GetKey(KeyCode.Y)) {
+            if (Input.GetButton("Y" + p.id) || Input.GetKey(KeyCode.Y)) 
+			{
                 godGameObjects[p.x + p.y * regRowLength].checkingInfo = true;
             }
 
             // check to see if player is allowed to move again
-            if (p.inputCooldown < Time.time && p.chosen == "") {
+            if (p.inputCooldown < Time.time && p.chosen == "") 
+			{
                 float x = Input.GetAxis("Horizontal" + (usingKeyboard ? "" : "_360_") + p.id);
                 float y = Input.GetAxis("Vertical" + (usingKeyboard ? "" : "_360_") + p.id);
                 bool moved = true;
-                if (x > minMag) {
+                if (x > minMag) 
+				{
                     p.x++;
-                    if (p.x >= curRowLength) {
+                    if (p.x >= curRowLength) 
+					{
                         p.x = 0;
                     }
-                } else if (x < -minMag) {
+                } 
+				else if (x < -minMag) 
+				{
                     p.x--;
-                    if (p.x < 0) {
+                    if (p.x < 0) 
+					{
                         p.x = curRowLength - 1;
                     }
-                } else if (y > minMag) {
+                } 
+				else if (y > minMag) 
+				{
                     p.y--;
-                    if (p.y < 0) {
+                    if (p.y < 0) 
+					{
                         p.y = (len - 1 - p.x) / regRowLength;
                     }
-                } else if (y < -minMag) {
+                } 
+				else if (y < -minMag) 
+				{
                     p.y++;
-                    if (p.y > (len - 1 - p.x) / regRowLength) {
+                    if (p.y > (len - 1 - p.x) / regRowLength) 
+					{
                         p.y = 0;
                     }
-                } else {
+                } 
+				else 
+				{
                     moved = false;
                 }
-                if (moved) {    // if successfully moved then set your parent and reset anchors
+                if (moved) 
+				{    
+					// if successfully moved then set your parent and reset anchors
                     p.hasMovedRecently = true;
                     // change parent of player selector
-                    if (p.parentName != gods[p.y][p.x]) {
+                    if (p.parentName != gods[p.y][p.x]) 
+					{
                         p.setParent(godGameObjects[p.y * regRowLength + p.x].go.transform);
                         p.refreshAnchors();
                     }
-
                     p.inputCooldown = Time.time + moveCooldown;
                 }
             }
 
-            if (p.chosen == "") {
+            if (p.chosen == "") 
+			{
                 allPlayersDecided = false;
             }
         }
 
         // update info checking
-        for (int i = 0; i < godGameObjects.Length; i++) {
+        for (int i = 0; i < godGameObjects.Length; i++) 
+		{
             godGameObjects[i].update();
         }
 
-        if (allPlayersDecided) {
+        if (allPlayersDecided) 
+		{
             // start countdown
             gameStartCountdown -= Time.deltaTime;
             countDown.enabled = true;
@@ -322,13 +372,15 @@ public class CharacterSelector : MonoBehaviour {
             overLay.SetActive(true);
             menuMusic.volume = gameStartCountdown / 3f;
 
-            if (gameStartCountdown < 0f) {
+            if (gameStartCountdown < 0f) 
+			{
                 menuMusic.Stop();
                 Destroy(menuMusic.gameObject);
                 // save all the players choices
                 PlayerPrefs.DeleteAll();
                 PlayerPrefs.SetInt("Number of players", players.Count);
-                for (int i = 0; i < players.Count; i++) {
+                for (int i = 0; i < players.Count; i++) 
+				{
                     Player p = players[i];
                     //Debug.Log(p.id + " " + p.chosen);
                     PlayerPrefs.SetInt("Player" + i + " ", p.id);
@@ -336,7 +388,9 @@ public class CharacterSelector : MonoBehaviour {
                 }
                 Application.LoadLevel("Main");
             }
-        } else {
+        } 
+		else 
+		{
             // stop countdown
             countDown.enabled = false;
             overLay.SetActive(false);
@@ -346,7 +400,8 @@ public class CharacterSelector : MonoBehaviour {
     }
 }
 
-class Player {
+class Player 
+{
     public int x = 0;
     public int y = 0;
     public string chosen = "";
@@ -364,11 +419,12 @@ class Player {
 
     private Vector2 relativeAnchor;
 
-    // should probably use a nicer color palette lol
+    // should probably use a nicer color palette
     private static Color[] colors = new Color[] { 
         Color.red, Color.yellow, Color.green, Color.blue, Color.magenta, Color.cyan, Color.grey, Color.black };
 
-    public Player(int id, Transform parent, Font f, Sprite sprite) {
+    public Player(int id, Transform parent, Font f, Sprite sprite) 
+	{
         this.id = id;
 
         // sprite image
@@ -400,26 +456,29 @@ class Player {
         setParent(parent);
     }
 
-    public void setSelected(bool b) {
+    public void setSelected(bool b) 
+	{
         img.color = new Color(img.color.r, img.color.g, img.color.b, b ? 1 : .3f);
         img.fillCenter = b;
         //txt.color = b ? Color.white : colors[id - 1];
         chosen = b ? parentName : "";
     }
 
-    public void setParent(Transform parent) {
+    public void setParent(Transform parent) 
+	{
         img.transform.SetParent(parent);
         btxt.transform.SetParent(img.transform);
         txt.transform.SetParent(img.transform);
-
         parentName = parent.gameObject.name;
     }
 
-    public void calculateAnchors(int relativePosition, int numPlayers) {
+    public void calculateAnchors(int relativePosition, int numPlayers) 
+	{
         relativeAnchor = new Vector2(1f - (float)relativePosition / numPlayers, 1f - (float)(relativePosition - 1) / numPlayers);
     }
 
-    public void refreshAnchors() {
+    public void refreshAnchors() 
+	{
         img.rectTransform.anchorMin = new Vector2(-0.1f, relativeAnchor.x);
         img.rectTransform.anchorMax = new Vector2(0f, relativeAnchor.y);
         img.rectTransform.offsetMin = Vector2.zero;
@@ -438,22 +497,25 @@ class Player {
 }
 
 // small class to hold and save some variables to avoid GetComponent calls
-class GodGameObject {
+class GodGameObject 
+{
     public GameObject go;
     public Image image;
     public GameObject info;
     public bool checkingInfo = false;
 
-    public void update() {
-        if (checkingInfo) {
+    public void update() 
+	{
+        if (checkingInfo) 
+		{
             image.color = new Color(.3f, .3f, .3f, 1f);
             info.SetActive(true);
-        } else {
+        } 
+		else 
+		{
             image.color = Color.white;
             info.SetActive(false);
         }
-
         checkingInfo = false;
     }
-
 }
