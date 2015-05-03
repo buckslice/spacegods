@@ -9,8 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 459654}
   - 212: {fileID: 21264472}
-  - 114: {fileID: 11447840}
-  - 114: {fileID: 11431224}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -146,30 +144,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc1542dbe7344c54ea6e783a16aacecb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: 1
-  freezeInputs: 1
---- !u!114 &11431224
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 170350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4e334405b66e0b40ab26508cae6bf6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &11447840
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 170350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4e334405b66e0b40ab26508cae6bf6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &11467700

@@ -57,7 +57,6 @@ public class GodController : MonoBehaviour {
         Game.instance.addPlayer(this);
         freezeInputs = true;
         releaseButtonFire = true;
-        usingJoysticks = true;
         oldTrigger = false;
         newTrigger = false;
         isFlipped = false;
@@ -69,14 +68,13 @@ public class GodController : MonoBehaviour {
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
         planetCollider.enabled = false;
         sr = model.GetComponent<SpriteRenderer>();
-        string[] joysticks = Input.GetJoystickNames();
-        if (joysticks.Length == 0 || (joysticks.Length == 1 && joysticks[0] == "")) {
-            usingJoysticks = false;
-        }
 
-        if (!usingJoysticks && player > 2) {
-            // temporary fix until we implement more keyboard stuff
-            player = 1;
+        usingJoysticks = false;
+        string[] joysticks = Input.GetJoystickNames();
+        for(int i = 0; i < joysticks.Length; i++) {
+            if(joysticks[i] != "") {
+                usingJoysticks = true;
+            }
         }
     }
 
@@ -200,6 +198,7 @@ public class GodController : MonoBehaviour {
     private void checkForDeath() {
         if (god.getCurrentHealth() <= 0 && !Game.instance.gameIsOver()) {
             Game.instance.removePlayer(this);
+            GetComponent<HealthBar>().deleteGameObject();
             Destroy(gameObject);
         }
     }

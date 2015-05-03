@@ -17,7 +17,7 @@ public class CharacterSelector : MonoBehaviour {
     private string[][] gods = new string[3][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR"},
         new string[] {"ODIN","ATHENA","MICHAEL JORDAN","CTHULHU"},
-		new string[] {"HERMES", "SHIVA", "SUN-WUKONG"}
+        new string[] {"HERMES", "SHIVA", "SUN-WUKONG"}
     };
 
     private string[] godInfo = new string[]{
@@ -42,7 +42,6 @@ public class CharacterSelector : MonoBehaviour {
 
     private List<Player> players = new List<Player>();
     private int len = 0;
-    private bool findingLost = false;
     private float gameStartCountdown;
     private bool usingKeyboard;
     private Text countDown;
@@ -160,7 +159,13 @@ public class CharacterSelector : MonoBehaviour {
 
         // add two players for keyboard mode if no controllers are connected
         string[] connectedJoysticks = Input.GetJoystickNames();
-        if (connectedJoysticks.Length == 0 || (connectedJoysticks.Length == 1 && connectedJoysticks[0] == "")) {
+        bool anyJoysticksConnected = false;
+        for (int i = 0; i < connectedJoysticks.Length; i++) {
+            if (connectedJoysticks[i] != "") {
+                anyJoysticksConnected = true;
+            }
+        }
+        if (!anyJoysticksConnected) {
             usingKeyboard = true;
             players.Add(new Player(1, godGameObjects[0].go.transform, playerFont, playerSprite));
             players.Add(new Player(2, godGameObjects[0].go.transform, playerFont, playerSprite));
@@ -176,66 +181,41 @@ public class CharacterSelector : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         // check for newly connected joysticks
-        string[] connectedJoysticks = Input.GetJoystickNames();
-
-        // NORMAL JOYSTICK MODE
-        bool playerNumChanged = false;
-        for (int i = 0; i < connectedJoysticks.Length; i++) {
-            if (connectedJoysticks[i] != "" && connectedJoysticks.Length > players.Count) {
-                // check to see if connected joystick is new
-                bool isNew = true;
-                foreach (Player p in players) {
-                    if (p.id == i + 1) {
-                        isNew = false;
-                        break;
+        if (!usingKeyboard) {
+            string[] connectedJoysticks = Input.GetJoystickNames();
+            // NORMAL JOYSTICK MODE
+            bool playerNumChanged = false;
+            for (int i = 0; i < connectedJoysticks.Length; i++) {
+                if (connectedJoysticks[i] != "") {
+                    // add new player if new unused joystick is found
+                    if (players.Find(p => p.id == i + 1) == null) {
+                        players.Add(new Player(i + 1, godGameObjects[0].go.transform, playerFont, playerSprite));
+                        playerNumChanged = true;
+                    }
+                } else {    // remove player with this id if found
+                    Player toRemove = players.Find(p => p.id == i + 1);
+                    if (players.Remove(toRemove)) {
+                        Destroy(toRemove.img.gameObject);
+                        playerNumChanged = true;
                     }
                 }
+            }
 
-                // add new player if new joystick is found
-                if (isNew) {
-                    Player p = new Player(i + 1, godGameObjects[0].go.transform, playerFont, playerSprite);
-                    //p.refreshAnchors(currentNumberOfPlayers);
-                    players.Add(p);
-                    playerNumChanged = true;
+            // if player number changed then resort player list based on id
+            // then set anchors based on which players are present
+            if (playerNumChanged) {
+                players.Sort((p1, p2) => p1.id.CompareTo(p2.id));
+
+                for (int i = 0; i < players.Count; i++) {
+                    players[i].calculateAnchors(i + 1, players.Count);
+                    players[i].refreshAnchors();
                 }
             }
         }
 
-        // if true it means a controller has disconnected
-        // now we need to figure out which controller
-        // dont boot player until all other players have moved
-        if (players.Count > connectedJoysticks.Length && !usingKeyboard) {
-            if (!findingLost) {
-                foreach (Player p in players) {
-                    p.hasMovedRecently = false;
-                }
-                findingLost = true;
-            } else {
-                List<Player> afks = players.FindAll(p => !p.hasMovedRecently);
-                if (afks.Count == 1) {
-                    Player toRemove = afks[0];
-                    players.Remove(toRemove);
-                    Destroy(toRemove.img.gameObject);
-                    findingLost = false;
-                    playerNumChanged = true;
-                }
-            }
-        }
-
-        // if player number changed then resort player list based on id
-        // then set anchors based on which players are present
-        if (playerNumChanged && !usingKeyboard) {
-            players.Sort((p1, p2) => p1.id.CompareTo(p2.id));
-
-            for (int i = 0; i < players.Count; i++) {
-                players[i].calculateAnchors(i + 1, players.Count);
-                players[i].refreshAnchors();
-            }
-        }
-
+        // let first player cancel back to menu
         if (players.Count > 0) {
-            bool p1Cancel = Input.GetButtonDown("Cancel" + players[0].id);
-            if (p1Cancel && players[0].chosen == "") {
+            if (Input.GetButtonDown("Cancel" + players[0].id) && players[0].chosen == "") {
                 Application.LoadLevel("Menu");
             }
         }
@@ -365,7 +345,7 @@ class Player {
     private Vector2 relativeAnchor;
 
     // should probably use a nicer color palette lol
-    private static Color[] colors = new Color[] { 
+    private static Color[] colors = new Color[] {
         Color.red, Color.yellow, Color.green, Color.blue, Color.magenta, Color.cyan, Color.grey, Color.black };
 
     public Player(int id, Transform parent, Font f, Sprite sprite) {
@@ -387,6 +367,7 @@ class Player {
         txt.resizeTextMinSize = 10;
         txt.resizeTextMaxSize = 50;
 
+        // black background text
         btxt = new GameObject("Player " + id + " btext").AddComponent<Text>();
         btxt.font = f;
         btxt.text = "" + id;
