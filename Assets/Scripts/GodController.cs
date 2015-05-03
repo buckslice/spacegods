@@ -326,5 +326,9 @@ public class GodController : MonoBehaviour {
     public int getPlayer() {
         return player;
     }
+
+    public Gods getGodType() {
+        return god.god;
+    }
 }
 

@@ -814,7 +814,7 @@ MonoBehaviour:
   players: []
   songs:
   - {fileID: 8300000, guid: a2bbe639e616ab84cab8da144e7472a0, type: 3}
-  - {fileID: 8300000, guid: 3c52258ba1a25ce42bec881a59cbb128, type: 3}
+  - {fileID: 0}
   - {fileID: 8300000, guid: 09d6b97fba7b5d64080a0e0331429722, type: 3}
   - {fileID: 8300000, guid: 8e9518f0737d55e4c8eb3c821ed52850, type: 3}
 --- !u!114 &1664334440
