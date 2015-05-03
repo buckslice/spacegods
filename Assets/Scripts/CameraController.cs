@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraController : MonoBehaviour {
+public class CameraController : MonoBehaviour 
+{
     public float minSize;
     public float jumpSize;
     public float backgroundScale;
@@ -10,16 +11,19 @@ public class CameraController : MonoBehaviour {
     private GameObject background;
 
     // use this for initialization
-    void Start() {
+    void Start() 
+	{
         mainCam = Camera.main;
         background = GameObject.Find("Scrolling Background");
     }
 
     // update is called once per frame
-    void Update() {
+    void Update() 
+	{
         // calculate bounding box of all the gods in match
         Bounds bounds = new Bounds();
-        for (int i = 0; i < Game.instance.players.Count; ++i) {
+        for (int i = 0; i < Game.instance.players.Count; ++i) 
+		{
             GodController player = Game.instance.players[i];
             Bounds b = new Bounds(player.transform.position, new Vector3(3, 3, 0));
 
@@ -31,8 +35,7 @@ public class CameraController : MonoBehaviour {
 
             bounds.Encapsulate(b);
         }
-
-
+		
         // set center of camera to center of the bounding box
         Vector3 newPos = new Vector3(bounds.center.x, bounds.center.y, -10f);
         mainCam.transform.position = newPos;
@@ -67,3 +70,4 @@ public class CameraController : MonoBehaviour {
         background.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(offsetX, offsetY));
     }
 }
+
