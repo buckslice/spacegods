@@ -3,8 +3,8 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Game : MonoBehaviour {
-
+public class Game : MonoBehaviour 
+{
     // list of all gods in current game
     public List<GodController> players;
     public AudioClip[] songs;
@@ -25,49 +25,62 @@ public class Game : MonoBehaviour {
 
     // lazy singleton class
     public static Game instance { get; private set; }
-    void Awake() {
+    void Awake() 
+	{
         instance = this;
     }
 
     // use this for initialization
-    void Start() {
+    void Start() 
+	{
         initializeVariables();
     }
 
     // update is called once per frame
-    void Update() {
+    void Update() 
+	{
         handleIntro();
         handleWinner();
         handlePause();
         handleSongSwitchingYaYoureRightThisIsReallyHelpingClarityThanksJeffrey();
     }
 
-    private void handleSongSwitchingYaYoureRightThisIsReallyHelpingClarityThanksJeffrey() {
-        if (introFinished && !song.isPlaying) {
+    private void handleSongSwitchingYaYoureRightThisIsReallyHelpingClarityThanksJeffrey() 
+	{
+        if (introFinished && !song.isPlaying) 
+		{
             song.clip = songs[Random.Range(1, songs.Length)];
             song.Play();
         }
     }
 
-    public void addPlayer(GodController player) {
+    public void addPlayer(GodController player) 
+	{
         players.Add(player);
     }
 
-    public void removePlayer(GodController player) {
+    public void removePlayer(GodController player) 
+	{
         players.Remove(player);
     }
-    public bool hasBegun() {
+
+    public bool hasBegun() 
+	{
         return introFinished;
     }
-    public bool gameIsOver() {
+
+    public bool gameIsOver() 
+	{
         // if there is only one god left
-        if (Time.timeSinceLevelLoad > 5f) {
+        if (Time.timeSinceLevelLoad > 5f) 
+		{
             return players.Count <= 1;
         }
         return false;
     }
 
-    private void initializeVariables() {
+    private void initializeVariables() 
+	{
         timer = 4.99f;
         soundTimer = 4;
         frames = 0;
@@ -81,12 +94,14 @@ public class Game : MonoBehaviour {
 
         // spawn players with data from player prefs
         int numPlayers = PlayerPrefs.GetInt("Number of players");
-        for (int i = 0; i < numPlayers; i++) {
+        for (int i = 0; i < numPlayers; i++) 
+		{
             int player = PlayerPrefs.GetInt("Player" + i + " ");
             string choice = PlayerPrefs.GetString("Player" + player);
             //Debug.Log(player + " " + choice);
             Object loadedGod = Resources.Load("Gods/" + choice);
-            if (!loadedGod) {
+            if (!loadedGod) 
+			{
                 choice = "Zeus";    // classic
                 loadedGod = Resources.Load(choice);
             }
@@ -99,12 +114,16 @@ public class Game : MonoBehaviour {
         }
     }
 
-    private void handleIntro() {
-        if (!introFinished) {
+    private void handleIntro() 
+	{
+        if (!introFinished) 
+		{
             // code for cool intro countdown and music
             int t = (int)timer;
-            if (t <= 3) {
-                if (!songStart) {
+            if (t <= 3) 
+			{
+                if (!songStart) 
+				{
                     // start song up at right time
                     song.time = 19.5f;
                     song.volume = 0f;
@@ -114,12 +133,14 @@ public class Game : MonoBehaviour {
                 song.volume += .25f * Time.deltaTime;   // fade in volume
                 countDown.text = (t <= 0) ? "GO!" : t + "";
                 countDown.fontSize = 300 + (int)((timer - (int)timer) * 300f);
-                if (t != soundTimer && t > 0) {
+                if (t != soundTimer && t > 0) 
+				{
                     // noises for the countdown numbers
                     AudioManager.instance.playSound("Collision", Vector3.zero, 1f);
                     soundTimer = t;
                 }
-                if (t <= 0 && !gameStart) {
+                if (t <= 0 && !gameStart) 
+				{
                     // game starts here
                     AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
                     countDown.color = Color.white;
@@ -128,14 +149,16 @@ public class Game : MonoBehaviour {
                     }
                     gameStart = true;
                 }
-                if (t <= 0 && frames > 5) {
+                if (t <= 0 && frames > 5) 
+				{
                     // flicker text between yellow and white
                     countDown.color = (countDown.color == Color.white) ? Color.yellow : Color.white;
                     frames = 0;
                 }
                 frames++;
 
-                if (t <= -1) {
+                if (t <= -1) 
+				{
                     // intro is over
                     countDown.text = "";
                     introFinished = true;
@@ -144,46 +167,60 @@ public class Game : MonoBehaviour {
             timer -= Time.deltaTime / 1.25f;
         }
     }
-    private void handleWinner() {
-        if (gameIsOver()) {
-            if (winner == 0 && players.Count > 0) {
+    private void handleWinner() 
+	{
+        if (gameIsOver()) 
+		{
+            if (winner == 0 && players.Count > 0) 
+			{
                 winnerName = players[0].name;
                 winner = players[0].getPlayer();
             }
-            if (winner != 0) {
+            if (winner != 0) 
+			{
                 //gameOverText.text = "Game Over!\nPlayer " + winner + " (" + winnerName + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
-                gameOverText.text = "Game Over!\n" + winnerName + " (P" + winner + ") wins!\nWinner Press A to Restart\nor Press B to Quit\nor Press Y to Change Gods";
-                if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
+                gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") WINS!\n P" + winner + ": PRESS A TO RESTART\nOR PRESS B TO QUIT\nOR PRESS Y TO CHANGE GODS";
+                if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) 
+				{
                     Application.LoadLevel("Main");
                 }
-                if (Input.GetKeyDown(KeyCode.Q) || Input.GetButtonDown("Cancel" + winner)) {
+                if (Input.GetKeyDown(KeyCode.Q) || Input.GetButtonDown("Cancel" + winner)) 
+				{
                     Application.LoadLevel(0);
                 }
-                if (Input.GetKeyDown(KeyCode.Y) || Input.GetButton("Y" + winner)) {
+                if (Input.GetKeyDown(KeyCode.Y) || Input.GetButton("Y" + winner)) 
+				{
                     Application.LoadLevel("Character Selection");
                 }
             }
         }
     }
 
-    private void handlePause() {
-        if (Input.GetKeyDown(KeyCode.P) && !isPaused) {
+    private void handlePause() 
+	{
+        if (Input.GetKeyDown(KeyCode.P) && !isPaused) 
+		{
             Time.timeScale = 0;
             isPaused = true;
-            gameOverText.text = "Game Paused";
+            gameOverText.text = "PAUSED";
             overlay.SetActive(true);
-        } else if (isPaused) {
-            if (Input.GetKeyDown(KeyCode.R)) {
+        } 
+		else if (isPaused) 
+		{
+            if (Input.GetKeyDown(KeyCode.R)) 
+			{
                 Time.timeScale = 1;
                 isPaused = false;
                 Application.LoadLevel("Main");
             }
-            if (Input.GetKeyDown(KeyCode.Q)) {
+            if (Input.GetKeyDown(KeyCode.Q)) 
+			{
                 Time.timeScale = 1;
                 isPaused = false;
                 Application.LoadLevel(0);
             }
-            if (Input.GetKeyDown(KeyCode.P)) {
+            if (Input.GetKeyDown(KeyCode.P)) 
+			{
                 Time.timeScale = 1;
                 isPaused = false;
                 overlay.SetActive(false);
