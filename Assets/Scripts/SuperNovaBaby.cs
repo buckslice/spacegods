@@ -8,7 +8,8 @@ public class SuperNovaBaby : MonoBehaviour
     private Transform sprite;
     private CircleCollider2D circCol;
     private float growth;
-    // use this for initialization
+    private float targetRadius;
+
     void Start() 
 	{
 		growth = 0f;
@@ -16,6 +17,7 @@ public class SuperNovaBaby : MonoBehaviour
         system = GetComponent<ParticleSystem>();
         sprite = transform.Find("sprite").transform;
 		circCol.radius = 3f;
+        targetRadius = circCol.radius;
     }
 
     // Update is called once per frame
@@ -23,6 +25,7 @@ public class SuperNovaBaby : MonoBehaviour
 	{
 		SuperNova ();
 		sprite.localScale = Vector3.one * (circCol.radius / 3f);
+        circCol.radius = Mathf.Lerp(circCol.radius, targetRadius, Time.deltaTime);
     }
 
 	private void SuperNova()
@@ -32,7 +35,7 @@ public class SuperNovaBaby : MonoBehaviour
 		float rate = Mathf.Pow(1.1f, growth - timeUntilShitGetsReal);
 		if (rate > 1.1f) 
 		{
-			circCol.radius += rate * Time.deltaTime;
+            targetRadius += rate * Time.deltaTime;
 			system.startSpeed += rate * Time.deltaTime;
 			system.startSize += rate * 2f * Time.deltaTime;
 		}
@@ -43,9 +46,9 @@ public class SuperNovaBaby : MonoBehaviour
 		if (col.gameObject.tag == "Planet") 
 		{
 			CircleCollider2D planetCol = col.gameObject.GetComponent<CircleCollider2D>();
-			circCol.radius += planetCol.radius;
-			system.startSpeed = 1f + circCol.radius / 3f;
-			system.startSize = 6f + circCol.radius / 1.5f;
+            targetRadius += planetCol.radius;
+            system.startSpeed += planetCol.radius / 2f;
+            system.startSize += planetCol.radius * 2f;
 		}
 	}
 }

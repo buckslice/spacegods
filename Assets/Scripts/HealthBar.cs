@@ -1,54 +1,60 @@
 using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour 
-{
+public class HealthBar : MonoBehaviour {
     private God god;
     private Vector3 screenPoint;
+    private RawImage img;
     private Texture2D texture;
-    private GUIStyle style;
 
     // use this for initialization
-    void Start() 
-	{
+    void Start() {
         god = GetComponent<God>();
-        texture = new Texture2D(1, 1);
-        style = new GUIStyle();
+
+        GameObject imgGO = new GameObject(gameObject.name + " healthbar");
+        imgGO.transform.parent = GameObject.Find("Canvas").transform;
+        imgGO.transform.SetAsFirstSibling();
+        img = imgGO.AddComponent<RawImage>();
+        img.rectTransform.anchorMin = Vector2.zero;
+        img.rectTransform.anchorMax = Vector2.zero;
+        img.rectTransform.offsetMin = new Vector2(0, 0);
+        img.rectTransform.offsetMax = new Vector2(100, 5);
+
+        texture = new Texture2D(100, 5);
+        img.texture = texture;
     }
 
     // update is called once per frame
-    void Update() 
-	{
+    void Update() {
         screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-        screenPoint.y = Screen.height - screenPoint.y;
-    }
+        screenPoint.y -= 700f / Camera.main.orthographicSize;
+        img.rectTransform.anchoredPosition = screenPoint;
 
-    void OnGUI() 
-	{
-        // avoids editor errors
-        if (god == null) 
-		{
-            return;
+        Color32[] pixels = new Color32[500];
+        float cur = god.getCurrentHealth();
+        float max = god.maxHealth;
+        Color32 color;
+
+        if (cur > max / 2f) {
+            color = Color.green;
+        } else if (cur <= max / 2f && cur > max / 4f) {
+            color = Color.yellow;
+        } else {
+            color = Color.red;
         }
 
-        if (god.getCurrentHealth() > god.maxHealth/2)
-            texture.SetPixel(0, 0, Color.green);
-		else if (god.getCurrentHealth() <= god.maxHealth/2 && god.getCurrentHealth() > god.maxHealth/4)
-            texture.SetPixel(0, 0, Color.yellow);
-        else
-            texture.SetPixel(0, 0, Color.red);
+        for (int i = 0; i < pixels.Length; i++) {
+            pixels[i] = i >= 100 ? pixels[i - 100] : cur / max * 100 > i ? color : (Color32)Color.gray;
+        }
 
+        texture.SetPixels32(pixels);
         texture.Apply();
 
-        style.normal.background = texture;
-
-        float yOff = 700f / Camera.main.orthographicSize;
-
-		GUI.Box(new Rect(screenPoint.x - god.maxHealth/2, screenPoint.y + yOff, god.getCurrentHealth(), 5), GUIContent.none, style);
-
-        // add gray bar to see how far off from maxHealth you are
-        texture.SetPixel(0, 0, Color.gray);
-        texture.Apply();
-		GUI.Box(new Rect(screenPoint.x - god.maxHealth/2 + god.getCurrentHealth(), screenPoint.y + yOff, god.maxHealth - god.getCurrentHealth(), 5), GUIContent.none, style);
     }
+
+    public void deleteGameObject() {
+        Destroy(img.gameObject);
+    }
+
+
 }

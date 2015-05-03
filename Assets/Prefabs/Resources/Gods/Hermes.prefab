@@ -9,8 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 459410}
   - 212: {fileID: 21279158}
-  - 114: {fileID: 11465976}
-  - 114: {fileID: 11411168}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -120,17 +118,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 3
---- !u!114 &11411168
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 111640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4e334405b66e0b40ab26508cae6bf6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11438148
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -159,17 +146,6 @@ MonoBehaviour:
   acceleration: 2
   throwStrength: 5
   special: 0
---- !u!114 &11465976
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 111640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4e334405b66e0b40ab26508cae6bf6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11484652
 MonoBehaviour:
   m_ObjectHideFlags: 1

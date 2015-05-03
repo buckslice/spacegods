@@ -227,7 +227,7 @@ public class Planet : MonoBehaviour
 		{ 
 			// kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
-			if (lastHolder && lastHolder.getGod().god == Gods.ANUBIS)
+			if (lastHolder && lastHolder.getGodType() == Gods.ANUBIS)
 			{
 				return;
 			}
