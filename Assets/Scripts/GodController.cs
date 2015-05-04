@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class GodController : MonoBehaviour {
     // player number, used for input
     private int player = 0;
@@ -11,6 +12,8 @@ public class GodController : MonoBehaviour {
     private Planet myPlanet;
     private CircleCollider2D planetCollider;
     private SpriteRenderer sr;
+	private SpriteRenderer catchBoxsr;
+	private Color catchBoxColor;
 
     // compare trigger values in previous frame
     private bool oldTrigger;
@@ -30,7 +33,6 @@ public class GodController : MonoBehaviour {
     private float invincible;
 	private Object explosion;
 	private Queue exClones;
-
 
     // use this for initialization
     void Start() {
@@ -64,6 +66,8 @@ public class GodController : MonoBehaviour {
         newTrigger = false;
         isFlipped = false;
         model = transform.Find("Model");
+		catchBoxsr = transform.Find ("CatchBox").GetComponent<SpriteRenderer> ();
+		catchBoxsr.color = catchBoxColor;
         myRigidbody = GetComponent<Rigidbody2D>();
         god = GetComponent<God>();
         flipX = model.localScale.x;
@@ -254,7 +258,7 @@ public class GodController : MonoBehaviour {
     }
 
     private void handleGodCollision(Collision2D collision) {
-        if (collision.gameObject.tag == "God" && collision.gameObject.name == "Cthulhu") {
+        if (collision.gameObject.tag == "God" && collision.gameObject.GetComponent<God>().god == Gods.CTHULHU) {
             float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass;
             god.changeHealth(damage * .5f);
         }
@@ -345,5 +349,10 @@ public class GodController : MonoBehaviour {
     public Gods getGodType() {
         return god.god;
     }
+
+	public void setColor(Color color){
+		catchBoxColor = color;
+	}
+	
 }
 

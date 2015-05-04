@@ -110,7 +110,9 @@ public class Game : MonoBehaviour
 
             GameObject godPrefab = (GameObject)Instantiate(loadedGod, spawnLocation, Quaternion.identity);
             godPrefab.name = choice;
-            godPrefab.GetComponent<GodController>().setPlayer(player);
+			GodController gc = godPrefab.GetComponent<GodController>();
+            gc.setPlayer(player);
+			gc.setColor(Player.colors[player - 1]);
         }
     }
 

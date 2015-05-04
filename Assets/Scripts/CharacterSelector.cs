@@ -346,7 +346,7 @@ class Player {
     private Vector2 relativeAnchor;
 
     // should probably use a nicer color palette lol
-    private static Color[] colors = new Color[] {
+    public static Color[] colors = new Color[] {
         Color.red, Color.yellow, Color.green, Color.blue, Color.magenta, Color.cyan, Color.grey, Color.black };
 
     public Player(int id, Transform parent, Font f, Sprite sprite) {
