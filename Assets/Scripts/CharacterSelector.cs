@@ -17,7 +17,7 @@ public class CharacterSelector : MonoBehaviour {
     private string[][] gods = new string[3][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR"},
         new string[] {"ODIN","ATHENA","MICHAEL JORDAN","CTHULHU"},
-        new string[] {"HERMES", "SHIVA", "SUN-WUKONG"}
+        new string[] {"HERMES", "SHIVA", "SUN-WUKONG", "QUETZALCOATL"}
     };
 
     private string[] godInfo = new string[]{
@@ -31,7 +31,8 @@ public class CharacterSelector : MonoBehaviour {
         "CAN'T THROW. EXTRA HEALTH AND MASS. DAMAGES PLAYERS ON COLLISION.",
         "VERY FAST, BUT FRAGILE AND WEAK.",
         "GAINS HEALTH WHEN A PLANET DIES IN HIS HANDS",
-        "CHINESE TRICKSTER GOD: CAN PRETEND TO HOLD A PLANET"
+        "CHINESE TRICKSTER GOD: CAN PRETEND TO HOLD A PLANET",
+		"DEALS DAMAGE OVER TIME WHEN THROWING TROPICAL PLANETS"
     };
 
     // cooldown between joystick movements

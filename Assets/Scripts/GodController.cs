@@ -178,6 +178,9 @@ public class GodController : MonoBehaviour {
                     sr.color = Color.blue;
                     frozenTime = 3f;
                 }
+				if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
+					god.dotDamage(damage * 0.25f);
+				}
             }
         }
     }
