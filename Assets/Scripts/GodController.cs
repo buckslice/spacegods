@@ -15,6 +15,7 @@ public class GodController : MonoBehaviour {
     private CircleCollider2D planetCollider2; // for Artemis&Apollo
     private SpriteRenderer sr;
     private SpriteRenderer catchBoxsr;
+	private SpriteRenderer frozensr;
     private Color catchBoxColor;
 
     // compare trigger values in previous frame
@@ -68,6 +69,7 @@ public class GodController : MonoBehaviour {
         isFlipped = false;
         model = transform.Find("Model");
         catchBoxsr = transform.Find("CatchBox").GetComponent<SpriteRenderer>();
+		frozensr = transform.Find("Frozen").GetComponent<SpriteRenderer>();
         catchBoxsr.color = catchBoxColor;
         myRigidbody = GetComponent<Rigidbody2D>();
         god = GetComponent<God>();
@@ -202,6 +204,7 @@ public class GodController : MonoBehaviour {
         if (frozenTime < 0f) {
             freezeInputs = false;
             //sr.color = Color.white;
+			frozensr.enabled = false;
         }
 		if (god.drunk) {
 			drunkTimer += Time.deltaTime;	
@@ -253,6 +256,7 @@ public class GodController : MonoBehaviour {
             if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.POSEIDON && planetThatHitMe.type == PlanetType.ICY) {
                 freezeInputs = true;
                 //sr.color = Color.blue;
+				frozensr.enabled = true;
                 frozenTime = 3f;
             }
             if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
