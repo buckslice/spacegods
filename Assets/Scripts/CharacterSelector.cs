@@ -17,7 +17,7 @@ public class CharacterSelector : MonoBehaviour {
     private string[][] gods = new string[3][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN"},
         new string[] {"ATHENA","MICHAEL JORDAN","CTHULHU","HERMES", "SHIVA"},
-        new string[] { "SUN-WUKONG", "QUETZALCOATL", "ARTEMIS & APOLLO"},
+        new string[] { "SUN-WUKONG", "QUETZALCOATL", "ARTEMIS & APOLLO", "JESUS"},
     };
 
     private string[] godInfo = new string[]{
@@ -33,7 +33,8 @@ public class CharacterSelector : MonoBehaviour {
         "GAINS HEALTH WHEN A PLANET DIES IN HIS HANDS",
         "CHINESE TRICKSTER GOD: CAN PRETEND TO HOLD A PLANET",
         "DEALS DAMAGE OVER TIME WHEN THROWING TROPICAL PLANETS",
-        "HELD PLANETS ARE SPLIT AND THROWN IN OPPOSITE DIRECTIONS"
+        "HELD PLANETS ARE SPLIT AND THROWN IN OPPOSITE DIRECTIONS",
+		"TURNS WATER INTO WINE. MAKES PLAYERS DRUNK WHEN THROWING WATER PLANETS"
     };
 
     // cooldown between joystick movements

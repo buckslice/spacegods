@@ -7,7 +7,8 @@ public enum PlanetType {
     MOLTEN,
     METAL,
     ROCKY,
-    TROPICAL
+    TROPICAL,
+	WATER
 }
 
 public enum PlanetState {
@@ -138,6 +139,9 @@ public class Planet : MonoBehaviour {
                 break;
             case PlanetState.ORBITING:
                 lastHolder = null;
+				if(type == PlanetType.WATER){
+					sr.color = Color.white;
+				}
                 thrownParticles.Stop();
                 break;
         }

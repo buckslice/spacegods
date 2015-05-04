@@ -30,6 +30,7 @@ public class GodController : MonoBehaviour {
 
     private bool freezeInputs;
     private float frozenTime = 10f;
+	private float drunkTimer = 0f;
     private bool usingJoysticks;
 
     private float invincible;
@@ -200,8 +201,11 @@ public class GodController : MonoBehaviour {
         frozenTime -= Time.deltaTime;
         if (frozenTime < 0f) {
             freezeInputs = false;
-            sr.color = Color.white;
+            //sr.color = Color.white;
         }
+		if (god.drunk) {
+			drunkTimer += Time.deltaTime;	
+		}
     }
 
     private void handleCollisionWithPlanet(Collision2D collision) {
@@ -248,12 +252,17 @@ public class GodController : MonoBehaviour {
 
             if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.POSEIDON && planetThatHitMe.type == PlanetType.ICY) {
                 freezeInputs = true;
-                sr.color = Color.blue;
+                //sr.color = Color.blue;
                 frozenTime = 3f;
             }
             if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
                 god.dotDamage(damage * 0.25f);
             }
+
+			if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.JESUS && planetThatHitMe.type == PlanetType.WATER) {
+				god.drunk = true;
+				//sr.color = Color.green;
+			}
         }
     }
 
@@ -299,7 +308,16 @@ public class GodController : MonoBehaviour {
                 dy = Input.GetAxis("Vertical" + player);
             }
         }
-
+		if (god.drunk && drunkTimer < 5f) {
+			float temp = dx;
+			dx = dy;
+			dy = temp;
+			//Debug.Log(drunkTimer);
+		} else{
+			god.drunk = false;
+			//sr.color = Color.white;
+			drunkTimer = 0f;
+		}
         // target is maxspeed (in meters/s) * inputs
         // lerp torwards that by the gods accel "factor" (not in meters2 but whatever)
         // gods mass is still ignored here, need to use rigidbody.addforce if we want that
@@ -376,6 +394,13 @@ public class GodController : MonoBehaviour {
                     god.changeHealth(-5f * Time.deltaTime);
                 }
                 break;
+			case Gods.JESUS:
+				if (myPlanet) {
+					if (myPlanet.type == PlanetType.WATER) {
+						myPlanet.sr.color = Color.red;
+					}
+				}
+			break;
             default:
                 break;
 

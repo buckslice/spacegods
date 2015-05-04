@@ -13,7 +13,8 @@ public enum Gods {
     SHIVA,
     SUN_WUKONG,
     QUETZALCOATL,
-    ARTEMIS_APOLLO
+    ARTEMIS_APOLLO,
+	JESUS
 }
 
 public class God : MonoBehaviour {
@@ -26,7 +27,8 @@ public class God : MonoBehaviour {
     private float startingThrowStrength;
     private float dot;
     private float counter;   // counter variable
-    public bool special;     // event variable 
+    public bool special;     // event variable
+	public bool drunk; // for Jesus
 
     // use this for initialization
     void Start() {
