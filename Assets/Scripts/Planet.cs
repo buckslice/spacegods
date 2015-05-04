@@ -16,15 +16,14 @@ public enum PlanetState {
     ORBITING
 }
 
-public class Planet : MonoBehaviour 
-{
+public class Planet : MonoBehaviour {
     private int health;
     private float gravity = 20f;
     private Transform gravitationTarget;
     public GodController lastHolder;
-	private float thrownTimer;
+    private float thrownTimer;
     private float invulnTime;
-	private float particleTimer;
+    private float particleTimer;
     private Transform texture;
     private Transform shade;
     private Transform cracked;
@@ -32,49 +31,44 @@ public class Planet : MonoBehaviour
     private Vector3 origShadeScale;
     private Vector3 origCrackedScale;
     private SpriteRenderer crackedsr;
-	private SpriteRenderer shadesr;
+    private SpriteRenderer shadesr;
     public SpriteRenderer sr;
     public Rigidbody2D rb;
     public CircleCollider2D cc;
     public PhysicsMaterial2D noBounce;
     public PlanetType type;
     public PlanetState state;
-	public float maxSpeed = 200f;
-	public ParticleSystem particles;
-	private ParticleSystem thrownParticles;
-	//private Object explode;
+    public float maxSpeed = 200f;
+    public ParticleSystem particles;
+    private ParticleSystem thrownParticles;
+    //private Object explode;
 
-    void Awake() 
-	{
+    void Awake() {
         // only need to do these once
         texture = transform.Find("Texture").transform;
         shade = transform.Find("Shade").transform;
         cracked = transform.Find("Cracked").transform;
-		shadesr = shade.GetComponent<SpriteRenderer> ();
+        shadesr = shade.GetComponent<SpriteRenderer>();
         crackedsr = cracked.GetComponent<SpriteRenderer>();
-		thrownParticles = texture.GetComponent<ParticleSystem> ();
+        particles = GetComponent<ParticleSystem>();
+        thrownParticles = texture.GetComponent<ParticleSystem>();
         sr = texture.GetComponent<SpriteRenderer>();
         origTextScale = texture.localScale;
         origShadeScale = shade.localScale;
         origCrackedScale = cracked.localScale;
         gravitationTarget = GameObject.Find("Sun").transform;
-		//explode = Resources.Load ("Boom");
-
-        // planet spawner will call this
-        //initializeVariables();
     }
-    public void initializeVariables() 
-	{
+
+    public void initializeVariables() {
         state = PlanetState.ORBITING;
         health = 2;
-		particleTimer = 0f;
-		thrownTimer = 0f;
+        particleTimer = 0f;
+        thrownTimer = 0f;
         crackedsr.enabled = false;
         invulnTime = -1f;
-		sr.enabled = shadesr.enabled = rb.simulated = true;
+        sr.enabled = shadesr.enabled = rb.simulated = true;
         // randomize size and mass
-        switch (Random.Range(0, 3)) 
-		{
+        switch (Random.Range(0, 3)) {
             case 0:             // small
                 cc.radius = .76f;
                 rb.mass = .6f;
@@ -106,107 +100,86 @@ public class Planet : MonoBehaviour
         updateVariables();
     }
 
-    void Update() 
-	{
+    void Update() {
         updateVariables();
         handlePlanetStates();
-
     }
 
-    public void updateVariables() 
-	{
+    public void updateVariables() {
         float a = ToAngle(shade.position.x, shade.position.y);
         shade.rotation = Quaternion.Euler(0, 0, a * 180f / 3.1415f + 225);
-        invulnTime -= Time.deltaTime;
         texture.localScale = origTextScale * cc.radius;
         shade.localScale = origShadeScale * cc.radius;
         cracked.localScale = origCrackedScale * cc.radius;
-		thrownParticles.startSize = cc.radius * 5f;
-		particles.startSize = cc.radius * 2f;
-		if (particleTimer > 0f) 
-		{
-			particleTimer += Time.deltaTime;	
-		}
-		if (thrownTimer > 0f) 
-		{
-			thrownTimer += Time.deltaTime;	
-		}
+        thrownParticles.startSize = cc.radius * 1f;
+        particles.startSize = cc.radius * 2f;
+
+        invulnTime -= Time.deltaTime;
+        particleTimer -= Time.deltaTime;
+        thrownTimer -= Time.deltaTime;
     }
 
-    private void handlePlanetStates() 
-	{
-        switch (state) 
-		{
+    private void handlePlanetStates() {
+        switch (state) {
             case PlanetState.THROWN:
-				//Debug.Log(rb.velocity);
-				thrownParticles.Play ();
-				if(thrownTimer == 0f)
-				{
-					thrownTimer = 0.001f;
-				}
-				else
-				{
-					if(thrownTimer > 2f)
-					{
-						state = PlanetState.ORBITING;
-						thrownTimer = 0f;
-					}
-				}
-                if (health <= 0) 
-				{
-                    // don't destroy if you are being held, god will do it
-					if(particleTimer == 0f)
-					{
-						particleTimer = 0.001f;
-						sr.enabled = shadesr.enabled = rb.simulated = false;
-						particles.Play();
-					}
-					if(particleTimer > 1.5f)
-					{
-						//Instantiate(explode, cracked.position, Quaternion.identity);
-                    	PlanetSpawner.current.returnPlanet(gameObject);
-					}
+                if (thrownTimer < Time.time) {
+                    if (!thrownParticles.isPlaying) {
+                        thrownParticles.Play();
+                        thrownTimer = Time.time + 3f;
+                    } else {
+                        state = PlanetState.ORBITING;
+                        thrownParticles.Stop();
+                    }
                 }
                 break;
             case PlanetState.HELD:
-				thrownTimer = 0f;
-				thrownParticles.Stop();
+                thrownTimer = 0f;
+                thrownParticles.Stop();
                 break;
             case PlanetState.ORBITING:
-				lastHolder = null;
-				thrownParticles.Stop();
+                lastHolder = null;
+                thrownParticles.Stop();
                 break;
         }
-		crackedsr.enabled = health == 1;
+
+        if (health <= 0) {
+            // don't destroy if you are being held, god will do it
+            if (particleTimer < Time.time) {
+                if (!particles.isPlaying) {
+                    particles.Play();
+                    particleTimer = Time.time + 1.5f;
+                    sr.enabled = shadesr.enabled = rb.simulated = false;
+                } else {
+                    if(state == PlanetState.HELD) {
+                        lastHolder.destroyDeadHeldPlanet(this);
+                    }
+                    PlanetSpawner.current.returnPlanet(gameObject);
+                }
+            }
+        }
+
+        crackedsr.enabled = health == 1;
     }
 
-    void FixedUpdate() 
-	{
-		if (rb.velocity.magnitude > maxSpeed)
-		{
-			rb.velocity = rb.velocity.normalized * maxSpeed;
-		}
+    void FixedUpdate() {
+        if (rb.velocity.magnitude > maxSpeed) {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
         // realistic gravity (scales with distance)
         Vector3 dist = (gravitationTarget.position - transform.position) / 10f;
         Vector3 g = Mathf.Max(gravity / dist.sqrMagnitude, gravity / 10f) * dist.normalized;
         rb.AddForce(g * rb.mass);
     }
 
-    void OnCollisionEnter2D(Collision2D collision) 
-	{
-        if (collision.gameObject.tag == "Player") 
-		{
-            cc.sharedMaterial = noBounce;
-        } 
-		else if (collision.gameObject.tag == "Planet") 
-		{
+    void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.tag == "Player") {
+            cc.sharedMaterial = noBounce;   // why doesnt this just get set once?
+        } else if (collision.gameObject.tag == "Planet") {
             // only want one of the planets to play the sound so base it off random factor like x position
-            if (transform.position.x > collision.transform.position.x) 
-			{
+            if (transform.position.x > collision.transform.position.x) {
                 //AudioManager.instance.playSound("Collision", transform.position, 1f);
             }
-            switch (state) 
-			{
+            switch (state) {
                 case PlanetState.THROWN:
                     damage();
                     break;
@@ -217,63 +190,50 @@ public class Planet : MonoBehaviour
                 case PlanetState.ORBITING:
                     break;
             }
-        } 
-		else if (collision.gameObject.tag == "Boundary") 
-		{
+        } else if (collision.gameObject.tag == "Boundary") {
             PlanetSpawner.current.returnPlanet(gameObject);
         }
     }
 
-    void OnTriggerEnter2D(Collider2D collider) 
-	{
-        if (collider.tag == "Sun") 
-		{ 
-			// kill planet if it hits sun
+    void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.tag == "Sun") {
+            // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
-			if (lastHolder && lastHolder.getGodType() == Gods.ANUBIS)
-			{
-				return;
-			}
-			PlanetSpawner.current.returnPlanet(gameObject);
+            if (lastHolder && lastHolder.getGodType() == Gods.ANUBIS) {
+                return;
+            }
+            PlanetSpawner.current.returnPlanet(gameObject);
         }
     }
 
-    public void damage() 
-	{
-        if (invulnTime < 0f) 
-		{
+    public void damage() {
+        if (invulnTime < 0f) {
             health--;
             invulnTime = 1f;
         }
     }
 
-    public float getRadius() 
-	{
+    public float getRadius() {
         return cc.radius;
     }
 
-    public float getHealth() 
-	{
+    public float getHealth() {
         return health;
     }
 
-    public float getMass() 
-	{
+    public float getMass() {
         return rb.mass;
     }
 
-    public void changeRadius(float change) 
-	{
+    public void changeRadius(float change) {
         cc.radius += change;
     }
 
-    public void changeMass(float change) 
-	{
+    public void changeMass(float change) {
         rb.mass += change;
     }
 
-    private float ToAngle(float x, float y) 
-	{
+    private float ToAngle(float x, float y) {
         if (x == 0)
             return y >= 0 ? Mathf.PI / 2 : Mathf.PI * 3 / 2;
 

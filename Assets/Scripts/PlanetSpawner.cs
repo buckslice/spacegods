@@ -2,8 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlanetSpawner : MonoBehaviour 
-{
+public class PlanetSpawner : MonoBehaviour {
     public static PlanetSpawner current;
 
     private int activePlanets = 0;
@@ -16,21 +15,18 @@ public class PlanetSpawner : MonoBehaviour
     private Stack<GameObject> pool;
     private Object basicPlanet;
 
-    void Awake() 
-	{
+    void Awake() {
         current = this;
-		
+
         basicPlanet = Resources.Load("Planet");
         pool = new Stack<GameObject>();
-        for (int i = 0; i < maxPlanets; i++) 
-		{
+        for (int i = 0; i < maxPlanets; i++) {
             returnPlanet((GameObject)Instantiate(basicPlanet));
             ++activePlanets; // to offset returnplanets
         }
     }
 
-    public void returnPlanet(GameObject obj) 
-	{
+    public void returnPlanet(GameObject obj) {
         obj.transform.parent = transform;
         obj.SetActive(false);
         obj.name = "Pooled Planet";
@@ -38,21 +34,16 @@ public class PlanetSpawner : MonoBehaviour
         --activePlanets;
     }
 
-    private GameObject getPlanet() 
-	{
-        if (pool.Count > 0) 
-		{
+    public GameObject getPlanet() {
+        if (pool.Count > 0) {
             return pool.Pop();
         }
         return (GameObject)Instantiate(basicPlanet);
     }
 
-    void Update() 
-	{
-        if (Game.instance.hasBegun() && !Game.instance.gameIsOver()) 
-		{
-            if (activePlanets < maxPlanets && spawnTime < Time.timeSinceLevelLoad) 
-			{
+    void Update() {
+        if (Game.instance.hasBegun() && !Game.instance.gameIsOver()) {
+            if (activePlanets < maxPlanets && spawnTime < Time.timeSinceLevelLoad) {
                 //Time.time doesn't work for restart
                 spawnPlanet();
                 spawnTime = Time.timeSinceLevelLoad + spawnSpeed;
@@ -63,20 +54,17 @@ public class PlanetSpawner : MonoBehaviour
         }
     }
 
-    private void spawnPlanet() 
-	{
+    private void spawnPlanet() {
         int numberOfPlanetTypes = System.Enum.GetValues(typeof(PlanetType)).Length;
-        if (planetSprites.Length < numberOfPlanetTypes) 
-		{
+        if (planetSprites.Length < numberOfPlanetTypes) {
             Debug.Log("Not enough planet sprites defined.");
             return;
         }
         Vector2 spawn = Vector2.zero;
         // with Random.Range for integers the max is exclusive for some reason
-        switch (Random.Range(1, 5)) 
-		{
+        switch (Random.Range(1, 5)) {
             case 1:
-                spawn = new Vector2(-0.1f, Random.Range(0f,1f));
+                spawn = new Vector2(-0.1f, Random.Range(0f, 1f));
                 break;
 
             case 2:

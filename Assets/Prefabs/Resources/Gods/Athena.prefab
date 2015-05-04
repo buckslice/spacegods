@@ -14,8 +14,7 @@ GameObject:
   - 58: {fileID: 5811632}
   - 58: {fileID: 5822640}
   - 114: {fileID: 11416624}
-  - 58: {fileID: 5818738}
-  - 122: {fileID: 12292164}
+  - 58: {fileID: 5885878}
   m_Layer: 0
   m_Name: Athena
   m_TagString: God
@@ -121,19 +120,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
   m_Radius: 1
---- !u!58 &5818738
-CircleCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 158294}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 3
 --- !u!58 &5822640
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -147,6 +133,19 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -1}
   serializedVersion: 2
   m_Radius: 1
+--- !u!58 &5885878
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158294}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 3
 --- !u!114 &11401470
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -186,17 +185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc1542dbe7344c54ea6e783a16aacecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!122 &12292164
-Halo:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 158294}
-  m_Enabled: 1
-  m_Color:
-    serializedVersion: 2
-    rgba: 4286611584
-  m_Size: 3
 --- !u!212 &21236720
 SpriteRenderer:
   m_ObjectHideFlags: 1

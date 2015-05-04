@@ -12,12 +12,11 @@ GameObject:
   - 114: {fileID: 11483486}
   - 114: {fileID: 11424156}
   - 58: {fileID: 5859174}
-  - 114: {fileID: 11412302}
   - 58: {fileID: 5863286}
-  - 58: {fileID: 5840252}
-  - 122: {fileID: 12210092}
+  - 114: {fileID: 11412302}
+  - 58: {fileID: 5808432}
   m_Layer: 0
-  m_Name: Artemis&Apollo
+  m_Name: Artemis & Apollo
   m_TagString: God
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108,7 +107,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!58 &5840252
+--- !u!58 &5808432
 CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -186,17 +185,6 @@ MonoBehaviour:
   acceleration: 1.25
   throwStrength: 20
   special: 0
---- !u!122 &12210092
-Halo:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 101718}
-  m_Enabled: 1
-  m_Color:
-    serializedVersion: 2
-    rgba: 4286611584
-  m_Size: 3
 --- !u!212 &21259744
 SpriteRenderer:
   m_ObjectHideFlags: 1

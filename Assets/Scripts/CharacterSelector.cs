@@ -14,11 +14,10 @@ public class CharacterSelector : MonoBehaviour {
     public Font font;
     public Font playerFont;
 
-    private string[][] gods = new string[4][] {
-        new string[] {"ZEUS","POSEIDON","ANUBIS","THOR"},
-        new string[] {"ODIN","ATHENA","MICHAEL JORDAN","CTHULHU"},
-        new string[] {"HERMES", "SHIVA", "SUN-WUKONG", "QUETZALCOATL"},
-		new string[] {"ARTEMIS&APOLLO"}
+    private string[][] gods = new string[3][] {
+        new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN"},
+        new string[] {"ATHENA","MICHAEL JORDAN","CTHULHU","HERMES", "SHIVA"},
+        new string[] { "SUN-WUKONG", "QUETZALCOATL", "ARTEMIS & APOLLO"},
     };
 
     private string[] godInfo = new string[]{
@@ -33,8 +32,8 @@ public class CharacterSelector : MonoBehaviour {
         "VERY FAST, BUT FRAGILE AND WEAK.",
         "GAINS HEALTH WHEN A PLANET DIES IN HIS HANDS",
         "CHINESE TRICKSTER GOD: CAN PRETEND TO HOLD A PLANET",
-		"DEALS DAMAGE OVER TIME WHEN THROWING TROPICAL PLANETS",
-		"THEIR PLANETS ARE SPLIT INTO TWO PLANETS AND THROWN IN OPPOSITE DIRECTIONS"
+        "DEALS DAMAGE OVER TIME WHEN THROWING TROPICAL PLANETS",
+        "HELD PLANETS ARE SPLIT AND THROWN IN OPPOSITE DIRECTIONS"
     };
 
     // cooldown between joystick movements
@@ -101,11 +100,12 @@ public class CharacterSelector : MonoBehaviour {
                     img.sprite = godSprites[godCoord1D];
                 }
                 //img.preserveAspect = true;
-                float p = .05f;
-                float padX = (1f - p * (yL + 1)) / yL;
-                float padY = (.96f - p * (xL + 1)) / xL;    // offset a little to give more room on bottom
-                img.rectTransform.anchorMin = new Vector2(x * padX + p * (x + 1), 1f - (y + 1) * padY - p * (y + 1));
-                img.rectTransform.anchorMax = new Vector2((x + 1) * padX + p * (x + 1), 1f - y * padY - p * (y + 1));
+                float px = .04f;
+                float py = .05f;
+                float padX = (1f - px * (yL + 1)) / yL;
+                float padY = (.96f - py * (xL + 1)) / xL;    // offset a little to give more room on bottom
+                img.rectTransform.anchorMin = new Vector2(x * padX + px * (x + 1), 1f - (y + 1) * padY - py * (y + 1));
+                img.rectTransform.anchorMax = new Vector2((x + 1) * padX + px * (x + 1), 1f - y * padY - py * (y + 1));
                 img.rectTransform.offsetMin = Vector2.zero;
                 img.rectTransform.offsetMax = Vector2.zero;
 

@@ -44,10 +44,9 @@ GameObject:
   - 114: {fileID: 11492390}
   - 114: {fileID: 11436636}
   - 58: {fileID: 5864258}
-  - 114: {fileID: 11422316}
   - 58: {fileID: 5854282}
-  - 58: {fileID: 5858918}
-  - 122: {fileID: 12289894}
+  - 114: {fileID: 11422316}
+  - 58: {fileID: 5820490}
   m_Layer: 0
   m_Name: Poseidon
   m_TagString: God
@@ -108,6 +107,19 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
+--- !u!58 &5820490
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 188832}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 3
 --- !u!58 &5854282
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -121,19 +133,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -1}
   serializedVersion: 2
   m_Radius: 1
---- !u!58 &5858918
-CircleCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 188832}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 3
 --- !u!58 &5864258
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -186,17 +185,6 @@ MonoBehaviour:
   acceleration: 1.25
   throwStrength: 20
   special: 0
---- !u!122 &12289894
-Halo:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 188832}
-  m_Enabled: 1
-  m_Color:
-    serializedVersion: 2
-    rgba: 4286611584
-  m_Size: 3
 --- !u!212 &21287256
 SpriteRenderer:
   m_ObjectHideFlags: 1

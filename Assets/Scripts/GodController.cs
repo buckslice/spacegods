@@ -10,12 +10,12 @@ public class GodController : MonoBehaviour {
     private Transform model;
     private Rigidbody2D myRigidbody;
     private Planet myPlanet;
-	private Planet myPlanet2; // for Artemis&Apollo
+    private Planet myPlanet2; // for Artemis&Apollo
     private CircleCollider2D planetCollider;
-	private CircleCollider2D planetCollider2; // for Artemis&Apollo
+    private CircleCollider2D planetCollider2; // for Artemis&Apollo
     private SpriteRenderer sr;
-	private SpriteRenderer catchBoxsr;
-	private Color catchBoxColor;
+    private SpriteRenderer catchBoxsr;
+    private Color catchBoxColor;
 
     // compare trigger values in previous frame
     private bool oldTrigger;
@@ -33,8 +33,6 @@ public class GodController : MonoBehaviour {
     private bool usingJoysticks;
 
     private float invincible;
-	private Object explosion;
-	private Queue exClones;
 
     // use this for initialization
     void Start() {
@@ -44,15 +42,15 @@ public class GodController : MonoBehaviour {
     // update is called once per frame
     void Update() {
         checkForDeath();
+        updateVariables();
         handleVelocityAndOrientation();
         handleThrow();
-        updateVariables();
         handleGodPassives();
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
-        handleGodCollision(collision);
-        handlePlanetCollision(collision);
+        handleCollisionWithGod(collision);
+        handleCollisionWithPlanet(collision);
     }
 
     void OnTriggerStay2D(Collider2D col) {
@@ -68,26 +66,24 @@ public class GodController : MonoBehaviour {
         newTrigger = false;
         isFlipped = false;
         model = transform.Find("Model");
-		catchBoxsr = transform.Find ("CatchBox").GetComponent<SpriteRenderer> ();
-		catchBoxsr.color = catchBoxColor;
+        catchBoxsr = transform.Find("CatchBox").GetComponent<SpriteRenderer>();
+        catchBoxsr.color = catchBoxColor;
         myRigidbody = GetComponent<Rigidbody2D>();
         god = GetComponent<God>();
         flipX = model.localScale.x;
         modelPosX = model.localPosition.x;
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
         planetCollider.enabled = false;
-		if (god.god == Gods.ARTEMIS_APOLLO) {
-			planetCollider2 = gameObject.AddComponent<CircleCollider2D>();
-			planetCollider2.enabled = false;	
-		}
+        if (god.god == Gods.ARTEMIS_APOLLO) {
+            planetCollider2 = gameObject.AddComponent<CircleCollider2D>();
+            planetCollider2.enabled = false;
+        }
         sr = model.GetComponent<SpriteRenderer>();
-		explosion = Resources.Load ("Boom");
-		exClones = new Queue ();
 
         usingJoysticks = false;
         string[] joysticks = Input.GetJoystickNames();
-        for(int i = 0; i < joysticks.Length; i++) {
-            if(joysticks[i] != "") {
+        for (int i = 0; i < joysticks.Length; i++) {
+            if (joysticks[i] != "") {
                 usingJoysticks = true;
             }
         }
@@ -98,30 +94,41 @@ public class GodController : MonoBehaviour {
         myPlanet.lastHolder = this;
         myPlanet.state = PlanetState.HELD;
         myPlanet.rb.simulated = false;  // disable planets physics
-        myRigidbody.mass += myPlanet.rb.mass; // add planets mass to your own
         myPlanet.transform.parent = transform;
-		if (god.god != Gods.ARTEMIS_APOLLO) {
-			planetCollider.radius = myPlanet.getRadius ();   // set our planetCollider equal to radius of planet
-			planetCollider.enabled = true;
-		}else{
+        if (god.god != Gods.ARTEMIS_APOLLO) {
+            myRigidbody.mass += myPlanet.rb.mass; // add planets mass to your own
+            planetCollider.radius = myPlanet.getRadius();   // set our planetCollider equal to radius of planet
+            planetCollider.enabled = true;
+        } else {
+            myPlanet.rb.mass = myPlanet.rb.mass / 2f;
+            myPlanet.cc.radius = myPlanet.cc.radius / 2f;
+            if (myPlanet.rb.mass < .3f) {
+                myPlanet.rb.mass = .3f;
+            }
+            if (myPlanet.cc.radius < .5f) {
+                myPlanet.cc.radius = .5f;
+            }
 
-
-			myPlanet2 = (Planet)Instantiate(myPlanet, transform.position, Quaternion.identity);
-			myPlanet2.lastHolder = this;
-			myPlanet2.state = PlanetState.HELD;
-			myPlanet2.rb.simulated = false;  // disable planets physics
-			myPlanet2.transform.parent = transform;
-			//myPlanet.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
-			//myPlanet2.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
-			myPlanet.rb.mass = myPlanet.rb.mass / 2f;
-			myPlanet2.rb.mass = myPlanet2.rb.mass / 2f;
-			myPlanet.cc.radius = myPlanet.cc.radius / 2f;
-			myPlanet2.cc.radius = myPlanet2.cc.radius / 2f;
-			planetCollider.radius = myPlanet.getRadius ();   // set our planetCollider equal to radius of planet
-			planetCollider.enabled = true;
-			planetCollider2.radius = myPlanet2.getRadius ();   // set our planetCollider equal to radius of planet
-			planetCollider2.enabled = true;
-		}
+            myPlanet2 = PlanetSpawner.current.getPlanet().GetComponent<Planet>();
+            myPlanet2.gameObject.SetActive(true);
+            myPlanet2.name = "A&A Duplicate Planet";
+            myPlanet2.initializeVariables();
+            myPlanet2.transform.position = transform.position;
+            myPlanet2.transform.parent = transform;
+            myPlanet2.sr.sprite = myPlanet.sr.sprite;
+            myPlanet2.type = myPlanet.type;
+            myPlanet2.lastHolder = this;
+            myPlanet2.state = PlanetState.HELD;
+            myPlanet2.rb.simulated = false;  // disable planets physics
+            myPlanet2.transform.parent = transform;
+            myPlanet2.rb.mass = myPlanet.rb.mass;
+            myPlanet2.cc.radius = myPlanet.cc.radius;
+            myRigidbody.mass += myPlanet.rb.mass + myPlanet2.rb.mass;
+            planetCollider.radius = myPlanet.getRadius();   // set our planetCollider equal to radius of planet
+            planetCollider.enabled = true;
+            planetCollider2.radius = myPlanet2.getRadius();   // set our planetCollider equal to radius of planet
+            planetCollider2.enabled = true;
+        }
     }
 
     private void throwPlanet(Vector2 aim) {
@@ -131,16 +138,17 @@ public class GodController : MonoBehaviour {
         myPlanet.rb.simulated = true;  //reenable planets physics
         myPlanet.rb.velocity = myRigidbody.velocity + aim * god.throwStrength;
         myRigidbody.mass -= myPlanet.rb.mass; // subtract off planets mass
-		if (god.god == Gods.ARTEMIS_APOLLO) {
-			myPlanet2.state = PlanetState.THROWN;
-			myPlanet2.transform.parent = null;
-			myPlanet2.rb.simulated = true;  //reenable planets physics
-			myPlanet2.rb.velocity = -myRigidbody.velocity - aim * god.throwStrength;
-			planetCollider2.enabled = false;
-			myPlanet2 = null;
-		}
         planetCollider.enabled = false;
         myPlanet = null;
+
+        if (god.god == Gods.ARTEMIS_APOLLO && myPlanet2) {
+            myPlanet2.state = PlanetState.THROWN;
+            myPlanet2.transform.parent = null;
+            myPlanet2.rb.simulated = true;  //reenable planets physics
+            myPlanet2.rb.velocity = -myRigidbody.velocity - aim * god.throwStrength;
+            planetCollider2.enabled = false;
+            myPlanet2 = null;
+        }
     }
     private void blockWithPlanet(Vector2 aim) {
         float holdDistance = 3f; // should be halo radius
@@ -148,33 +156,39 @@ public class GodController : MonoBehaviour {
         Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
         myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
         planetCollider.offset = holdPos;
-		if (god.god == Gods.ARTEMIS_APOLLO) {
-			Vector3 target2 = transform.position - new Vector3(holdPos.x, holdPos.y, 0);
-			myPlanet2.transform.position = Vector3.Lerp(myPlanet2.transform.position, target2, 6f * Time.deltaTime);
-			planetCollider2.offset = -holdPos;
-		}
+        if (god.god == Gods.ARTEMIS_APOLLO && myPlanet2) {
+            Vector3 target2 = transform.position - new Vector3(holdPos.x, holdPos.y, 0);
+            myPlanet2.transform.position = Vector3.Lerp(myPlanet2.transform.position, target2, 6f * Time.deltaTime);
+            planetCollider2.offset = -holdPos;
+        }
     }
 
-	private void deleteExplosion() {
-		Destroy ((Object)exClones.Dequeue ());
-	}
-
-    private void destroyDeadHeldPlanet() {
+    public void destroyDeadHeldPlanet(Planet planet) {
         if (god.god == Gods.SHIVA) {
             god.changeHealth(-myPlanet.rb.mass * 10f);
         }
-		
-		exClones.Enqueue (Instantiate (explosion, myPlanet.transform.position, Quaternion.identity));
-		Invoke ("deleteExplosion", 2);
-        myRigidbody.mass -= myPlanet.rb.mass;
-        planetCollider.enabled = false;
-        PlanetSpawner.current.returnPlanet(myPlanet.gameObject);
-		if (god.god == Gods.ARTEMIS_APOLLO) {
-			PlanetSpawner.current.returnPlanet(myPlanet2.gameObject);
-			myPlanet2 = null;
-			planetCollider2.enabled = false;
-		}
+
+        myRigidbody.mass -= planet.rb.mass;
+
+        if (god.god == Gods.ARTEMIS_APOLLO) {
+            if (planet == myPlanet2) {
+                myPlanet2 = null;
+                planetCollider2.enabled = false;
+                return;
+            }
+        }
         myPlanet = null;
+        planetCollider.enabled = false;
+
+        // make planet2 main planet
+        if (god.god == Gods.ARTEMIS_APOLLO) {
+            if (myPlanet2) {
+                myPlanet = myPlanet2;
+                myPlanet2 = null;
+                planetCollider.enabled = true;
+            }
+        }
+
     }
 
     private void updateVariables() {
@@ -190,56 +204,56 @@ public class GodController : MonoBehaviour {
         }
     }
 
-    private void handlePlanetCollision(Collision2D collision) {
+    private void handleCollisionWithPlanet(Collision2D collision) {
         if (collision.gameObject.tag == "Planet") {
             // since were using mainly circle colliders, the first contact point will probably be the only one
             ContactPoint2D first = collision.contacts[0];
             // if either of the colliders are our planetCollider then we dont take damage
-			if(myPlanet){
-				if(myPlanet2){
-					if ((first.collider == planetCollider2 || first.otherCollider == planetCollider2)) {
-						AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-						myPlanet2.damage();
-						return;
-					}
-				}
-		        if ((first.collider == planetCollider || first.otherCollider == planetCollider)) {
-					AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-		            myPlanet.damage();
-		            return;
-		        } else if (invincible > .5f) {
-		            switch (god.god) {
-		                case Gods.THOR:
-		                    if (god.getCounter() > 10f) {
-		                        god.resetCounter();
-		                        invincible = 0f;
-		                        //myRigidbody.AddForce(-collision.relativeVelocity);
-		                        return;
-		                    }
-		                break;
-		            }
-	            }
-			}
+            if (myPlanet) {
+                if (myPlanet2) {
+                    if ((first.collider == planetCollider2 || first.otherCollider == planetCollider2)) {
+                        AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
+                        myPlanet2.damage();
+                        return;
+                    }
+                }
+                if ((first.collider == planetCollider || first.otherCollider == planetCollider)) {
+                    AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
+                    myPlanet.damage();
+                    return;
+                } else if (invincible > .5f) {
+                    switch (god.god) {
+                        case Gods.THOR:
+                            if (god.getCounter() > 10f) {
+                                god.resetCounter();
+                                invincible = 0f;
+                                //myRigidbody.AddForce(-collision.relativeVelocity);
+                                return;
+                            }
+                            break;
+                    }
+                }
+            }
 
-			
-			Planet planetThatHitMe = collision.gameObject.GetComponent<Planet>();
-			if (planetThatHitMe.lastHolder == this) {
-				return;
-			}
-			// otherwise one of our gods colliders have been hit so we take damage
-			AudioManager.instance.playSound("GodHurt", transform.position, 1f);
-			float damage = collision.relativeVelocity.magnitude * planetThatHitMe.getMass();
-			god.changeHealth(damage * .5f);
-			invincible = 0f;
-			
-			if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.POSEIDON && planetThatHitMe.type == PlanetType.ICY) {
-				freezeInputs = true;
-				sr.color = Color.blue;
-				frozenTime = 3f;
-			}
-			if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
-				god.dotDamage(damage * 0.25f);
-			}
+
+            Planet planetThatHitMe = collision.gameObject.GetComponent<Planet>();
+            if (planetThatHitMe.lastHolder == this) {
+                return;
+            }
+            // otherwise one of our gods colliders have been hit so we take damage
+            AudioManager.instance.playSound("GodHurt", transform.position, 1f);
+            float damage = collision.relativeVelocity.magnitude * planetThatHitMe.getMass();
+            god.changeHealth(damage * .5f);
+            invincible = 0f;
+
+            if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.POSEIDON && planetThatHitMe.type == PlanetType.ICY) {
+                freezeInputs = true;
+                sr.color = Color.blue;
+                frozenTime = 3f;
+            }
+            if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
+                god.dotDamage(damage * 0.25f);
+            }
         }
     }
 
@@ -249,15 +263,12 @@ public class GodController : MonoBehaviour {
         float xAim = usingJoysticks ? Input.GetAxis("Horizontal_aim_360_" + player) : isFlipped ? -1f : 1f;
         float yAim = usingJoysticks ? Input.GetAxis("Vertical_aim_360_" + player) : 0f;
         Vector2 aim = new Vector2(xAim, yAim).normalized;
-        if (myPlanet) {     // if your god is holding a planet
-            if (myPlanet.getHealth() > 0) {
-                if (fireInput) {    // throw planet
-                    throwPlanet(aim);
-                } else {    // move planet where aiming for blocking
-                    blockWithPlanet(aim);
-                }
-            } else {    //planet died before it was thrown
-                destroyDeadHeldPlanet();
+
+        if (myPlanet) {
+            if (fireInput) {    // throw planet
+                throwPlanet(aim);
+            } else {    // move planet where aiming for blocking
+                blockWithPlanet(aim);
             }
         }
 
@@ -311,7 +322,7 @@ public class GodController : MonoBehaviour {
         }
     }
 
-    private void handleGodCollision(Collision2D collision) {
+    private void handleCollisionWithGod(Collision2D collision) {
         if (collision.gameObject.tag == "God" && collision.gameObject.GetComponent<God>().god == Gods.CTHULHU) {
             float damage = collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass;
             god.changeHealth(damage * .5f);
@@ -379,7 +390,7 @@ public class GodController : MonoBehaviour {
 
     private void handlePlanetCatch(Collider2D col) {
         bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + player) < 0.0 : Input.GetButton("Fire" + player);
-        if (col.tag == "Planet" && inputFire && !myPlanet && god.god != Gods.CTHULHU) {
+        if (col.tag == "Planet" && inputFire && !myPlanet) {
             Planet planet = col.gameObject.GetComponent<Planet>();
             bool canCatch = planet.lastHolder == this || planet.state == PlanetState.ORBITING || timeSinceTryCatch < .25f;
             if (releaseButtonFire && canCatch) {
@@ -404,9 +415,9 @@ public class GodController : MonoBehaviour {
         return god.god;
     }
 
-	public void setColor(Color color){
-		catchBoxColor = color;
-	}
-	
+    public void setColor(Color color) {
+        catchBoxColor = color;
+    }
+
 }
 
