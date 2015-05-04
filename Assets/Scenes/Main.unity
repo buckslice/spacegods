@@ -159,7 +159,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11467234, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
       propertyPath: timeUntilShitGetsReal
-      value: 120
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
       propertyPath: InitialModule.maxNumParticles

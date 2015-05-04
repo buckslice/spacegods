@@ -10,7 +10,9 @@ public class GodController : MonoBehaviour {
     private Transform model;
     private Rigidbody2D myRigidbody;
     private Planet myPlanet;
+	private Planet myPlanet2; // for Artemis&Apollo
     private CircleCollider2D planetCollider;
+	private CircleCollider2D planetCollider2; // for Artemis&Apollo
     private SpriteRenderer sr;
 	private SpriteRenderer catchBoxsr;
 	private Color catchBoxColor;
@@ -74,6 +76,10 @@ public class GodController : MonoBehaviour {
         modelPosX = model.localPosition.x;
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
         planetCollider.enabled = false;
+		if (god.god == Gods.ARTEMIS_APOLLO) {
+			planetCollider2 = gameObject.AddComponent<CircleCollider2D>();
+			planetCollider2.enabled = false;	
+		}
         sr = model.GetComponent<SpriteRenderer>();
 		explosion = Resources.Load ("Boom");
 		exClones = new Queue ();
@@ -94,8 +100,28 @@ public class GodController : MonoBehaviour {
         myPlanet.rb.simulated = false;  // disable planets physics
         myRigidbody.mass += myPlanet.rb.mass; // add planets mass to your own
         myPlanet.transform.parent = transform;
-        planetCollider.radius = myPlanet.getRadius();   // set our planetCollider equal to radius of planet
-        planetCollider.enabled = true;
+		if (god.god != Gods.ARTEMIS_APOLLO) {
+			planetCollider.radius = myPlanet.getRadius ();   // set our planetCollider equal to radius of planet
+			planetCollider.enabled = true;
+		}else{
+
+
+			myPlanet2 = (Planet)Instantiate(myPlanet, transform.position, Quaternion.identity);
+			myPlanet2.lastHolder = this;
+			myPlanet2.state = PlanetState.HELD;
+			myPlanet2.rb.simulated = false;  // disable planets physics
+			myPlanet2.transform.parent = transform;
+			//myPlanet.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
+			//myPlanet2.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
+			myPlanet.rb.mass = myPlanet.rb.mass / 2f;
+			myPlanet2.rb.mass = myPlanet2.rb.mass / 2f;
+			myPlanet.cc.radius = myPlanet.cc.radius / 2f;
+			myPlanet2.cc.radius = myPlanet2.cc.radius / 2f;
+			planetCollider.radius = myPlanet.getRadius ();   // set our planetCollider equal to radius of planet
+			planetCollider.enabled = true;
+			planetCollider2.radius = myPlanet2.getRadius ();   // set our planetCollider equal to radius of planet
+			planetCollider2.enabled = true;
+		}
     }
 
     private void throwPlanet(Vector2 aim) {
@@ -105,6 +131,14 @@ public class GodController : MonoBehaviour {
         myPlanet.rb.simulated = true;  //reenable planets physics
         myPlanet.rb.velocity = myRigidbody.velocity + aim * god.throwStrength;
         myRigidbody.mass -= myPlanet.rb.mass; // subtract off planets mass
+		if (god.god == Gods.ARTEMIS_APOLLO) {
+			myPlanet2.state = PlanetState.THROWN;
+			myPlanet2.transform.parent = null;
+			myPlanet2.rb.simulated = true;  //reenable planets physics
+			myPlanet2.rb.velocity = -myRigidbody.velocity - aim * god.throwStrength;
+			planetCollider2.enabled = false;
+			myPlanet2 = null;
+		}
         planetCollider.enabled = false;
         myPlanet = null;
     }
@@ -114,11 +148,16 @@ public class GodController : MonoBehaviour {
         Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
         myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
         planetCollider.offset = holdPos;
+		if (god.god == Gods.ARTEMIS_APOLLO) {
+			Vector3 target2 = transform.position - new Vector3(holdPos.x, holdPos.y, 0);
+			myPlanet2.transform.position = Vector3.Lerp(myPlanet2.transform.position, target2, 6f * Time.deltaTime);
+			planetCollider2.offset = -holdPos;
+		}
     }
 
 	private void deleteExplosion() {
-			Destroy ((Object)exClones.Dequeue ());
-		}
+		Destroy ((Object)exClones.Dequeue ());
+	}
 
     private void destroyDeadHeldPlanet() {
         if (god.god == Gods.SHIVA) {
@@ -130,6 +169,11 @@ public class GodController : MonoBehaviour {
         myRigidbody.mass -= myPlanet.rb.mass;
         planetCollider.enabled = false;
         PlanetSpawner.current.returnPlanet(myPlanet.gameObject);
+		if (god.god == Gods.ARTEMIS_APOLLO) {
+			PlanetSpawner.current.returnPlanet(myPlanet2.gameObject);
+			myPlanet2 = null;
+			planetCollider2.enabled = false;
+		}
         myPlanet = null;
     }
 
@@ -151,41 +195,51 @@ public class GodController : MonoBehaviour {
             // since were using mainly circle colliders, the first contact point will probably be the only one
             ContactPoint2D first = collision.contacts[0];
             // if either of the colliders are our planetCollider then we dont take damage
-            if ((first.collider == planetCollider || first.otherCollider == planetCollider) && myPlanet) {
-                AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-                myPlanet.damage();
-                return;
-            } else if (invincible > .5f) {
-                switch (god.god) {
-                    case Gods.THOR:
-                        if (god.getCounter() > 10f) {
-                            god.resetCounter();
-                            invincible = 0f;
-                            //myRigidbody.AddForce(-collision.relativeVelocity);
-                            return;
-                        }
-                        break;
-                }
-
-                Planet planetThatHitMe = collision.gameObject.GetComponent<Planet>();
-                if (planetThatHitMe.lastHolder == this) {
-                    return;
-                }
-                // otherwise one of our gods colliders have been hit so we take damage
-                AudioManager.instance.playSound("GodHurt", transform.position, 1f);
-                float damage = collision.relativeVelocity.magnitude * planetThatHitMe.getMass();
-                god.changeHealth(damage * .5f);
-                invincible = 0f;
-
-                if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.POSEIDON && planetThatHitMe.type == PlanetType.ICY) {
-                    freezeInputs = true;
-                    sr.color = Color.blue;
-                    frozenTime = 3f;
-                }
-				if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
-					god.dotDamage(damage * 0.25f);
+			if(myPlanet){
+				if(myPlanet2){
+					if ((first.collider == planetCollider2 || first.otherCollider == planetCollider2)) {
+						AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
+						myPlanet2.damage();
+						return;
+					}
 				}
-            }
+		        if ((first.collider == planetCollider || first.otherCollider == planetCollider)) {
+					AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
+		            myPlanet.damage();
+		            return;
+		        } else if (invincible > .5f) {
+		            switch (god.god) {
+		                case Gods.THOR:
+		                    if (god.getCounter() > 10f) {
+		                        god.resetCounter();
+		                        invincible = 0f;
+		                        //myRigidbody.AddForce(-collision.relativeVelocity);
+		                        return;
+		                    }
+		                break;
+		            }
+	            }
+			}
+
+			
+			Planet planetThatHitMe = collision.gameObject.GetComponent<Planet>();
+			if (planetThatHitMe.lastHolder == this) {
+				return;
+			}
+			// otherwise one of our gods colliders have been hit so we take damage
+			AudioManager.instance.playSound("GodHurt", transform.position, 1f);
+			float damage = collision.relativeVelocity.magnitude * planetThatHitMe.getMass();
+			god.changeHealth(damage * .5f);
+			invincible = 0f;
+			
+			if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.POSEIDON && planetThatHitMe.type == PlanetType.ICY) {
+				freezeInputs = true;
+				sr.color = Color.blue;
+				frozenTime = 3f;
+			}
+			if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
+				god.dotDamage(damage * 0.25f);
+			}
         }
     }
 

@@ -14,10 +14,11 @@ public class CharacterSelector : MonoBehaviour {
     public Font font;
     public Font playerFont;
 
-    private string[][] gods = new string[3][] {
+    private string[][] gods = new string[4][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR"},
         new string[] {"ODIN","ATHENA","MICHAEL JORDAN","CTHULHU"},
-        new string[] {"HERMES", "SHIVA", "SUN-WUKONG", "QUETZALCOATL"}
+        new string[] {"HERMES", "SHIVA", "SUN-WUKONG", "QUETZALCOATL"},
+		new string[] {"ARTEMIS&APOLLO"}
     };
 
     private string[] godInfo = new string[]{
@@ -32,7 +33,8 @@ public class CharacterSelector : MonoBehaviour {
         "VERY FAST, BUT FRAGILE AND WEAK.",
         "GAINS HEALTH WHEN A PLANET DIES IN HIS HANDS",
         "CHINESE TRICKSTER GOD: CAN PRETEND TO HOLD A PLANET",
-		"DEALS DAMAGE OVER TIME WHEN THROWING TROPICAL PLANETS"
+		"DEALS DAMAGE OVER TIME WHEN THROWING TROPICAL PLANETS",
+		"THEIR PLANETS ARE SPLIT INTO TWO PLANETS AND THROWN IN OPPOSITE DIRECTIONS"
     };
 
     // cooldown between joystick movements

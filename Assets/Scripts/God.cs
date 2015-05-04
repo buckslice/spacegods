@@ -12,7 +12,8 @@ public enum Gods {
 	HERMES,
 	SHIVA,
 	SUN_WUKONG,
-	QUETZALCOATL
+	QUETZALCOATL,
+	ARTEMIS_APOLLO
 }
 
 public class God : MonoBehaviour 

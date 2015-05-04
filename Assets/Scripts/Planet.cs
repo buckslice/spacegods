@@ -63,7 +63,6 @@ public class Planet : MonoBehaviour
         // planet spawner will call this
         //initializeVariables();
     }
-
     public void initializeVariables() 
 	{
         state = PlanetState.ORBITING;
@@ -139,6 +138,7 @@ public class Planet : MonoBehaviour
         switch (state) 
 		{
             case PlanetState.THROWN:
+				//Debug.Log(rb.velocity);
 				thrownParticles.Play ();
 				if(thrownTimer == 0f)
 				{

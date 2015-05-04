@@ -23,9 +23,7 @@ public class SuperNovaBaby : MonoBehaviour
     // Update is called once per frame
     void Update() 
 	{
-		SuperNova ();
-		sprite.localScale = Vector3.one * (circCol.radius / 3f);
-        circCol.radius = Mathf.Lerp(circCol.radius, targetRadius, Time.deltaTime);
+		//SuperNova ();
     }
 
 	private void SuperNova()
@@ -39,6 +37,8 @@ public class SuperNovaBaby : MonoBehaviour
 			system.startSpeed += rate * Time.deltaTime;
 			system.startSize += rate * 2f * Time.deltaTime;
 		}
+		sprite.localScale = Vector3.one * (circCol.radius / 3f);
+		circCol.radius = Mathf.Lerp(circCol.radius, targetRadius, Time.deltaTime);
 	}
 
 	void OnTriggerEnter2D(Collider2D col)
