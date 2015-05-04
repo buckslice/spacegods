@@ -28,6 +28,9 @@ public class GodController : MonoBehaviour {
     private bool usingJoysticks;
 
     private float invincible;
+	private Object explosion;
+	private Queue exClones;
+
 
     // use this for initialization
     void Start() {
@@ -68,6 +71,8 @@ public class GodController : MonoBehaviour {
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
         planetCollider.enabled = false;
         sr = model.GetComponent<SpriteRenderer>();
+		explosion = Resources.Load ("Boom");
+		exClones = new Queue ();
 
         usingJoysticks = false;
         string[] joysticks = Input.GetJoystickNames();
@@ -107,10 +112,17 @@ public class GodController : MonoBehaviour {
         planetCollider.offset = holdPos;
     }
 
+	private void deleteExplosion() {
+			Destroy ((Object)exClones.Dequeue ());
+		}
+
     private void destroyDeadHeldPlanet() {
         if (god.god == Gods.SHIVA) {
             god.changeHealth(-myPlanet.rb.mass * 10f);
         }
+		
+		exClones.Enqueue (Instantiate (explosion, myPlanet.transform.position, Quaternion.identity));
+		Invoke ("deleteExplosion", 2);
         myRigidbody.mass -= myPlanet.rb.mass;
         planetCollider.enabled = false;
         PlanetSpawner.current.returnPlanet(myPlanet.gameObject);

@@ -42,6 +42,7 @@ public class Planet : MonoBehaviour
 	public float maxSpeed = 200f;
 	public ParticleSystem particles;
 	private ParticleSystem thrownParticles;
+	//private Object explode;
 
     void Awake() 
 	{
@@ -57,6 +58,7 @@ public class Planet : MonoBehaviour
         origShadeScale = shade.localScale;
         origCrackedScale = cracked.localScale;
         gravitationTarget = GameObject.Find("Sun").transform;
+		//explode = Resources.Load ("Boom");
 
         // planet spawner will call this
         //initializeVariables();
@@ -161,6 +163,7 @@ public class Planet : MonoBehaviour
 					}
 					if(particleTimer > 1.5f)
 					{
+						//Instantiate(explode, cracked.position, Quaternion.identity);
                     	PlanetSpawner.current.returnPlanet(gameObject);
 					}
                 }

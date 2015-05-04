@@ -19,7 +19,7 @@ public class PlanetSpawner : MonoBehaviour
     void Awake() 
 	{
         current = this;
-
+		
         basicPlanet = Resources.Load("Planet");
         pool = new Stack<GameObject>();
         for (int i = 0; i < maxPlanets; i++) 
