@@ -16,6 +16,7 @@ public class GodController : MonoBehaviour {
     private SpriteRenderer sr;
     private SpriteRenderer catchBoxsr;
 	private SpriteRenderer frozensr;
+	private SpriteRenderer drunksr;
     private Color catchBoxColor;
 
     // compare trigger values in previous frame
@@ -70,6 +71,7 @@ public class GodController : MonoBehaviour {
         model = transform.Find("Model");
         catchBoxsr = transform.Find("CatchBox").GetComponent<SpriteRenderer>();
 		frozensr = transform.Find("Frozen").GetComponent<SpriteRenderer>();
+		drunksr = transform.Find("Drunk").GetComponent<SpriteRenderer>();
         catchBoxsr.color = catchBoxColor;
         myRigidbody = GetComponent<Rigidbody2D>();
         god = GetComponent<God>();
@@ -265,6 +267,7 @@ public class GodController : MonoBehaviour {
 
 			if (planetThatHitMe.lastHolder && planetThatHitMe.lastHolder.god.god == Gods.JESUS && planetThatHitMe.type == PlanetType.WATER) {
 				god.drunk = true;
+				drunksr.enabled = true;
 				//sr.color = Color.green;
 			}
         }
@@ -319,6 +322,7 @@ public class GodController : MonoBehaviour {
 			//Debug.Log(drunkTimer);
 		} else{
 			god.drunk = false;
+			drunksr.enabled = false;
 			//sr.color = Color.white;
 			drunkTimer = 0f;
 		}
