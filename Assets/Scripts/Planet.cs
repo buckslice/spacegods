@@ -151,7 +151,7 @@ public class Planet : MonoBehaviour {
             if (particleTimer < Time.time) {
                 if (!particles.isPlaying) {
                     particles.Play();
-                    particleTimer = Time.time + 1.5f;
+                    particleTimer = Time.time + 1.8f;
                     sr.enabled = shadesr.enabled = rb.simulated = false;
                 } else {
                     if(state == PlanetState.HELD) {
