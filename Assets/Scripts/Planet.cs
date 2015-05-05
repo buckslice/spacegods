@@ -142,12 +142,12 @@ public class Planet : MonoBehaviour {
 				if(type == PlanetType.WATER){
 					sr.color = Color.white;
 				}
+                gravity = 20f;
                 thrownParticles.Stop();
                 break;
         }
 
         if (health <= 0) {
-            // don't destroy if you are being held, god will do it
             if (particleTimer < Time.time) {
                 if (!particles.isPlaying) {
                     particles.Play();
@@ -204,6 +204,7 @@ public class Planet : MonoBehaviour {
             // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
             if (lastHolder && lastHolder.getGodType() == Gods.ANUBIS) {
+                gravity = 0f;
                 return;
             }
             PlanetSpawner.current.returnPlanet(gameObject);
