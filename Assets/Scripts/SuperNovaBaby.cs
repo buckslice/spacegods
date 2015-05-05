@@ -23,7 +23,8 @@ public class SuperNovaBaby : MonoBehaviour {
         circCol.radius = Mathf.Lerp(circCol.radius, targetRadius, Time.deltaTime);
         sprite.localScale = Vector3.one * (circCol.radius / 3f);
         sprite.localScale += Vector3.one * .2f;
-
+		system.maxParticles = (int)(2500f/circCol.radius);
+		system.emissionRate = (system.maxParticles/system.startLifetime);
         //SuperNova ();
     }
 
@@ -43,7 +44,6 @@ public class SuperNovaBaby : MonoBehaviour {
             targetRadius += planetCol.radius / 2f;
             system.startSpeed += planetCol.radius / 4f;
             system.startSize += planetCol.radius * 1f;
-            system.maxParticles -= 4;
         }
     }
 }
