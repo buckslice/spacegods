@@ -6,7 +6,7 @@ public class Game : MonoBehaviour {
     // list of all gods in current game
     public List<GodController> players;
     public AudioClip[] songs;
-
+    public int numPlayers;
     private GameObject overlay;
     private Text countDown;
     private Text gameOverText;
@@ -41,7 +41,7 @@ public class Game : MonoBehaviour {
         overlay.GetComponent<Renderer>().enabled = true;
 
         // spawn players with data from player prefs
-        int numPlayers = PlayerPrefs.GetInt("Number of players");
+        numPlayers = PlayerPrefs.GetInt("Number of players");
         for (int i = 0; i < numPlayers; i++) {
             int player = PlayerPrefs.GetInt("Player" + i + " ");
             string choice = PlayerPrefs.GetString("Player" + player);

@@ -16,10 +16,11 @@ public class CharacterSelector : MonoBehaviour {
 
     // all caps text cuz new font is kinda weird
     // it underlines lowercase vowels so try it out i dunno
-    private string[][] gods = new string[3][] {
+    public static string[][] gods = new string[4][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN"},
         new string[] {"ATHENA","MICHAEL JORDAN","CTHULHU","HERMES", "SHIVA"},
-        new string[] { "SUN-WUKONG", "QUETZALCOATL", "ARTEMIS & APOLLO", "JESUS"},
+        new string[] {"SUN-WUKONG", "QUETZALCOATL", "ARTEMIS & APOLLO", "JESUS", "NIKE"},
+        new string[] {"HADES", "BLANK", "BLANK", "BLANK", "RANDOM"}
     };
 
     private string[] godInfo = new string[]{
@@ -36,7 +37,13 @@ public class CharacterSelector : MonoBehaviour {
         "CAN PRETEND TO HOLD A PLANET",
         "DEALS DAMAGE OVER TIME WHEN THROWING TROPICAL PLANETS",
         "HELD PLANETS ARE SPLIT AND THROWN IN OPPOSITE DIRECTIONS",
-        "TURNS WATER INTO WINE AND MAKES PLAYERS DRUNK WHEN THROWING WATER PLANETS"
+        "TURNS WATER INTO WINE AND MAKES PLAYERS DRUNK WHEN THROWING WATER PLANETS",
+        "STRONGER THE CLOSER SHE IS TO VICTORY",
+        "COMES BACK FROM DEATH",
+        "BLANK",
+        "BLANK",
+        "BLANK",
+        "RNG WILL DETERMINE YOUR FATE"
     };
 
     // cooldown between joystick movements
@@ -392,6 +399,15 @@ class Player {
         img.fillCenter = b;
         //txt.color = b ? Color.white : colors[id - 1];
         chosen = b ? parentName : "";
+        if(chosen == "RANDOM") {
+            int row = Random.Range(0, CharacterSelector.gods.Length), column;
+            if(row != CharacterSelector.gods.Length - 1) {
+                column = Random.Range(0, CharacterSelector.gods[0].Length);
+            } else {
+                column = Random.Range(0, CharacterSelector.gods[0].Length - 1); //so that you don't pick RANDOM
+            }
+            chosen = CharacterSelector.gods[row][column];
+        }
     }
 
     public void setParent(Transform parent) {

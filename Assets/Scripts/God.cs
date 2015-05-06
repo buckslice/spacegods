@@ -15,7 +15,10 @@ public enum GodType {
     SUN_WUKONG,
     QUETZALCOATL,
     ARTEMIS_APOLLO,
-    JESUS
+    JESUS,
+    NIKE,
+    HADES,
+    APHRODITE
 }
 
 public enum GodState {
@@ -115,7 +118,11 @@ public class God : MonoBehaviour {
                     changeHealth(3f * Time.deltaTime);
                 }
                 break;
-
+            case GodType.NIKE:
+                if (Game.instance.players.Count > 1f) {
+                    throwStrength = startingThrowStrength * Game.instance.numPlayers / (Game.instance.players.Count - 1);
+                }
+                break;
             default:
                 break;
         }
@@ -171,6 +178,11 @@ public class God : MonoBehaviour {
 
     private void checkForDeath() {
         if (currentHealth <= 0 && !Game.instance.gameIsOver()) {
+            if(type == GodType.HADES && coolDown < 0f) {
+                coolDown = 60f;
+                currentHealth = maxHealth / 5f;
+                return;
+            }
             Game.instance.removePlayer(controller); // remove player from list
             Destroy(img.gameObject);    // destroy healthbar GameObject
             Destroy(gameObject);        // destroy this GameObject
