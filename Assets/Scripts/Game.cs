@@ -42,11 +42,11 @@ public class Game : MonoBehaviour {
     }
 
     private void playMusic() {
-        if (introFinished && !song.isPlaying) {
+        //if (introFinished && !song.isPlaying) {
             // ppl keep removing songs from gameobject list so this is dangerous
             //song.clip = songs[Random.Range(1, songs.Length)];
             //song.Play();
-        }
+        //}
     }
 
     public void addPlayer(GodController player) {
