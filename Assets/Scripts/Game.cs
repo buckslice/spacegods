@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
@@ -30,46 +29,6 @@ public class Game : MonoBehaviour {
 
     // use this for initialization
     void Start() {
-        initializeVariables();
-    }
-
-    // update is called once per frame
-    void Update() {
-        handleIntro();
-        handleWinner();
-        handlePause();
-        playMusic();
-    }
-
-    private void playMusic() {
-        //if (introFinished && !song.isPlaying) {
-            // ppl keep removing songs from gameobject list so this is dangerous
-            //song.clip = songs[Random.Range(1, songs.Length)];
-            //song.Play();
-        //}
-    }
-
-    public void addPlayer(GodController player) {
-        players.Add(player);
-    }
-
-    public void removePlayer(GodController player) {
-        players.Remove(player);
-    }
-
-    public bool hasBegun() {
-        return introFinished;
-    }
-
-    public bool gameIsOver() {
-        // if there is only one god left
-        if (Time.timeSinceLevelLoad > 5f) {
-            return players.Count <= 1;
-        }
-        return false;
-    }
-
-    private void initializeVariables() {
         timer = 4.99f;
         soundTimer = 4;
         frames = 0;
@@ -97,13 +56,70 @@ public class Game : MonoBehaviour {
 
             GameObject godPrefab = (GameObject)Instantiate(loadedGod, spawnLocation, Quaternion.identity);
             godPrefab.name = choice;
-            GodController gc = godPrefab.GetComponent<GodController>();
-            gc.setPlayer(player);
-            gc.setColor(Player.colors[player - 1]);
+            godPrefab.GetComponent<GodController>().id = player;
+            godPrefab.transform.Find("Range Indicator").GetComponent<SpriteRenderer>().color = Player.colors[player - 1];
         }
     }
 
-    private void handleIntro() {
+    // update is called once per frame
+    void Update() {
+        runIntro();
+        checkWinner();
+        handlePause();
+        playMusic();
+    }
+
+    private void playMusic() {
+        //if (introFinished && !song.isPlaying) {
+        // ppl keep removing songs from gameobject list so this is dangerous
+        //song.clip = songs[Random.Range(1, songs.Length)];
+        //song.Play();
+        //}
+    }
+
+    public void addPlayer(GodController player) {
+        players.Add(player);
+    }
+
+    public void removePlayer(GodController player) {
+        players.Remove(player);
+    }
+
+    public bool hasBegun() {
+        return introFinished;
+    }
+
+    public bool gameIsOver() {
+        // if there is only one god left
+        if (Time.timeSinceLevelLoad > 5f) {
+            return players.Count <= 1;
+        }
+        return false;
+    }
+
+    private void checkWinner() {
+        if (gameIsOver()) {
+            if (winner == 0 && players.Count > 0) {
+                winnerName = players[0].name;
+                winner = players[0].id;
+            }
+            if (winner != 0) {
+                //gameOverText.text = "Game Over!\nPlayer " + winner + " (" + winnerName + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
+                gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") WINS!\n P" + winner + ": A TO RESTART\nB TO QUIT\nY TO CHANGE GODS";
+                if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
+                    Application.LoadLevel("Main");
+                }
+                if (Input.GetKeyDown(KeyCode.Q) || Input.GetButtonDown("Cancel" + winner)) {
+                    Application.LoadLevel(0);
+                }
+                if (Input.GetKeyDown(KeyCode.Y) || Input.GetButton("Y" + winner)) {
+                    Application.LoadLevel("Character Selection");
+                }
+            }
+        }
+    }
+
+    private void runIntro() {
         if (!introFinished) {
             // code for cool intro countdown and music
             int t = (int)timer;
@@ -128,7 +144,7 @@ public class Game : MonoBehaviour {
                     AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
                     countDown.color = Color.white;
                     foreach (GodController gc in players) {
-                        gc.unlock();
+                        gc.freezeInputs = false;
                     }
                     gameStart = true;
                 }
@@ -146,27 +162,6 @@ public class Game : MonoBehaviour {
                 }
             }
             timer -= Time.deltaTime / 1.25f;
-        }
-    }
-    private void handleWinner() {
-        if (gameIsOver()) {
-            if (winner == 0 && players.Count > 0) {
-                winnerName = players[0].name;
-                winner = players[0].getPlayer();
-            }
-            if (winner != 0) {
-                //gameOverText.text = "Game Over!\nPlayer " + winner + " (" + winnerName + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
-                gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") WINS!\n P" + winner + ": A TO RESTART\nB TO QUIT\nY TO CHANGE GODS";
-                if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
-                    Application.LoadLevel("Main");
-                }
-                if (Input.GetKeyDown(KeyCode.Q) || Input.GetButtonDown("Cancel" + winner)) {
-                    Application.LoadLevel(0);
-                }
-                if (Input.GetKeyDown(KeyCode.Y) || Input.GetButton("Y" + winner)) {
-                    Application.LoadLevel("Character Selection");
-                }
-            }
         }
     }
 

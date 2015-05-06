@@ -14,6 +14,8 @@ public class CharacterSelector : MonoBehaviour {
     public Font font;
     public Font playerFont;
 
+    // all caps text cuz new font is kinda weird
+    // it underlines lowercase vowels so try it out i dunno
     private string[][] gods = new string[3][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN"},
         new string[] {"ATHENA","MICHAEL JORDAN","CTHULHU","HERMES", "SHIVA"},
@@ -34,7 +36,7 @@ public class CharacterSelector : MonoBehaviour {
         "CAN PRETEND TO HOLD A PLANET",
         "DEALS DAMAGE OVER TIME WHEN THROWING TROPICAL PLANETS",
         "HELD PLANETS ARE SPLIT AND THROWN IN OPPOSITE DIRECTIONS",
-		"TURNS WATER INTO WINE AND MAKES PLAYERS DRUNK WHEN THROWING WATER PLANETS"
+        "TURNS WATER INTO WINE AND MAKES PLAYERS DRUNK WHEN THROWING WATER PLANETS"
     };
 
     // cooldown between joystick movements
@@ -236,11 +238,9 @@ public class CharacterSelector : MonoBehaviour {
             } else {
                 if (Input.GetButtonDown("Submit" + p.id)) {
                     p.setSelected(true);
-                    p.hasMovedRecently = true;
                 }
                 if (Input.GetButtonDown("Cancel" + p.id)) {
                     p.setSelected(false);
-                    p.hasMovedRecently = true;
                 }
             }
 
@@ -248,10 +248,14 @@ public class CharacterSelector : MonoBehaviour {
                 godGameObjects[p.x + p.y * regRowLength].checkingInfo = true;
             }
 
+            float x = Input.GetAxis("Horizontal" + (usingKeyboard ? "" : "_360_") + p.id);
+            float y = Input.GetAxis("Vertical" + (usingKeyboard ? "" : "_360_") + p.id);
+            if (Mathf.Abs(x) < minMag && Mathf.Abs(y) < minMag) {
+                p.inputCooldown = -1f;
+            }
+
             // check to see if player is allowed to move again
             if (p.inputCooldown < Time.time && p.chosen == "") {
-                float x = Input.GetAxis("Horizontal" + (usingKeyboard ? "" : "_360_") + p.id);
-                float y = Input.GetAxis("Vertical" + (usingKeyboard ? "" : "_360_") + p.id);
                 bool moved = true;
                 if (x > minMag) {
                     p.x++;
@@ -277,7 +281,6 @@ public class CharacterSelector : MonoBehaviour {
                     moved = false;
                 }
                 if (moved) {    // if successfully moved then set your parent and reset anchors
-                    p.hasMovedRecently = true;
                     // change parent of player selector
                     if (p.parentName != gods[p.y][p.x]) {
                         p.setParent(godGameObjects[p.y * regRowLength + p.x].go.transform);
@@ -339,7 +342,6 @@ class Player {
     public float inputCooldown;
 
     public int id;
-    public bool hasMovedRecently;
 
     public Image img;
     public Text txt;

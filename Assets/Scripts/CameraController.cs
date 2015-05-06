@@ -1,41 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraController : MonoBehaviour 
-{
+public class CameraController : MonoBehaviour {
     public float minSize;
     public float jumpSize;
     public float backgroundScale;
 
     private Camera mainCam;
-    private GameObject background;
+    private Renderer background;
 
     // use this for initialization
-    void Start() 
-	{
+    void Start() {
         mainCam = Camera.main;
-        background = GameObject.Find("Scrolling Background");
+        background = GameObject.Find("Scrolling Background").GetComponent<Renderer>();
     }
 
     // update is called once per frame
-    void Update() 
-	{
+    void Update() {
         // calculate bounding box of all the gods in match
         Bounds bounds = new Bounds();
-        for (int i = 0; i < Game.instance.players.Count; ++i) 
-		{
+        for (int i = 0; i < Game.instance.players.Count; ++i) {
             GodController player = Game.instance.players[i];
             Bounds b = new Bounds(player.transform.position, new Vector3(3, 3, 0));
 
             // if you don't want to include origin
-            // if (i == 0) 
-            // {
+            // if (i == 0) {
             //   bounds = new Bounds(b.center, b.size);
             // }
 
             bounds.Encapsulate(b);
         }
-		
+
         // set center of camera to center of the bounding box
         Vector3 newPos = new Vector3(bounds.center.x, bounds.center.y, -10f);
         mainCam.transform.position = newPos;
@@ -61,13 +56,13 @@ public class CameraController : MonoBehaviour
         // set tiling of background texture
         float tileX = bgWidth * backgroundScale;
         float tileY = bgHeight * backgroundScale;
-        background.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(tileX, tileY));
+        background.material.SetTextureScale("_MainTex", new Vector2(tileX, tileY));
 
         // set offset of texture; assumes camera starts at origin
         // have to subtract off half the tiling rate to make the texture grow outward from the center
         float offsetX = newPos.x * backgroundScale - tileX / 2f;
         float offsetY = newPos.y * backgroundScale - tileY / 2f;
-        background.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(offsetX, offsetY));
+        background.material.SetTextureOffset("_MainTex", new Vector2(offsetX, offsetY));
     }
 }
 

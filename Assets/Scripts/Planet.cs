@@ -8,7 +8,7 @@ public enum PlanetType {
     METAL,
     ROCKY,
     TROPICAL,
-	WATER
+    WATER
 }
 
 public enum PlanetState {
@@ -21,9 +21,8 @@ public class Planet : MonoBehaviour {
     private int health;
     private float gravity = 20f;
     private Transform gravitationTarget;
-    public GodController lastHolder;
     private float thrownTimer;
-    private float invulnTime;
+    private float invulnerabe;
     private float particleTimer;
     private Transform texture;
     private Transform shade;
@@ -33,10 +32,11 @@ public class Planet : MonoBehaviour {
     private Vector3 origCrackedScale;
     private SpriteRenderer crackedsr;
     private SpriteRenderer shadesr;
-    public SpriteRenderer sr;
+
+    public GodController lastHolder;
     public Rigidbody2D rb;
+    public SpriteRenderer sr;
     public CircleCollider2D cc;
-    public PhysicsMaterial2D noBounce;
     public PlanetType type;
     public PlanetState state;
     public float maxSpeed = 200f;
@@ -66,7 +66,7 @@ public class Planet : MonoBehaviour {
         particleTimer = 0f;
         thrownTimer = 0f;
         crackedsr.enabled = false;
-        invulnTime = -1f;
+        invulnerabe = -1f;
         sr.enabled = shadesr.enabled = rb.simulated = true;
         // randomize size and mass
         switch (Random.Range(0, 3)) {
@@ -115,7 +115,7 @@ public class Planet : MonoBehaviour {
         thrownParticles.startSize = cc.radius * 1f;
         particles.startSize = cc.radius * 2f;
 
-        invulnTime -= Time.deltaTime;
+        invulnerabe -= Time.deltaTime;
         particleTimer -= Time.deltaTime;
         thrownTimer -= Time.deltaTime;
     }
@@ -139,9 +139,9 @@ public class Planet : MonoBehaviour {
                 break;
             case PlanetState.ORBITING:
                 lastHolder = null;
-				if(type == PlanetType.WATER){
-					sr.color = Color.white;
-				}
+                if (type == PlanetType.WATER) {
+                    sr.color = Color.white;
+                }
                 gravity = 20f;
                 thrownParticles.Stop();
                 break;
@@ -154,8 +154,8 @@ public class Planet : MonoBehaviour {
                     particleTimer = Time.time + 1.8f;
                     sr.enabled = shadesr.enabled = rb.simulated = false;
                 } else {
-                    if(state == PlanetState.HELD) {
-                        lastHolder.destroyDeadHeldPlanet(this);
+                    if (state == PlanetState.HELD) {
+                        lastHolder.heldPlanetDestroyed(this);
                     }
                     PlanetSpawner.current.returnPlanet(gameObject);
                 }
@@ -176,9 +176,7 @@ public class Planet : MonoBehaviour {
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.tag == "Player") {
-            cc.sharedMaterial = noBounce;   // why doesnt this just get set once?
-        } else if (collision.gameObject.tag == "Planet") {
+        if (collision.gameObject.tag == "Planet") {
             // only want one of the planets to play the sound so base it off random factor like x position
             if (transform.position.x > collision.transform.position.x) {
                 //AudioManager.instance.playSound("Collision", transform.position, 1f);
@@ -203,18 +201,18 @@ public class Planet : MonoBehaviour {
         if (collider.tag == "Sun") {
             // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
-            if (lastHolder && lastHolder.getGodType() == Gods.ANUBIS) {
+            if (lastHolder && lastHolder.god.type == GodType.ANUBIS) {
                 gravity = 0f;
-                return;
+            } else {
+                PlanetSpawner.current.returnPlanet(gameObject);
             }
-            PlanetSpawner.current.returnPlanet(gameObject);
         }
     }
 
     public void damage() {
-        if (invulnTime < 0f) {
+        if (invulnerabe < 0f) {
             health--;
-            invulnTime = 1f;
+            invulnerabe = 1f;
         }
     }
 
