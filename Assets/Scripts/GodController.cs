@@ -196,8 +196,11 @@ public class GodController : MonoBehaviour {
     }
 
     private void holdPlanet(Planet planet) {
-        timeSinceCatch = 0f;
         myPlanet = planet;
+        if (myPlanet.lastHolder && god.type == GodType.THOR && god.special && myPlanet.lastHolder.god.type == GodType.THOR && timeSinceTrigger > 3f) {
+            god.changeHealth(myPlanet.rb.mass * god.throwStrength / 2f, true);
+        }
+        timeSinceCatch = 0f;
         myPlanet.lastHolder = this;
         myPlanet.state = PlanetState.HELD;
         myPlanet.rb.simulated = false;  // disable planets physics
