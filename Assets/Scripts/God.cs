@@ -35,6 +35,7 @@ public class God : MonoBehaviour {
     public float maxSpeed;
     public float acceleration;
     public float throwStrength;
+    public bool special;
 
     public GodState state { get; set; }
     public float startingThrowStrength { get; private set; }
@@ -70,6 +71,7 @@ public class God : MonoBehaviour {
         currentHealth = maxHealth;
         startingThrowStrength = throwStrength;
         coolDown = invincible = CCTimer = 0f;
+        special = false;
 
         // health bar creation
         GameObject imgGO = new GameObject(gameObject.name + " healthbar");
@@ -99,7 +101,7 @@ public class God : MonoBehaviour {
 
     private void handleGodPassives() {
         switch (type) {
-            case GodType.THOR:
+            case GodType.CTHULHU:
                 if (coolDown < 0f) {
                     sr.color = Color.grey;
                 } else {
@@ -164,11 +166,6 @@ public class God : MonoBehaviour {
                 return false;
             }
             invincible = .5f;
-
-            if (type == GodType.THOR && coolDown < 0f) {
-                coolDown = 10f;
-                return false;
-            }
         }
         currentHealth += diff;
         checkForDeath();

@@ -264,6 +264,10 @@ public class GodController : MonoBehaviour {
             myPlanet2 = null;
         }
 
+        if (god.type == GodType.THOR && !god.special) {
+            god.special = true;
+        }
+
     }
 
     private void blockWithPlanet(Vector2 aim) {
