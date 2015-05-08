@@ -63,6 +63,7 @@ public class Planet : MonoBehaviour {
     public void initializeVariables() {
         state = PlanetState.ORBITING;
         health = 2;
+        lastHolder = null;
         particleTimer = 0f;
         thrownTimer = 0f;
         crackedsr.enabled = false;
@@ -123,11 +124,17 @@ public class Planet : MonoBehaviour {
     private void handlePlanetStates() {
         switch (state) {
             case PlanetState.THROWN:
-                if (thrownTimer < Time.time) {
+                if (thrownTimer < 0f) {
                     if (!thrownParticles.isPlaying) {
                         thrownParticles.Play();
-                        thrownTimer = Time.time + 3f;
+                        thrownTimer = 3f;
                     } else {
+                        if (lastHolder && lastHolder.god.type == GodType.THOR && lastHolder.god.special) {
+                            gravity = 0f;
+                            rb.AddForce(new Vector2(lastHolder.transform.position.x - transform.position.x, lastHolder.transform.position.y - transform.position.y).normalized * lastHolder.god.throwStrength);
+                            return;
+                        }
+                        gravity = 20f;
                         state = PlanetState.ORBITING;
                         thrownParticles.Stop();
                     }
@@ -149,14 +156,17 @@ public class Planet : MonoBehaviour {
         }
 
         if (health <= 0) {
-            if (particleTimer < Time.time) {
+            if (particleTimer < 0f) {
                 if (!particles.isPlaying) {
                     particles.Play();
-                    particleTimer = Time.time + 1.8f;
+                    particleTimer = 1.8f;
                     sr.enabled = shadesr.enabled = rb.simulated = false;
                 } else {
                     if (state == PlanetState.HELD) {
                         lastHolder.heldPlanetDestroyed(this);
+                    }
+                    if (lastHolder && lastHolder.god.type == GodType.THOR) {
+                        lastHolder.god.special = false;
                     }
                     PlanetSpawner.current.returnPlanet(gameObject);
                 }
@@ -193,6 +203,9 @@ public class Planet : MonoBehaviour {
                     break;
             }
         } else if (collision.gameObject.tag == "Boundary") {
+            if (lastHolder && lastHolder.god.type == GodType.THOR) {
+                lastHolder.god.special = false;
+            }
             PlanetSpawner.current.returnPlanet(gameObject);
         }
     }
@@ -204,6 +217,9 @@ public class Planet : MonoBehaviour {
             if (lastHolder && lastHolder.god.type == GodType.ANUBIS) {
                 gravity = 0f;
             } else {
+                if (lastHolder && lastHolder.god.type == GodType.THOR) {
+                    lastHolder.god.special = false;
+                }
                 PlanetSpawner.current.returnPlanet(gameObject);
             }
         }
