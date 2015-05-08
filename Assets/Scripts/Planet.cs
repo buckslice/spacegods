@@ -144,6 +144,7 @@ public class Planet : MonoBehaviour {
                 }
                 gravity = 20f;
                 thrownParticles.Stop();
+                show();
                 break;
         }
 
@@ -161,7 +162,6 @@ public class Planet : MonoBehaviour {
                 }
             }
         }
-
         crackedsr.enabled = health == 1;
     }
 
@@ -214,6 +214,20 @@ public class Planet : MonoBehaviour {
             health--;
             invulnerabe = 1f;
         }
+    }
+
+    public void hide() {
+        sr.enabled = false;
+        shadesr.enabled = false;
+        crackedsr.enabled = false;
+        thrownParticles.enableEmission = false;
+    }
+
+    private void show() {
+        sr.enabled = true;
+        shadesr.enabled = true;
+        crackedsr.enabled = true;
+        thrownParticles.enableEmission = true;
     }
 
     public float getRadius() {

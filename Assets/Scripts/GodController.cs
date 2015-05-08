@@ -146,13 +146,6 @@ public class GodController : MonoBehaviour {
                     planetCollider.radius = myPlanet.getRadius();
                 }
                 break;
-            case GodType.SUN_WUKONG:
-                bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + id) < 0.0 : Input.GetButton("Fire" + id);
-                if (!myPlanet && inputFire) {
-                    //passive goes here
-                }
-                break;
-
             case GodType.MICHAEL_JORDAN:
                 if (myPlanet) {
                     if (myPlanet.type == PlanetType.BASKETBALL) {
@@ -256,6 +249,10 @@ public class GodController : MonoBehaviour {
         myPlanet.rb.velocity = myRigidbody.velocity + aim * god.throwStrength;
         myRigidbody.mass -= myPlanet.rb.mass; // subtract off planets mass
         planetCollider.enabled = false;
+        if (god.type == GodType.SUN_WUKONG && god.coolDown < 0f) {
+            myPlanet.hide();
+            god.coolDown = 5f;
+        }
         myPlanet = null;
 
         if (god.type == GodType.ARTEMIS_APOLLO && myPlanet2) {
@@ -266,6 +263,7 @@ public class GodController : MonoBehaviour {
             planetCollider2.enabled = false;
             myPlanet2 = null;
         }
+
     }
 
     private void blockWithPlanet(Vector2 aim) {
