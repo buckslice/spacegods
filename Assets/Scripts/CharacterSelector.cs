@@ -7,6 +7,7 @@ public class CharacterSelector : MonoBehaviour {
 
     //private string gods[]
     public Sprite[] godSprites;
+    public AudioClip[] godSounds;
     private GodGameObject[] godGameObjects;
 
     public Sprite nameBackground;
@@ -118,6 +119,13 @@ public class CharacterSelector : MonoBehaviour {
                 mainRT.offsetMin = Vector2.zero;
                 mainRT.offsetMax = Vector2.zero;
 
+                // adds gods sound
+                if (godSounds != null && godSounds.Length > godCoord1D)
+                {
+                    thisGod.sound = godSounds[godCoord1D];
+                }
+
+                
                 // add gods image
                 GameObject imgGO = new GameObject("image");
                 imgGO.transform.parent = mainGO.transform;
@@ -269,6 +277,10 @@ public class CharacterSelector : MonoBehaviour {
                 string godName = godGameObjects[godHover].name;
                 if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) {
                     p.chosen = p.chosen == "" ? godName : "";
+                    if (godGameObjects[godHover].sound != null)
+                    {
+                        AudioSource.PlayClipAtPoint(godGameObjects[godHover].sound, Vector3.zero, 50.0f);
+                    }
                 } else {
                     if (Input.GetButtonDown("Submit" + p.id)) {
                         p.chosen = godName;
@@ -434,6 +446,7 @@ class Player {
 class GodGameObject {
     public string name;
     public Image image;
+    public AudioClip sound;
     public GameObject info;
     public bool checkingInfo = false;
 
