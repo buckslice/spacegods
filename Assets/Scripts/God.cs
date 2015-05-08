@@ -59,7 +59,7 @@ public class God : MonoBehaviour {
     void Start() {
         // getting components
         controller = GetComponent<GodController>();
-        sr = GetComponent<SpriteRenderer>();
+        sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         Transform stateComponent = transform.Find("State");
         frozenSrs = stateComponent.Find("Frozen").GetComponentsInChildren<SpriteRenderer>();
         drunkSr = stateComponent.Find("Drunk").GetComponent<SpriteRenderer>();

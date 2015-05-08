@@ -16,11 +16,10 @@ public class CharacterSelector : MonoBehaviour {
 
     // all caps text cuz new font is kinda weird
     // it underlines lowercase vowels so try it out i dunno
-    public static string[][] gods = new string[4][] {
-        new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN"},
-        new string[] {"ATHENA","MICHAEL JORDAN","CTHULHU","HERMES", "SHIVA"},
-        new string[] {"SUN-WUKONG", "QUETZALCOATL", "ARTEMIS & APOLLO", "JESUS", "NIKE"},
-        new string[] {"HADES", "BLANK", "BLANK", "BLANK", "RANDOM"}
+    public static string[][] gods = new string[3][] {
+        new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN","ATHENA","MICHAEL JORDAN"},
+        new string[] {"CTHULHU","HERMES", "SHIVA","SUN-WUKONG", "QUETZALCOATL","ARTEMIS & APOLLO", "JESUS"},
+        new string[] {"NIKE","HADES", "BLANK", "BLANK", "BLANK", "BLANK", "RANDOM" },
     };
 
     private string[] godInfo = new string[]{
@@ -43,22 +42,26 @@ public class CharacterSelector : MonoBehaviour {
         "BLANK",
         "BLANK",
         "BLANK",
+        "BLANK",
         "RNG WILL DETERMINE YOUR FATE"
     };
 
-    // cooldown between joystick movements
-    private float moveCooldown = .25f;
-
-    // joystick has to be pushed at least this far in certain direction
-    private float minMag = .5f;
+    // percentage of screen width travelled per second
+    public float moveSpeed = .3f;
 
     private List<Player> players = new List<Player>();
-    private int len = 0;
     private float gameStartCountdown;
     private bool usingKeyboard;
     private Text countDown;
-    private GameObject overLay;
+    private Image overLay;
     private AudioSource menuMusic;
+
+    private Vector2 minAnch;
+    private Vector2 maxAnch;
+    private float padX;
+    private float padY;
+    private float imgW;
+    private float imgH;
 
     // Use this for initialization
     void Start() {
@@ -72,24 +75,31 @@ public class CharacterSelector : MonoBehaviour {
         } else {
             menuMusic = menuMusicObject.GetComponent<AudioSource>();
         }
-        len = 0;
+        int len = 0;
         for (int i = 0; i < gods.Length; i++) {
             for (int j = 0; j < gods[i].Length; j++) {
-                //Debug.Log(gods[i][j]);
                 len++;
             }
         }
 
+        RectTransform mainPanel = GetComponent<Image>().rectTransform;
+        minAnch = mainPanel.anchorMin;
+        maxAnch = mainPanel.anchorMax;
+
         // make sure it starts enabled in the inspector (can't Find disabled objects (thanks unity (thanks obama)))
         countDown = GameObject.Find("CountDown").GetComponent<Text>();
-        overLay = GameObject.Find("Overlay");
+        overLay = GameObject.Find("Overlay").GetComponent<Image>();
         countDown.enabled = false;
-        overLay.SetActive(false);
+        overLay.gameObject.SetActive(false);
 
         godGameObjects = new GodGameObject[len];
         int xL = gods.Length;
+        int yL = gods[0].Length;
+        padX = .008f;   // percentage of main panel padding
+        padY = .015f;   // eyeballed these but whatever
+        imgW = (1f - padX * (yL + 1)) / yL;
+        imgH = (1f - padY * (xL + 1)) / xL;
         for (int y = 0; y < xL; y++) {
-            int yL = gods[0].Length;
             for (int x = 0; x < yL; x++) {
                 if (x >= gods[y].Length) {
                     break;
@@ -98,77 +108,80 @@ public class CharacterSelector : MonoBehaviour {
 
                 GodGameObject thisGod = new GodGameObject();
                 godGameObjects[godCoord1D] = thisGod;
+                // main rectTransform anchoring for each god
+                GameObject mainGO = new GameObject(gods[y][x]);
+                thisGod.name = mainGO.name;
+                mainGO.transform.parent = gameObject.transform;
+                RectTransform mainRT = mainGO.AddComponent<RectTransform>();
+                mainRT.anchorMin = new Vector2(x * imgW + padX * (x + 1), 1f - (y + 1) * imgH - padY * (y + 1));
+                mainRT.anchorMax = new Vector2((x + 1) * imgW + padX * (x + 1), 1f - y * imgH - padY * (y + 1));
+                mainRT.offsetMin = Vector2.zero;
+                mainRT.offsetMax = Vector2.zero;
 
                 // add gods image
-                GameObject imgGO = new GameObject();
-                imgGO.name = gods[y][x];
-                imgGO.transform.parent = gameObject.transform;
-                thisGod.go = imgGO;
+                GameObject imgGO = new GameObject("image");
+                imgGO.transform.parent = mainGO.transform;
                 Image img = imgGO.AddComponent<Image>();
                 thisGod.image = img;
                 if (godSprites != null && godSprites.Length > godCoord1D) {
                     img.sprite = godSprites[godCoord1D];
                 }
                 //img.preserveAspect = true;
-                float px = .04f;
-                float py = .05f;
-                float padX = (1f - px * (yL + 1)) / yL;
-                float padY = (.96f - py * (xL + 1)) / xL;    // offset a little to give more room on bottom
-                img.rectTransform.anchorMin = new Vector2(x * padX + px * (x + 1), 1f - (y + 1) * padY - py * (y + 1));
-                img.rectTransform.anchorMax = new Vector2((x + 1) * padX + px * (x + 1), 1f - y * padY - py * (y + 1));
+                img.rectTransform.anchorMin = new Vector2(0f, .125f);
+                img.rectTransform.anchorMax = new Vector2(1f, 1f);
                 img.rectTransform.offsetMin = Vector2.zero;
                 img.rectTransform.offsetMax = Vector2.zero;
 
-                // background for gods name text
-                GameObject minipanel = new GameObject("panel");
-                minipanel.transform.parent = imgGO.transform;
-                Image textBg = minipanel.AddComponent<Image>();
-                //textBg.type = Image.Type.Sliced;
-                textBg.sprite = nameBackground;
-                textBg.rectTransform.anchorMin = Vector2.zero;
-                textBg.rectTransform.anchorMax = new Vector2(1f, 0f);
-                textBg.rectTransform.offsetMin = Vector2.zero;
-                textBg.rectTransform.offsetMax = new Vector2(0, 50);
-                Vector3 bgPos = textBg.rectTransform.anchoredPosition3D;
-                textBg.rectTransform.anchoredPosition3D = new Vector3(bgPos.x, 0, bgPos.z);
+                // panel for gods name text
+                GameObject panelGO = new GameObject("name panel");
+                panelGO.transform.parent = mainGO.transform;
+                Image txtPanel = panelGO.AddComponent<Image>();
+                txtPanel.sprite = nameBackground;
+                txtPanel.rectTransform.anchorMin = new Vector2(0f, 0f);
+                txtPanel.rectTransform.anchorMax = new Vector2(1f, .25f);
+                txtPanel.rectTransform.offsetMin = Vector2.zero;
+                txtPanel.rectTransform.offsetMax = Vector2.zero;
 
                 // gods name text
-                GameObject txtGO = new GameObject("text");
-                txtGO.transform.parent = imgGO.transform;
+                GameObject txtGO = new GameObject("name");
+                txtGO.transform.parent = panelGO.transform;
                 Text txt = txtGO.AddComponent<Text>();
                 txt.text = gods[y][x];
                 txt.font = font;
                 txt.color = new Color(1f, 1f, .6f);
-                txt.rectTransform.anchorMin = Vector2.zero;
-                txt.rectTransform.anchorMax = new Vector2(1f, 0f);
                 txt.alignment = TextAnchor.MiddleCenter;
                 txt.resizeTextForBestFit = true;
                 txt.resizeTextMinSize = 10;
                 txt.resizeTextMaxSize = 100;
+                txt.rectTransform.anchorMin = Vector2.zero;
+                txt.rectTransform.anchorMax = Vector2.one;
                 txt.rectTransform.offsetMin = Vector2.zero;
-                txt.rectTransform.offsetMax = new Vector2(0, 50);
-                Vector3 txtPos = txt.rectTransform.anchoredPosition3D;
-                txt.rectTransform.anchoredPosition3D = new Vector3(txtPos.x, 0, txtPos.z);
+                txt.rectTransform.offsetMax = Vector2.zero;
 
                 // gods info text
-                GameObject infoGO = new GameObject("info");
+                GameObject infoGO = new GameObject("god info");
                 thisGod.info = infoGO;
-                infoGO.transform.parent = imgGO.transform;
+                infoGO.transform.parent = mainGO.transform;
                 Text info = infoGO.AddComponent<Text>();
                 info.text = godInfo[godCoord1D];
                 info.font = font;
                 info.color = new Color32(200, 255, 255, 255);
-                info.rectTransform.anchorMin = Vector2.zero;
+                info.rectTransform.anchorMin = new Vector2(0f, .25f);
                 info.rectTransform.anchorMax = Vector2.one;
+                info.rectTransform.offsetMin = Vector2.zero;
                 info.rectTransform.offsetMax = Vector2.zero;
-                info.rectTransform.offsetMin = new Vector2(0f, 25);
                 info.resizeTextForBestFit = true;
                 info.resizeTextMinSize = 10;
                 info.resizeTextMaxSize = 30;
                 infoGO.SetActive(false);
-
             }
         }
+
+        padX *= (maxAnch.x - minAnch.x);
+        padY *= (maxAnch.y - minAnch.y);
+
+        imgW *= (maxAnch.x - minAnch.x);
+        imgH *= (maxAnch.y - minAnch.y);
 
         // add two players for keyboard mode if no controllers are connected
         string[] connectedJoysticks = Input.GetJoystickNames();
@@ -180,14 +193,8 @@ public class CharacterSelector : MonoBehaviour {
         }
         if (!anyJoysticksConnected) {
             usingKeyboard = true;
-            players.Add(new Player(1, godGameObjects[0].go.transform, playerFont, playerSprite));
-            players.Add(new Player(2, godGameObjects[0].go.transform, playerFont, playerSprite));
-
-            players[0].calculateAnchors(1, 2);
-            players[0].refreshAnchors();
-            players[1].calculateAnchors(2, 2);
-            players[1].refreshAnchors();
-            moveCooldown = .15f;
+            players.Add(new Player(1, playerFont, playerSprite));
+            players.Add(new Player(2, playerFont, playerSprite));
         }
     }
 
@@ -202,7 +209,7 @@ public class CharacterSelector : MonoBehaviour {
                 if (connectedJoysticks[i] != "") {
                     // add new player if new unused joystick is found
                     if (players.Find(p => p.id == i + 1) == null) {
-                        players.Add(new Player(i + 1, godGameObjects[0].go.transform, playerFont, playerSprite));
+                        players.Add(new Player(i + 1, playerFont, playerSprite));
                         playerNumChanged = true;
                     }
                 } else {    // remove player with this id if found
@@ -218,11 +225,6 @@ public class CharacterSelector : MonoBehaviour {
             // then set anchors based on which players are present
             if (playerNumChanged) {
                 players.Sort((p1, p2) => p1.id.CompareTo(p2.id));
-
-                for (int i = 0; i < players.Count; i++) {
-                    players[i].calculateAnchors(i + 1, players.Count);
-                    players[i].refreshAnchors();
-                }
             }
         }
 
@@ -237,70 +239,60 @@ public class CharacterSelector : MonoBehaviour {
         bool allPlayersDecided = players.Count > 1;
         // process input for joysticks and move each player
         foreach (Player p in players) {
-            int curRowLength = gods[p.y].Length;
-            int regRowLength = gods[0].Length;
 
-            if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) {
-                p.setSelected(p.chosen == "");
-            } else {
-                if (Input.GetButtonDown("Submit" + p.id)) {
-                    p.setSelected(true);
-                }
-                if (Input.GetButtonDown("Cancel" + p.id)) {
-                    p.setSelected(false);
-                }
-            }
-
-            if (Input.GetButton("Y" + p.id) || Input.GetKey(KeyCode.Y)) {
-                godGameObjects[p.x + p.y * regRowLength].checkingInfo = true;
-            }
-
+            float speed = moveSpeed * Screen.width * Time.deltaTime;
             float x = Input.GetAxis("Horizontal" + (usingKeyboard ? "" : "_360_") + p.id);
             float y = Input.GetAxis("Vertical" + (usingKeyboard ? "" : "_360_") + p.id);
-            if (Mathf.Abs(x) < minMag && Mathf.Abs(y) < minMag) {
-                p.inputCooldown = -1f;
+
+            if (usingKeyboard && Mathf.Abs(x) + Mathf.Abs(y) > 1.5f) {
+                x *= .7071f;
+                y *= .7071f;
             }
 
-            // check to see if player is allowed to move again
-            if (p.inputCooldown < Time.time && p.chosen == "") {
-                bool moved = true;
-                if (x > minMag) {
-                    p.x++;
-                    if (p.x >= curRowLength) {
-                        p.x = 0;
-                    }
-                } else if (x < -minMag) {
-                    p.x--;
-                    if (p.x < 0) {
-                        p.x = curRowLength - 1;
-                    }
-                } else if (y > minMag) {
-                    p.y--;
-                    if (p.y < 0) {
-                        p.y = (len - 1 - p.x) / regRowLength;
-                    }
-                } else if (y < -minMag) {
-                    p.y++;
-                    if (p.y > (len - 1 - p.x) / regRowLength) {
-                        p.y = 0;
-                    }
-                } else {
-                    moved = false;
-                }
-                if (moved) {    // if successfully moved then set your parent and reset anchors
-                    // change parent of player selector
-                    if (p.parentName != gods[p.y][p.x]) {
-                        p.setParent(godGameObjects[p.y * regRowLength + p.x].go.transform);
-                        p.refreshAnchors();
-                    }
+            x *= speed;
+            y *= speed;
 
-                    p.inputCooldown = Time.time + moveCooldown;
+            if (p.chosen == "") {
+                Color c = p.img.color;
+                p.img.color = new Color(c.r, c.g, c.b, .3f);
+                p.x = Mathf.Clamp(p.x + x, -Screen.width / 2f, Screen.width / 2f);
+                p.y = Mathf.Clamp(p.y + y, -Screen.height / 2f, Screen.height / 2f);
+            } else {
+                Color c = p.img.color;
+                p.img.color = new Color(c.r, c.g, c.b, 1f);
+            }
+
+            p.img.rectTransform.anchoredPosition = new Vector2(p.x, p.y);
+
+            int godHover = getGodAtScreenPoint((p.x + Screen.width / 2f) / Screen.width, (p.y + Screen.height / 2f) / Screen.height);
+            if (godHover >= 0) {
+                string godName = godGameObjects[godHover].name;
+                if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) {
+                    p.chosen = p.chosen == "" ? godName : "";
+                } else {
+                    if (Input.GetButtonDown("Submit" + p.id)) {
+                        p.chosen = godName;
+                    }
+                    if (Input.GetButtonDown("Cancel" + p.id)) {
+                        p.chosen = "";
+                    }
+                }
+
+                while (p.chosen == "RANDOM" || p.chosen == "BLANK") {
+                    p.chosen = godGameObjects[Random.Range(0, godGameObjects.Length - 1)].name;
+                }
+
+                if (Input.GetButton("Y" + p.id) || Input.GetKey(KeyCode.Y)) {
+                    godGameObjects[godHover].checkingInfo = true;
                 }
             }
 
             if (p.chosen == "") {
                 allPlayersDecided = false;
             }
+
+            // incase screen is resized during play (probably unnecessary)
+            p.updatePointerSize();
         }
 
         // update info checking
@@ -313,7 +305,9 @@ public class CharacterSelector : MonoBehaviour {
             gameStartCountdown -= Time.deltaTime;
             countDown.enabled = true;
             countDown.text = "" + (int)(gameStartCountdown + 1);
-            overLay.SetActive(true);
+            overLay.gameObject.SetActive(true);
+            Color c = overLay.color;
+            overLay.color = new Color(c.r, c.b, c.g, 1f - gameStartCountdown / 3f);
             menuMusic.volume = gameStartCountdown / 3f;
 
             if (gameStartCountdown < 0f) {
@@ -324,7 +318,6 @@ public class CharacterSelector : MonoBehaviour {
                 PlayerPrefs.SetInt("Number of players", players.Count);
                 for (int i = 0; i < players.Count; i++) {
                     Player p = players[i];
-                    //Debug.Log(p.id + " " + p.chosen);
                     PlayerPrefs.SetInt("Player" + i + " ", p.id);
                     PlayerPrefs.SetString("Player" + p.id, p.chosen);
                 }
@@ -333,27 +326,58 @@ public class CharacterSelector : MonoBehaviour {
         } else {
             // stop countdown
             countDown.enabled = false;
-            overLay.SetActive(false);
+            overLay.gameObject.SetActive(false);
             gameStartCountdown = 3f;
             menuMusic.volume = 1f;
         }
     }
+
+    public int getGodAtScreenPoint(float x, float y) {
+        int xg = -1;
+        int yg = -1;
+
+        int cols = gods[0].Length;
+        int rows = gods.Length;
+
+        float xp = minAnch.x;
+        for (int i = 0; i < cols; i++) {
+            xp += padX;
+            if (x >= xp && x <= xp + imgW) {
+                xg = i;
+                break;
+            }
+            xp += imgW;
+        }
+
+        float yp = maxAnch.y;
+        for (int i = 0; i < rows; i++) {
+            yp -= padY;
+            if (y <= yp && y >= yp - imgH) {
+                yg = i;
+                break;
+            }
+            yp -= imgH;
+        }
+
+        if (xg < 0 || yg < 0) {
+            return -1;
+        }
+
+        return yg * cols + xg;
+    }
 }
 
 class Player {
-    public int x = 0;
-    public int y = 0;
+    public float x = 0;
+    public float y = 0;
+    public bool locked = false;
+
     public string chosen = "";
-
-    // should have extended event system probably, but this works good enough
-    public float inputCooldown;
-
     public int id;
 
     public Image img;
     public Text txt;
     public Text btxt;
-    public string parentName;
 
     private Vector2 relativeAnchor;
 
@@ -361,24 +385,22 @@ class Player {
     public static Color[] colors = new Color[] {
         Color.red, Color.yellow, Color.green, Color.blue, Color.magenta, Color.cyan, Color.grey, Color.black };
 
-    public Player(int id, Transform parent, Font f, Sprite sprite) {
+    public Player(int id, Font f, Sprite sprite) {
         this.id = id;
 
         // sprite image
         img = new GameObject("Player " + id).AddComponent<Image>();
         img.sprite = sprite;
         img.color = colors[id - 1];
-        img.type = Image.Type.Sliced;
+        img.type = Image.Type.Simple;
 
         // text that indicates player number
         txt = new GameObject("Player " + id + " text").AddComponent<Text>();
         txt.font = f;
         txt.text = "" + id;
-        //txt.color = colors[id - 1];
         txt.alignment = TextAnchor.MiddleCenter;
         txt.resizeTextForBestFit = true;
         txt.resizeTextMinSize = 10;
-        txt.resizeTextMaxSize = 50;
 
         // black background text
         btxt = new GameObject("Player " + id + " btext").AddComponent<Text>();
@@ -388,61 +410,29 @@ class Player {
         btxt.alignment = TextAnchor.MiddleCenter;
         btxt.resizeTextForBestFit = true;
         btxt.resizeTextMinSize = 10;
-        btxt.resizeTextMaxSize = 50;
+        btxt.rectTransform.anchoredPosition3D = new Vector3(2, -3, 0);
 
-        setSelected(false);
-        setParent(parent);
-    }
-
-    public void setSelected(bool b) {
-        img.color = new Color(img.color.r, img.color.g, img.color.b, b ? 1 : .3f);
-        img.fillCenter = b;
-        //txt.color = b ? Color.white : colors[id - 1];
-        chosen = b ? parentName : "";
-        if(chosen == "RANDOM") {
-            int row = Random.Range(0, CharacterSelector.gods.Length), column;
-            if(row != CharacterSelector.gods.Length - 1) {
-                column = Random.Range(0, CharacterSelector.gods[0].Length);
-            } else {
-                column = Random.Range(0, CharacterSelector.gods[0].Length - 1); //so that you don't pick RANDOM
-            }
-            chosen = CharacterSelector.gods[row][column];
-        }
-    }
-
-    public void setParent(Transform parent) {
-        img.transform.SetParent(parent);
+        img.transform.SetParent(GameObject.Find("Canvas").transform);
+        img.transform.SetSiblingIndex(id + 2);
         btxt.transform.SetParent(img.transform);
         txt.transform.SetParent(img.transform);
 
-        parentName = parent.gameObject.name;
+        updatePointerSize();
     }
 
-    public void calculateAnchors(int relativePosition, int numPlayers) {
-        relativeAnchor = new Vector2(1f - (float)relativePosition / numPlayers, 1f - (float)(relativePosition - 1) / numPlayers);
-    }
+    // set player pointer size based on percentage of screen width
+    public void updatePointerSize() {
+        float size = .05f * Screen.width;
 
-    public void refreshAnchors() {
-        img.rectTransform.anchorMin = new Vector2(-0.1f, relativeAnchor.x);
-        img.rectTransform.anchorMax = new Vector2(0f, relativeAnchor.y);
-        img.rectTransform.offsetMin = Vector2.zero;
-        img.rectTransform.offsetMax = Vector3.zero;
-
-        txt.rectTransform.anchorMin = new Vector3(0f, .5f);
-        txt.rectTransform.anchorMax = new Vector3(1f, 1f);
-        txt.rectTransform.offsetMin = Vector2.zero;
-        txt.rectTransform.offsetMax = Vector2.zero;
-
-        btxt.rectTransform.anchorMin = new Vector3(0f, .5f);
-        btxt.rectTransform.anchorMax = new Vector3(1f, 1f);
-        btxt.rectTransform.offsetMin = new Vector2(2, -3);
-        btxt.rectTransform.offsetMax = new Vector2(2, -2);
+        img.rectTransform.sizeDelta = new Vector2(size, size);
+        txt.resizeTextMaxSize = (int)size;
+        btxt.resizeTextMaxSize = (int)size;
     }
 }
 
 // small class to hold and save some variables to avoid GetComponent calls
 class GodGameObject {
-    public GameObject go;
+    public string name;
     public Image image;
     public GameObject info;
     public bool checkingInfo = false;
