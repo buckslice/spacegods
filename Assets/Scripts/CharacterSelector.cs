@@ -49,6 +49,8 @@ public class CharacterSelector : MonoBehaviour {
 
     // percentage of screen width travelled per second
     public float moveSpeed = .3f;
+    //The volume of the sound of selecting a character
+    public float CharSoundVolume;
 
     private List<Player> players = new List<Player>();
     private float gameStartCountdown;
@@ -277,9 +279,10 @@ public class CharacterSelector : MonoBehaviour {
                 string godName = godGameObjects[godHover].name;
                 if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) {
                     p.chosen = p.chosen == "" ? godName : "";
+                    //Play the Characters sound on selection
                     if (godGameObjects[godHover].sound != null)
                     {
-                        AudioSource.PlayClipAtPoint(godGameObjects[godHover].sound, Vector3.zero, 50.0f);
+                        AudioSource.PlayClipAtPoint(godGameObjects[godHover].sound, Vector3.zero, CharSoundVolume);
                     }
                 } else {
                     if (Input.GetButtonDown("Submit" + p.id)) {
@@ -287,6 +290,7 @@ public class CharacterSelector : MonoBehaviour {
                     }
                     if (Input.GetButtonDown("Cancel" + p.id)) {
                         p.chosen = "";
+                        //need to remove sound on cancel
                     }
                 }
 
