@@ -102,8 +102,10 @@ public class Game : MonoBehaviour {
                 winner = players[0].id;
             }
             if (winner != 0) {
-                //gameOverText.text = "Game Over!\nPlayer " + winner + " (" + winnerName + ") wins!\nWinner Press A to Restart\nor Press B to Quit";
-                gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") WINS!\n P" + winner + ": A TO RESTART\nB TO QUIT\nY TO CHANGE GODS";
+                if (winnerName == "ARTEMIS & APOLLO")
+					gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") WIN!\n P" + winner + ": A TO RESTART\nB TO QUIT\nY TO CHANGE GODS";
+				else
+                	gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") WINS!\n P" + winner + ": A TO RESTART\nB TO QUIT\nY TO CHANGE GODS";
                 if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
                     Application.LoadLevel("Main");
                 }
