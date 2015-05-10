@@ -763,9 +763,7 @@ MonoBehaviour:
   players: []
   songs:
   - {fileID: 8300000, guid: a2bbe639e616ab84cab8da144e7472a0, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  numPlayers: 0
 --- !u!114 &1664334440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -803,3 +801,4 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cee22c80f6190e343a2294263d9d1dcb, type: 3}
   - {fileID: 8300000, guid: f885dc35e543bad488c2e408a6bd18c9, type: 3}
   - {fileID: 8300000, guid: 5b125cb97652d5c4cb1910c2cea5301b, type: 3}
+  - {fileID: 8300000, guid: 63e0ddf034e3e6d4193fb25716271831, type: 3}
