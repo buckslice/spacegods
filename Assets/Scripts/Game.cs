@@ -166,7 +166,7 @@ public class Game : MonoBehaviour {
     }
 
     private void handlePause() {
-        if (Input.GetKeyDown(KeyCode.P) && !isPaused) {
+        if (Input.GetKeyDown(KeyCode.P) && !isPaused && !gameIsOver() && introFinished) {
             Time.timeScale = 0;
             isPaused = true;
             gameOverText.text = "PAUSED";

@@ -280,7 +280,7 @@ public class CharacterSelector : MonoBehaviour {
                 if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) {
                     p.chosen = p.chosen == "" ? godName : "";
                     //Play the Characters sound on selection
-                    if (godGameObjects[godHover].sound != null)
+                    if (p.chosen != "" && godGameObjects[godHover].sound != null)
                     {
                         AudioSource.PlayClipAtPoint(godGameObjects[godHover].sound, Vector3.zero, CharSoundVolume);
                     }
