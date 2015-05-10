@@ -70,8 +70,8 @@ public class Game : MonoBehaviour {
     }
 
     public void playMusic() {
-        if (song.time > 0.0f && song.time < 0.5f) {
-			song.time = 48.5f;
+        if (song.time >= 209.68f) {
+			song.time = 40.96f;
 		}
     }
 
