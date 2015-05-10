@@ -69,12 +69,10 @@ public class Game : MonoBehaviour {
         playMusic();
     }
 
-    private void playMusic() {
-        //if (introFinished && !song.isPlaying) {
-        // ppl keep removing songs from gameobject list so this is dangerous
-        //song.clip = songs[Random.Range(1, songs.Length)];
-        //song.Play();
-        //}
+    public void playMusic() {
+        if (song.time > 0.0f && song.time < 0.5f) {
+			song.time = 48.5f;
+		}
     }
 
     public void addPlayer(GodController player) {
