@@ -382,6 +382,9 @@ public class GodController : MonoBehaviour {
                 god.state = GodState.DRUNK;
                 god.CCTimer = 5f;
             }
+            if (planetThatHitMe.lastHolder.god.type == GodType.NIKE) {
+                planetThatHitMe.lastHolder.god.throwStrength += 4f;
+            }
         }
     }
 
