@@ -218,7 +218,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 418970, guid: c9661870c23148f46bf643f147dcbc36, type: 2}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 191322, guid: c9661870c23148f46bf643f147dcbc36, type: 2}
       propertyPath: m_TagString
@@ -746,8 +746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449acb889f887b648b5e28fda11bb50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSize: 8
-  jumpSize: 10
+  minSize: 12
   backgroundScale: .0199999996
 --- !u!114 &1664334439
 MonoBehaviour:

@@ -203,7 +203,7 @@ public class God : MonoBehaviour {
                 break;
             case GodState.POISONED:
                 poisonedSr.enabled = true;
-                changeHealth(-controller.getSpeed() * Time.deltaTime, true);
+                changeHealth(-controller.getVelocity().magnitude * Time.deltaTime, true);
                 break;
         }
     }

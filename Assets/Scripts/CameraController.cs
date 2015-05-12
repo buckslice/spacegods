@@ -3,11 +3,12 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour {
     public float minSize;
-    public float jumpSize;
     public float backgroundScale;
 
     private Camera mainCam;
     private Renderer background;
+
+    private float[] cameraJumps = { 12, 20, 30, 45, 60, 80, 100 };
 
     // use this for initialization
     void Start() {
@@ -22,12 +23,12 @@ public class CameraController : MonoBehaviour {
         for (int i = 0; i < Game.instance.players.Count; ++i) {
             GodController player = Game.instance.players[i];
             Bounds b = new Bounds(player.transform.position, new Vector3(5, 5, 0));
-
             // if you don't want to include origin
             if (i == 0) {
                 bounds = new Bounds(b.center, b.size);
             }
-
+            //Vector3 prediction = player.transform.position + player.getVelocity() * .5f;
+            //bounds.Encapsulate(prediction);
             bounds.Encapsulate(b);
         }
 
@@ -41,10 +42,15 @@ public class CameraController : MonoBehaviour {
         // set camera size
         // never goes smaller than minSize and has to be at least the reqHeight
         float targSize = Mathf.Max(minSize, (bounds.extents.y < reqHeight) ? reqHeight : bounds.extents.y);
-        targSize = ((int)(targSize / jumpSize) + 1) * jumpSize;
+        for (int i = cameraJumps.Length - 2; i >= 0; i--) {
+            if (targSize > cameraJumps[i]) {
+                targSize = cameraJumps[i + 1];
+                break;
+            }
+        }
 
         // lerp quickly when camera is expanding and slowly when shrinking
-        float rate = targSize > mainCam.orthographicSize ? Time.deltaTime * 2f : Time.deltaTime;
+        float rate = targSize > mainCam.orthographicSize ? Time.deltaTime * 3f : Time.deltaTime;
         mainCam.orthographicSize = Mathf.Lerp(mainCam.orthographicSize, targSize, rate);
         //mainCam.orthographicSize = targSize;
 

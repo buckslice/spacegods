@@ -385,8 +385,8 @@ public class GodController : MonoBehaviour {
         }
     }
 
-    public float getSpeed() {
-        return myRigidbody.velocity.magnitude;
+    public Vector3 getVelocity() {
+        return myRigidbody.velocity;
     }
 
 }
