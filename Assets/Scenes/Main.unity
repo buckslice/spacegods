@@ -390,7 +390,7 @@ Transform:
   m_Children:
   - {fileID: 1466217360}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
 --- !u!1 &1243934481
 GameObject:
   m_ObjectHideFlags: 0
