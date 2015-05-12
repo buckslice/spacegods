@@ -115,9 +115,12 @@ public class GodController : MonoBehaviour {
     private void handleThrow() {
         newTrigger = Input.GetAxis("Fire_360_" + id) < 0.0;
         bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + id);
-        float xAim = usingJoysticks ? Input.GetAxis("Horizontal_aim_360_" + id) : isFlipped ? -1f : 1f;
+        float xAim = usingJoysticks ? Input.GetAxis("Horizontal_aim_360_" + id) : 0f;// isFlipped ? -1f : 1f;
         float yAim = usingJoysticks ? Input.GetAxis("Vertical_aim_360_" + id) : 0f;
         Vector2 aim = new Vector2(xAim, yAim).normalized;
+        if (aim.magnitude < 1f) {
+            aim = myRigidbody.velocity.normalized;
+        }
 
         if (myPlanet) {
             if (fireInput) {    // throw planet
