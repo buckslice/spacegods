@@ -330,6 +330,8 @@ MonoBehaviour:
   maxSpeed: 20
   acceleration: 1
   throwStrength: 20
+  abilityCooldown: 4
+  auraCollider: {fileID: 0}
 --- !u!212 &21210844
 SpriteRenderer:
   m_ObjectHideFlags: 1

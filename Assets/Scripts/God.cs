@@ -252,7 +252,13 @@ public class God : MonoBehaviour {
         healthBar.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y);
         cooldownBar.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
         background.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
-        cooldownBar.rectTransform.sizeDelta = new Vector2(100f, 5f);
+
+        if (abilityCooldown != 0f) {
+            float cd = Mathf.Clamp01(1f - coolDown / abilityCooldown) * 100f;
+            cooldownBar.rectTransform.sizeDelta = new Vector2(cd, 5f);
+        }else {
+            cooldownBar.rectTransform.sizeDelta = new Vector2(100f, 5f);
+        }
 
         float cur = currentHealth;
         float max = maxHealth;
@@ -265,5 +271,9 @@ public class God : MonoBehaviour {
         } else {
             healthBar.color = Color.red;
         }
+    }
+
+    public void resetCooldown() {
+        coolDown = abilityCooldown;
     }
 }

@@ -143,7 +143,7 @@ public class GodController : MonoBehaviour {
         if (god.type == GodType.CTHULHU && god.coolDown < 0f && fireInput) {
             //transform.position += new Vector3(xAim, yAim, 0f).normalized * god.getStartingThrowStrength();
             myRigidbody.AddForce(aim * god.startingThrowStrength * 2f, ForceMode2D.Impulse);
-            god.coolDown = 4f;
+            god.resetCooldown();
             AudioManager.instance.playSound("Monster Growl", transform.position, 0.5f);
 
         }
