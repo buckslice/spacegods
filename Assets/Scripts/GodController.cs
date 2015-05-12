@@ -160,7 +160,7 @@ public class GodController : MonoBehaviour {
                     myPlanet.changeRadius(Time.deltaTime / 10f);
                     planetCollider.radius = myPlanet.getRadius();
                     if (!god.particles.isPlaying) {
-                        god.particles.Play();
+                        god.particles.Play(false);
                     }
                 } else {
                     god.particles.Stop();
@@ -289,7 +289,7 @@ public class GodController : MonoBehaviour {
         planetCollider.enabled = false;
         if (god.type == GodType.SUN_WUKONG && god.coolDown < 0f) {
             myPlanet.hide();
-            god.coolDown = 5f;
+            god.resetCooldown();
         }
         myPlanet = null;
 

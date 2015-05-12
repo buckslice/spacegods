@@ -97,30 +97,37 @@ public class God : MonoBehaviour {
         startingThrowStrength = throwStrength;
         startingAcceleration = acceleration;
         startingMaxSpeed = maxSpeed;
-        coolDown = invincible = CCTimer = 0f;
+        invincible = CCTimer = 0f;
+        coolDown = abilityCooldown;
         special = false;
 
-        // UI bar initialization
+        // main UI bar
         mainBar = new GameObject(gameObject.name + " bars");
         mainBar.transform.parent = GameObject.Find("Canvas").transform;
         mainBar.transform.SetAsFirstSibling();
+
         GameObject backgroundGO = new GameObject(gameObject.name + " background");
         backgroundGO.transform.parent = mainBar.transform;
         background = backgroundGO.AddComponent<Image>();
+        background.rectTransform.sizeDelta = new Vector2(100, 5);
+        background.color = Color.grey;
+        background.rectTransform.pivot = Vector2.zero;
+
+        // cooldown bar if needed
+        if (abilityCooldown != 0f) {
+            GameObject cooldownGO = new GameObject(gameObject.name + " cooldownBar");
+            cooldownGO.transform.parent = mainBar.transform;
+            cooldownBar = cooldownGO.AddComponent<Image>();
+            cooldownBar.color = Color.yellow;
+            cooldownBar.rectTransform.pivot = Vector2.zero;
+            background.rectTransform.sizeDelta = new Vector2(100, 10);
+        }
+
+        // healthbar
         GameObject healthGO = new GameObject(gameObject.name + " healthbar");
         healthGO.transform.parent = mainBar.transform;
         healthBar = healthGO.AddComponent<Image>();
-        GameObject cooldownGO = new GameObject(gameObject.name + " cooldownBar");
-        cooldownGO.transform.parent = mainBar.transform;
-        cooldownBar = cooldownGO.AddComponent<Image>();
-
-        background.rectTransform.sizeDelta = new Vector2(100, 10);
-        background.color = Color.grey;
-        cooldownBar.color = Color.yellow;
-
-        cooldownBar.rectTransform.pivot = Vector2.zero;
         healthBar.rectTransform.pivot = Vector2.zero;
-        background.rectTransform.pivot = Vector2.zero;
 
         setBars();
     }
@@ -159,28 +166,29 @@ public class God : MonoBehaviour {
                 break;
 
             case GodType.MORRIGAN:
-                if (coolDown < -30f && coolDown > -40f) {
+                if (coolDown < -10f) {
+                    sr.enabled = true;
+                    enragedSr.enabled = false;
+                    resetCooldown();
+                    auraCollider.enabled = false;
+                    particles.Stop();
+                    acceleration = startingAcceleration;
+                    maxSpeed = startingMaxSpeed;
+                } else if (coolDown < 0f) {
                     enragedSr.enabled = true;
                     sr.color = Color.white;
                     sr.enabled = false;
                     auraCollider.enabled = true;
                     if (!particles.isPlaying) {
-                        particles.Play();
+                        particles.Play(false);
                     }
                     acceleration = startingAcceleration * 2f;
                     maxSpeed = startingMaxSpeed * 2f;
-                } else if (coolDown < -40f) {
-                    sr.enabled = true;
-                    enragedSr.enabled = false;
-                    coolDown = 0f;
-                    auraCollider.enabled = false;
-                    particles.Stop();
-                    acceleration = startingAcceleration;
-                    maxSpeed = startingMaxSpeed;
-                } else {
+                }else {
                     sr.color = new Color(1f + coolDown / 30f, 1f + coolDown / 30f, 1f + coolDown / 30f);
                     particles.Stop();
                 }
+
                 break;
             default:
                 break;
@@ -232,9 +240,9 @@ public class God : MonoBehaviour {
     private void checkForDeath() {
         if (currentHealth <= 0 && !Game.instance.gameIsOver()) {
             if (type == GodType.HADES && coolDown < 0f) {
-                coolDown = 30f;
+                resetCooldown();
                 currentHealth = maxHealth / 4f;
-                particles.Play();
+                particles.Play(false);
                 return;
             }
             Game.instance.removePlayer(controller); // remove player from list
@@ -249,16 +257,7 @@ public class God : MonoBehaviour {
         screenPoint = Camera.main.WorldToScreenPoint(transform.transform.position);
         screenPoint.x -= 50f;
         screenPoint.y -= 700f / Camera.main.orthographicSize;
-        healthBar.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y);
-        cooldownBar.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
-        background.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
-
-        if (abilityCooldown != 0f) {
-            float cd = Mathf.Clamp01(1f - coolDown / abilityCooldown) * 100f;
-            cooldownBar.rectTransform.sizeDelta = new Vector2(cd, 5f);
-        }else {
-            cooldownBar.rectTransform.sizeDelta = new Vector2(100f, 5f);
-        }
+        healthBar.rectTransform.anchoredPosition = screenPoint;
 
         float cur = currentHealth;
         float max = maxHealth;
@@ -270,6 +269,15 @@ public class God : MonoBehaviour {
             healthBar.color = Color.yellow;
         } else {
             healthBar.color = Color.red;
+        }
+
+        if (abilityCooldown != 0f) {
+            cooldownBar.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
+            background.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
+            float cd = Mathf.Clamp01(1f - coolDown / abilityCooldown) * 100f;
+            cooldownBar.rectTransform.sizeDelta = new Vector2(cd, 5f);
+        }else {
+            background.rectTransform.anchoredPosition = screenPoint;
         }
     }
 
