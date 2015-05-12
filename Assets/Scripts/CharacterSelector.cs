@@ -40,7 +40,7 @@ public class CharacterSelector : MonoBehaviour {
         "TURNS WATER INTO WINE AND MAKES PLAYERS DRUNK WHEN THROWING WATER PLANETS",
         "STRONGER THE CLOSER SHE IS TO VICTORY",
         "COMES BACK FROM DEATH",
-        "TRANSFORMS INTO A RAVEN, HAS AURA THAT DEALS DAMAGE",
+        "TRANSFORMS INTO A RAVEN HAS AURA THAT DEALS DAMAGE",
         "SLOWS TIME WHILE HOLDING A MOON PLANET",
         "BLANK",
         "BLANK",
@@ -122,12 +122,13 @@ public class CharacterSelector : MonoBehaviour {
                 mainRT.offsetMax = Vector2.zero;
 
                 // adds gods sound
-                if (godSounds != null && godSounds.Length > godCoord1D)
-                {
-                    thisGod.sound = godSounds[godCoord1D];
+                if (godSounds != null && godSounds.Length > godCoord1D) {
+                    thisGod.source = mainGO.AddComponent<AudioSource>();
+                    thisGod.source.playOnAwake = false;
+                    thisGod.source.clip = godSounds[godCoord1D];
                 }
 
-                
+
                 // add gods image
                 GameObject imgGO = new GameObject("image");
                 imgGO.transform.parent = mainGO.transform;
@@ -280,13 +281,18 @@ public class CharacterSelector : MonoBehaviour {
                 if (usingKeyboard && Input.GetButtonDown("Fire" + p.id)) {
                     p.chosen = p.chosen == "" ? godName : "";
                     //Play the Characters sound on selection
-                    if (p.chosen != "" && godGameObjects[godHover].sound != null)
-                    {
-                        AudioSource.PlayClipAtPoint(godGameObjects[godHover].sound, Vector3.zero, CharSoundVolume);
+                    if (p.chosen != "" && godGameObjects[godHover].source.clip != null) {
+                        godGameObjects[godHover].source.Stop();
+                        godGameObjects[godHover].source.Play();
                     }
                 } else {
                     if (Input.GetButtonDown("Submit" + p.id)) {
                         p.chosen = godName;
+                        //Play the Characters sound on selection
+                        if (p.chosen != "" && godGameObjects[godHover].source.clip != null) {
+                            godGameObjects[godHover].source.Stop();
+                            godGameObjects[godHover].source.Play();
+                        }
                     }
                     if (Input.GetButtonDown("Cancel" + p.id)) {
                         p.chosen = "";
@@ -450,7 +456,7 @@ class Player {
 class GodGameObject {
     public string name;
     public Image image;
-    public AudioClip sound;
+    public AudioSource source;
     public GameObject info;
     public bool checkingInfo = false;
 

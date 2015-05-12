@@ -93,7 +93,7 @@ public class GodController : MonoBehaviour {
         // lerp torwards that by the gods accel "factor" (not in meters2 but whatever)
         // gods mass is still ignored here, need to use rigidbody.addforce if we want that
         Vector2 targetVelocity = new Vector2(dx, dy).normalized * god.maxSpeed;
-        myRigidbody.velocity = Vector2.Lerp(myRigidbody.velocity, targetVelocity, god.acceleration * Time.deltaTime);
+        myRigidbody.velocity = Vector2.Lerp(myRigidbody.velocity, targetVelocity, god.acceleration * Time.deltaTime * 1.3f);
 
         // limit velocity to maxSpeed of god with an opposing force
         // this way gods can briefly travel faster than their maxSpeed due to outside forces
@@ -131,7 +131,7 @@ public class GodController : MonoBehaviour {
             //transform.position += new Vector3(xAim, yAim, 0f).normalized * god.getStartingThrowStrength();
             myRigidbody.AddForce(aim * god.startingThrowStrength * 2f, ForceMode2D.Impulse);
             god.coolDown = 4f;
-			AudioManager.instance.playSound("Monster Growl", transform.position, 0.5f);
+            AudioManager.instance.playSound("Monster Growl", transform.position, 0.5f);
 
         }
     }
@@ -258,7 +258,7 @@ public class GodController : MonoBehaviour {
     }
 
     private void throwPlanet(Vector2 aim) {
-        if(timeSinceCatch < .1f) {
+        if (timeSinceCatch < .1f) {
             return;
         }
         releasedTrigger = false;
@@ -351,6 +351,9 @@ public class GodController : MonoBehaviour {
         }
 
         float damage = -collision.relativeVelocity.magnitude * planetThatHitMe.getMass();
+        if (planetThatHitMe.state == PlanetState.ORBITING) {
+            damage *= .25f;
+        }
         if (god.changeHealth(damage * .5f)) {   // if successfully damage this god
             AudioManager.instance.playSound("GodHurt", transform.position, 1f);
             // if no recent holder of planet then return

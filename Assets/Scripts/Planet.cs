@@ -88,18 +88,6 @@ public class Planet : MonoBehaviour {
                 break;
         }
 
-        // add some random velocity tangent to the direction of gravity
-        Vector3 dir = (gravitationTarget.position - rb.transform.position).normalized;
-
-        // not sure what this is even doing but alright
-        Vector3 tangent = Vector3.Cross(dir, new Vector3(0, 0, 1f));
-        Vector3 halfway = (dir + tangent.normalized).normalized;
-        halfway = (dir + halfway).normalized;
-        Vector3 position = new Vector3(Random.Range(Mathf.Min(halfway.x, tangent.x), Mathf.Max(halfway.x, tangent.x)),
-                                       Random.Range(Mathf.Min(halfway.y, tangent.y), Mathf.Max(halfway.y, tangent.y)),
-                                       Random.Range(Mathf.Min(halfway.z, tangent.z), Mathf.Max(halfway.z, tangent.z)));
-
-        rb.velocity = Random.Range(10f, 15f) * position;
         updateVariables();
     }
 

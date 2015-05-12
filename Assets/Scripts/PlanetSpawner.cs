@@ -80,9 +80,15 @@ public class PlanetSpawner : MonoBehaviour {
                 break;
         }
 
+
+
         GameObject planet = getPlanet();
         planet.SetActive(true);
-        planet.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(spawn.x, spawn.y, 10f)); ;
+        Vector3 worldSpawn = Camera.main.ViewportToWorldPoint(new Vector3(spawn.x, spawn.y, 10f));
+        if (worldSpawn.sqrMagnitude > 99f * 99f) {
+            worldSpawn = Random.insideUnitCircle.normalized * 95f;
+        }
+        planet.transform.position = worldSpawn;
         planet.transform.rotation = Quaternion.identity;    //just in case
 
         Planet script = planet.GetComponent<Planet>();
@@ -93,7 +99,12 @@ public class PlanetSpawner : MonoBehaviour {
         script.sr.sprite = planetSprites[i];
         script.initializeVariables();
 
-        //planet.transform.parent = gameObject.transform;
+
+        // add some random velocity tangent to the direction of gravity
+        Vector3 dir = (Vector3.zero - script.transform.position).normalized;
+        Vector3 tangent = Vector3.Cross(dir, new Vector3(0, 0, 1f)).normalized;
+        script.rb.velocity = Random.Range(10f, 15f) * tangent;
+
         ++activePlanets;
     }
 }

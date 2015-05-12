@@ -21,12 +21,12 @@ public class CameraController : MonoBehaviour {
         Bounds bounds = new Bounds();
         for (int i = 0; i < Game.instance.players.Count; ++i) {
             GodController player = Game.instance.players[i];
-            Bounds b = new Bounds(player.transform.position, new Vector3(3, 3, 0));
+            Bounds b = new Bounds(player.transform.position, new Vector3(5, 5, 0));
 
             // if you don't want to include origin
-            // if (i == 0) {
-            //   bounds = new Bounds(b.center, b.size);
-            // }
+            if (i == 0) {
+                bounds = new Bounds(b.center, b.size);
+            }
 
             bounds.Encapsulate(b);
         }
