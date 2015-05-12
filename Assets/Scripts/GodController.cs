@@ -25,6 +25,7 @@ public class GodController : MonoBehaviour {
     private float flipX;
     private float modelPosX;
     private bool isFlipped; // true when facing right; false when facing left
+    private float holdDistance = 3f;    // range of holding
 
     // use this for initialization
     void Start() {
@@ -115,11 +116,16 @@ public class GodController : MonoBehaviour {
     private void handleThrow() {
         newTrigger = Input.GetAxis("Fire_360_" + id) < 0.0;
         bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + id);
-        float xAim = usingJoysticks ? Input.GetAxis("Horizontal_aim_360_" + id) : 0f;// isFlipped ? -1f : 1f;
-        float yAim = usingJoysticks ? Input.GetAxis("Vertical_aim_360_" + id) : 0f;
-        Vector2 aim = new Vector2(xAim, yAim).normalized;
-        if (aim.magnitude < 1f) {
+        Vector2 aim;
+        if (!usingJoysticks) {
             aim = myRigidbody.velocity.normalized;
+        } else {
+            float xAim = Input.GetAxis("Horizontal_aim_360_" + id);
+            float yAim = Input.GetAxis("Vertical_aim_360_" + id);
+            aim = new Vector2(xAim, yAim).normalized;
+            if (aim.sqrMagnitude < .01f * .01f) {
+                aim = myRigidbody.velocity.normalized;
+            }
         }
 
         if (myPlanet) {
@@ -267,6 +273,7 @@ public class GodController : MonoBehaviour {
         releasedTrigger = false;
         myPlanet.state = PlanetState.THROWN;
         myPlanet.transform.parent = null;
+        myPlanet.transform.position = transform.position + new Vector3(aim.x, aim.y, 0) * holdDistance;
         myPlanet.rb.simulated = true;  //reenable planets physics
         myPlanet.rb.velocity = myRigidbody.velocity + aim * god.throwStrength;
         myRigidbody.mass -= myPlanet.rb.mass; // subtract off planets mass
@@ -280,6 +287,7 @@ public class GodController : MonoBehaviour {
         if (god.type == GodType.ARTEMIS_APOLLO && myPlanet2) {
             myPlanet2.state = PlanetState.THROWN;
             myPlanet2.transform.parent = null;
+            myPlanet2.transform.position = transform.position - new Vector3(aim.x, aim.y, 0) * holdDistance;
             myPlanet2.rb.simulated = true;  //reenable planets physics
             myPlanet2.rb.velocity = -myRigidbody.velocity - aim * god.throwStrength;
             planetCollider2.enabled = false;
@@ -293,7 +301,6 @@ public class GodController : MonoBehaviour {
     }
 
     private void blockWithPlanet(Vector2 aim) {
-        float holdDistance = 3f; // should be halo radius
         Vector2 holdPos = aim * holdDistance;
         Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
         myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
