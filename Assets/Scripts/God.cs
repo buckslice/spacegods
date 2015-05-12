@@ -18,7 +18,8 @@ public enum GodType {
     JESUS,
     NIKE,
     HADES,
-    APHRODITE
+    APHRODITE,
+    MORRIGAN
 }
 
 public enum GodState {
@@ -43,6 +44,8 @@ public class God : MonoBehaviour {
     public float CCTimer { get; set; }   // time left on abnormal state (another good WoW reference jeffrey lol)
     private float invincible;   // tracks whether the god is immune to damage
     private float currentHealth;
+    private float startingAcceleration;
+    private float startingMaxSpeed;
     private GodController controller;
 
     // renderers
@@ -50,6 +53,11 @@ public class God : MonoBehaviour {
     private SpriteRenderer[] frozenSrs;
     private SpriteRenderer drunkSr;
     private SpriteRenderer poisonedSr;
+
+    // Morrigan components
+    private SpriteRenderer enragedSr;
+    private ParticleSystem particles;
+    public CircleCollider2D auraCollider;
 
     // health bar
     private Vector3 screenPoint;
@@ -60,7 +68,18 @@ public class God : MonoBehaviour {
     void Start() {
         // getting components
         controller = GetComponent<GodController>();
-        sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        if (type != GodType.MORRIGAN) {
+            sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        } else {
+            sr = transform.Find("Sprite").Find("Normal").GetComponent<SpriteRenderer>();
+            enragedSr = transform.Find("Sprite").Find("Enraged").GetComponent<SpriteRenderer>();
+            particles = GetComponent<ParticleSystem>();
+            auraCollider = gameObject.AddComponent<CircleCollider2D>();
+            auraCollider.radius = 6f;
+            auraCollider.isTrigger = true;
+            auraCollider.enabled = false;
+        }
+        
         Transform stateComponent = transform.Find("State");
         frozenSrs = stateComponent.Find("Frozen").GetComponentsInChildren<SpriteRenderer>();
         drunkSr = stateComponent.Find("Drunk").GetComponent<SpriteRenderer>();
@@ -70,6 +89,8 @@ public class God : MonoBehaviour {
         state = GodState.NORMAL;
         currentHealth = maxHealth;
         startingThrowStrength = throwStrength;
+        startingAcceleration = acceleration;
+        startingMaxSpeed = maxSpeed;
         coolDown = invincible = CCTimer = 0f;
         special = false;
 
@@ -123,6 +144,32 @@ public class God : MonoBehaviour {
             case GodType.NIKE:
                 if (Game.instance.players.Count > 1f) {
                     throwStrength = startingThrowStrength * Game.instance.numPlayers / (Game.instance.players.Count - 1);
+                }
+                break;
+
+            case GodType.MORRIGAN:
+                if (coolDown < -30f && coolDown > -40f) {
+                    enragedSr.enabled = true;
+                    sr.color = Color.white;
+                    sr.enabled = false;
+                    auraCollider.enabled = true;
+                    if (!particles.isPlaying) {
+                        particles.Play();
+                    }
+                    acceleration = startingAcceleration * 2f;
+                    maxSpeed = startingMaxSpeed * 2f;
+                }
+                else if(coolDown < -40f) {
+                    sr.enabled = true;
+                    enragedSr.enabled = false;
+                    coolDown = 0f;
+                    auraCollider.enabled = false;
+                    particles.Stop();
+                    acceleration = startingAcceleration;
+                    maxSpeed = startingMaxSpeed;
+                } else {
+                    sr.color = new Color(1f + coolDown / 30f, 1f + coolDown / 30f, 1f + coolDown / 30f);
+                    particles.Stop();
                 }
                 break;
             default:

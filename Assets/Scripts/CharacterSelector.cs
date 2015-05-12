@@ -20,7 +20,7 @@ public class CharacterSelector : MonoBehaviour {
     public static string[][] gods = new string[3][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN","ATHENA","MICHAEL JORDAN"},
         new string[] {"CTHULHU","HERMES", "SHIVA","SUN-WUKONG", "QUETZALCOATL","ARTEMIS & APOLLO", "JESUS"},
-        new string[] {"NIKE","HADES", "BLANK", "BLANK", "BLANK", "BLANK", "RANDOM" },
+        new string[] {"NIKE","HADES", "MORRIGAN", "BLANK", "BLANK", "BLANK", "RANDOM" },
     };
 
     private string[] godInfo = new string[]{
@@ -40,7 +40,7 @@ public class CharacterSelector : MonoBehaviour {
         "TURNS WATER INTO WINE AND MAKES PLAYERS DRUNK WHEN THROWING WATER PLANETS",
         "STRONGER THE CLOSER SHE IS TO VICTORY",
         "COMES BACK FROM DEATH",
-        "BLANK",
+        "TRANSFORMS INTO A RAVEN, HAS AURA THAT DEALS DAMAGE",
         "BLANK",
         "BLANK",
         "BLANK",

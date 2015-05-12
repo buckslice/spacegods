@@ -194,6 +194,8 @@ public class GodController : MonoBehaviour {
             }
         } else if (col.tag == "Sun") {
             god.changeHealth(-Time.deltaTime * 10f, true);
+        } else if (col.tag == "God" && col.gameObject.GetComponent<God>().type == GodType.MORRIGAN && col.gameObject.GetComponent<God>().auraCollider.enabled) {
+            god.changeHealth(-Time.deltaTime * 2f, true);
         }
     }
 
