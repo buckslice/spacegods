@@ -5,11 +5,10 @@ public enum PlanetType {
     BASKETBALL,
     ICY,
     MOLTEN,
-    METAL,
+    MOON,
     ROCKY,
     TROPICAL,
     WATER,
-    MOON
 }
 
 public enum PlanetState {

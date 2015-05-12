@@ -117,7 +117,10 @@ public class GodController : MonoBehaviour {
         bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + id);
         float xAim = usingJoysticks ? Input.GetAxis("Horizontal_aim_360_" + id) : 0f;// isFlipped ? -1f : 1f;
         float yAim = usingJoysticks ? Input.GetAxis("Vertical_aim_360_" + id) : 0f;
-        Vector2 aim = new Vector2(xAim, yAim).normalized;
+        Vector2 aim = new Vector2(xAim, yAim);
+        if (aim.magnitude > 1f){
+            aim = aim.normalized;
+        }
         if (aim.magnitude < 1f) {
             aim = myRigidbody.velocity.normalized;
         }
