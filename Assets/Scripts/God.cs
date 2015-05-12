@@ -46,6 +46,7 @@ public class God : MonoBehaviour {
     public float CCTimer { get; set; }   // time left on abnormal state (another good WoW reference jeffrey lol)
     private float invincible;   // tracks whether the god is immune to damage
     private float currentHealth;
+    private ParticleSystem particles;
 
     private GodController controller;
 
@@ -57,7 +58,6 @@ public class God : MonoBehaviour {
 
     // Morrigan components
     private SpriteRenderer enragedSr;
-    private ParticleSystem particles;
     public CircleCollider2D auraCollider;
 
     // health bar
@@ -80,8 +80,10 @@ public class God : MonoBehaviour {
             auraCollider.isTrigger = true;
             auraCollider.enabled = false;
         }
-        
-        Transform stateComponent = transform.Find("State");
+        if (type == GodType.HADES) {
+            particles = GetComponent<ParticleSystem>();
+        }
+            Transform stateComponent = transform.Find("State");
         frozenSrs = stateComponent.Find("Frozen").GetComponentsInChildren<SpriteRenderer>();
         drunkSr = stateComponent.Find("Drunk").GetComponent<SpriteRenderer>();
         poisonedSr = stateComponent.Find("Poisoned").GetComponent<SpriteRenderer>();
@@ -142,11 +144,11 @@ public class God : MonoBehaviour {
                     changeHealth(3f * Time.deltaTime);
                 }
                 break;
-            case GodType.NIKE:
-                if (Game.instance.players.Count > 1f) {
-                    throwStrength = startingThrowStrength * Game.instance.numPlayers / (Game.instance.players.Count - 1);
-                }
-                break;
+            //case GodType.NIKE:
+            //    if (Game.instance.players.Count > 1f) {
+            //        throwStrength = startingThrowStrength * Game.instance.numPlayers / (Game.instance.players.Count - 1);
+            //    }
+            //    break;
 
             case GodType.MORRIGAN:
                 if (coolDown < -30f && coolDown > -40f) {
@@ -224,8 +226,9 @@ public class God : MonoBehaviour {
     private void checkForDeath() {
         if (currentHealth <= 0 && !Game.instance.gameIsOver()) {
             if(type == GodType.HADES && coolDown < 0f) {
-                coolDown = 60f;
-                currentHealth = maxHealth / 5f;
+                coolDown = 30f;
+                currentHealth = maxHealth / 4f;
+                particles.Play();
                 return;
             }
             Game.instance.removePlayer(controller); // remove player from list
