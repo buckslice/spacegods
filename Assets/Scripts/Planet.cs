@@ -143,12 +143,12 @@ public class Planet : MonoBehaviour {
                 break;
         }
 
-        if (health <= 0) {
+        if (health == 0) {
             if (particleTimer < 0f) {
                 if (!particles.isPlaying) {
                     particles.Play();
                     particleTimer = 1.8f;
-                    sr.enabled = shadesr.enabled = rb.simulated = false;
+                    sr.enabled = shadesr.enabled = rb.simulated = cc.enabled = false;
                 } else {
                     if (state == PlanetState.HELD) {
                         lastHolder.heldPlanetDestroyed(this);
@@ -221,16 +221,16 @@ public class Planet : MonoBehaviour {
     }
 
     public void hide() {
-        sr.enabled = false;
-        shadesr.enabled = false;
-        crackedsr.enabled = false;
+        sr.color = new Color(1f, 1f, 1f, 0.1f);
+        shadesr.color = new Color(1f, 1f, 1f, 0.1f);
+        crackedsr.color = new Color(1f, 1f, 1f, 0.1f);
         thrownParticles.enableEmission = false;
     }
 
     private void show() {
-        sr.enabled = true;
-        shadesr.enabled = true;
-        crackedsr.enabled = true;
+        sr.color = new Color(1f, 1f, 1f, 1f);
+        shadesr.color = new Color(1f, 1f, 1f, 1f);
+        crackedsr.color = new Color(1f, 1f, 1f, 1f);
         thrownParticles.enableEmission = true;
     }
 

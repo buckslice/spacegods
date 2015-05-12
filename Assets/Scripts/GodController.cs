@@ -29,25 +29,29 @@ public class GodController : MonoBehaviour {
 
     // use this for initialization
     void Start() {
-        Game.instance.addPlayer(this);
-        freezeInputs = true;
-        releasedTrigger = true;
-        oldTrigger = false;
-        newTrigger = false;
-        isFlipped = false;
-        model = transform.Find("Sprite");
-        flipX = model.localScale.x;
-        modelPosX = model.localPosition.x;
+        // getting components
         god = GetComponent<God>();
         myRigidbody = GetComponent<Rigidbody2D>();
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
-        planetCollider.enabled = false;
+
+        // add god controller to game
+        Game.instance.addPlayer(this);
+
+        // setting all the bools to their initial values
+        freezeInputs = releasedTrigger = true;
+        oldTrigger = newTrigger = isFlipped = planetCollider.enabled = usingJoysticks = false;
+
+        // sprite flipping
+        model = transform.Find("Sprite");
+        flipX = model.localScale.x;
+        modelPosX = model.localPosition.x;
+
         if (god.type == GodType.ARTEMIS_APOLLO) {
             planetCollider2 = gameObject.AddComponent<CircleCollider2D>();
             planetCollider2.enabled = false;
         }
 
-        usingJoysticks = false;
+        // joystick handling
         string[] joysticks = Input.GetJoystickNames();
         for (int i = 0; i < joysticks.Length; i++) {
             if (joysticks[i] != "") {
@@ -155,6 +159,11 @@ public class GodController : MonoBehaviour {
                     myRigidbody.mass += Time.deltaTime / 10f;
                     myPlanet.changeRadius(Time.deltaTime / 10f);
                     planetCollider.radius = myPlanet.getRadius();
+                    if (!god.particles.isPlaying) {
+                        god.particles.Play();
+                    }
+                } else {
+                    god.particles.Stop();
                 }
                 break;
             case GodType.MICHAEL_JORDAN:
