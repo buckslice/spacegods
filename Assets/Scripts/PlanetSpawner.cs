@@ -101,7 +101,7 @@ public class PlanetSpawner : MonoBehaviour {
         // add some random velocity tangent to the direction of gravity
         Vector3 dir = (Vector3.zero - script.transform.position).normalized;
         Vector3 tangent = Vector3.Cross(dir, new Vector3(0, 0, 1f)).normalized;
-        script.rb.velocity = Random.Range(10f, 15f) * tangent + Random.Range(5f, 10f) * dir;
+        script.rb.velocity = Random.Range(8f, 12f) * tangent + Random.Range(5f, 10f) * dir;
 
         ++activePlanets;
     }

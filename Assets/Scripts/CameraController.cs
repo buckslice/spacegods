@@ -51,6 +51,9 @@ public class CameraController : MonoBehaviour {
 
         // lerp quickly when camera is expanding and slowly when shrinking
         float rate = targSize > mainCam.orthographicSize ? Time.deltaTime * 3f : Time.deltaTime;
+        if(Time.timeSinceLevelLoad < .5f) { // for smooth beginning
+            rate = 0f;
+        }
         mainCam.orthographicSize = Mathf.Lerp(mainCam.orthographicSize, targSize, rate);
         //mainCam.orthographicSize = targSize;
 

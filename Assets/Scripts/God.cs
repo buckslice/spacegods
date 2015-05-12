@@ -36,8 +36,9 @@ public class God : MonoBehaviour {
     public float maxSpeed;
     public float acceleration;
     public float throwStrength;
-    public bool special;
+    public float abilityCooldown;
 
+    public bool special { get; set; }
     public GodState state { get; set; }
     public float startingThrowStrength { get; private set; }
     public float startingAcceleration { get; private set; }
@@ -62,8 +63,10 @@ public class God : MonoBehaviour {
 
     // health bar
     private Vector3 screenPoint;
-    private RawImage img;
-    private Texture2D texture;
+    private GameObject mainBar;
+    private Image healthBar;
+    private Image cooldownBar;
+    private Image background;
 
     // use this for initialization
     void Start() {
@@ -83,7 +86,7 @@ public class God : MonoBehaviour {
         if (type == GodType.HADES) {
             particles = GetComponent<ParticleSystem>();
         }
-            Transform stateComponent = transform.Find("State");
+        Transform stateComponent = transform.Find("State");
         frozenSrs = stateComponent.Find("Frozen").GetComponentsInChildren<SpriteRenderer>();
         drunkSr = stateComponent.Find("Drunk").GetComponent<SpriteRenderer>();
         poisonedSr = stateComponent.Find("Poisoned").GetComponent<SpriteRenderer>();
@@ -97,19 +100,29 @@ public class God : MonoBehaviour {
         coolDown = invincible = CCTimer = 0f;
         special = false;
 
-        // health bar creation
-        GameObject imgGO = new GameObject(gameObject.name + " healthbar");
-        imgGO.transform.parent = GameObject.Find("Canvas").transform;
-        imgGO.transform.SetAsFirstSibling();
-        img = imgGO.AddComponent<RawImage>();
-        img.rectTransform.anchorMin = Vector2.zero;
-        img.rectTransform.anchorMax = Vector2.zero;
-        img.rectTransform.offsetMin = new Vector2(0, 0);
-        img.rectTransform.offsetMax = new Vector2(100, 5);
-        texture = new Texture2D(100, 5);
-        img.texture = texture;
-        setHealthBar();
-        moveHealthBar();
+        // UI bar initialization
+        mainBar = new GameObject(gameObject.name + " bars");
+        mainBar.transform.parent = GameObject.Find("Canvas").transform;
+        mainBar.transform.SetAsFirstSibling();
+        GameObject backgroundGO = new GameObject(gameObject.name + " background");
+        backgroundGO.transform.parent = mainBar.transform;
+        background = backgroundGO.AddComponent<Image>();
+        GameObject healthGO = new GameObject(gameObject.name + " healthbar");
+        healthGO.transform.parent = mainBar.transform;
+        healthBar = healthGO.AddComponent<Image>();
+        GameObject cooldownGO = new GameObject(gameObject.name + " cooldownBar");
+        cooldownGO.transform.parent = mainBar.transform;
+        cooldownBar = cooldownGO.AddComponent<Image>();
+
+        background.rectTransform.sizeDelta = new Vector2(100, 10);
+        background.color = Color.grey;
+        cooldownBar.color = Color.yellow;
+
+        cooldownBar.rectTransform.pivot = Vector2.zero;
+        healthBar.rectTransform.pivot = Vector2.zero;
+        background.rectTransform.pivot = Vector2.zero;
+
+        setBars();
     }
 
     // make this late update maybe
@@ -120,7 +133,7 @@ public class God : MonoBehaviour {
 
         handleGodPassives();
         handleGodStates();
-        moveHealthBar();
+        setBars();
     }
 
     private void handleGodPassives() {
@@ -144,11 +157,6 @@ public class God : MonoBehaviour {
                     changeHealth(3f * Time.deltaTime);
                 }
                 break;
-            //case GodType.NIKE:
-            //    if (Game.instance.players.Count > 1f) {
-            //        throwStrength = startingThrowStrength * Game.instance.numPlayers / (Game.instance.players.Count - 1);
-            //    }
-            //    break;
 
             case GodType.MORRIGAN:
                 if (coolDown < -30f && coolDown > -40f) {
@@ -161,8 +169,7 @@ public class God : MonoBehaviour {
                     }
                     acceleration = startingAcceleration * 2f;
                     maxSpeed = startingMaxSpeed * 2f;
-                }
-                else if(coolDown < -40f) {
+                } else if (coolDown < -40f) {
                     sr.enabled = true;
                     enragedSr.enabled = false;
                     coolDown = 0f;
@@ -219,52 +226,44 @@ public class God : MonoBehaviour {
         }
         currentHealth += diff;
         checkForDeath();
-        setHealthBar();
         return true;
     }
 
     private void checkForDeath() {
         if (currentHealth <= 0 && !Game.instance.gameIsOver()) {
-            if(type == GodType.HADES && coolDown < 0f) {
+            if (type == GodType.HADES && coolDown < 0f) {
                 coolDown = 30f;
                 currentHealth = maxHealth / 4f;
                 particles.Play();
                 return;
             }
             Game.instance.removePlayer(controller); // remove player from list
-            Destroy(img.gameObject);    // destroy healthbar GameObject
+            Destroy(mainBar);    // destroy healthbar GameObject
             Destroy(gameObject);        // destroy this GameObject
         }
         // clamp health if you are still alive
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
     }
 
-    private void moveHealthBar() {
+    private void setBars() {
         screenPoint = Camera.main.WorldToScreenPoint(transform.transform.position);
+        screenPoint.x -= 50f;
         screenPoint.y -= 700f / Camera.main.orthographicSize;
-        img.rectTransform.anchoredPosition = screenPoint;
-    }
+        healthBar.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y);
+        cooldownBar.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
+        background.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
+        cooldownBar.rectTransform.sizeDelta = new Vector2(100f, 5f);
 
-    private void setHealthBar() {
-        Color32[] pixels = new Color32[500];
         float cur = currentHealth;
         float max = maxHealth;
-        Color32 color;
 
+        healthBar.rectTransform.sizeDelta = new Vector2(cur / max * 100f, 5f);
         if (cur > max / 2f) {
-            color = Color.green;
+            healthBar.color = Color.green;
         } else if (cur <= max / 2f && cur > max / 4f) {
-            color = Color.yellow;
+            healthBar.color = Color.yellow;
         } else {
-            color = Color.red;
+            healthBar.color = Color.red;
         }
-
-        for (int i = 0; i < pixels.Length; i++) {
-            pixels[i] = i >= 100 ? pixels[i - 100] : cur / max * 100 > i ? color : (Color32)Color.gray;
-        }
-
-        texture.SetPixels32(pixels);
-        texture.Apply();
     }
-
 }
