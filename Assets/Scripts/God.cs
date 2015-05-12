@@ -18,7 +18,7 @@ public enum GodType {
     JESUS,
     NIKE,
     HADES,
-    APHRODITE,
+    KHONSU,
     MORRIGAN
 }
 
@@ -40,12 +40,13 @@ public class God : MonoBehaviour {
 
     public GodState state { get; set; }
     public float startingThrowStrength { get; private set; }
+    public float startingAcceleration { get; private set; }
+    public float startingMaxSpeed { get; private set; }
     public float coolDown { get; set; }  // generic variable for various god abilities
     public float CCTimer { get; set; }   // time left on abnormal state (another good WoW reference jeffrey lol)
     private float invincible;   // tracks whether the god is immune to damage
     private float currentHealth;
-    private float startingAcceleration;
-    private float startingMaxSpeed;
+
     private GodController controller;
 
     // renderers

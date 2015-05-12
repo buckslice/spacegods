@@ -20,7 +20,7 @@ public class CharacterSelector : MonoBehaviour {
     public static string[][] gods = new string[3][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN","ATHENA","MICHAEL JORDAN"},
         new string[] {"CTHULHU","HERMES", "SHIVA","SUN-WUKONG", "QUETZALCOATL","ARTEMIS & APOLLO", "JESUS"},
-        new string[] {"NIKE","HADES", "MORRIGAN", "BLANK", "BLANK", "BLANK", "RANDOM" },
+        new string[] {"NIKE","HADES", "MORRIGAN", "KHONSU", "BLANK", "BLANK", "RANDOM" },
     };
 
     private string[] godInfo = new string[]{
@@ -41,7 +41,7 @@ public class CharacterSelector : MonoBehaviour {
         "STRONGER THE CLOSER SHE IS TO VICTORY",
         "COMES BACK FROM DEATH",
         "TRANSFORMS INTO A RAVEN, HAS AURA THAT DEALS DAMAGE",
-        "BLANK",
+        "SLOWS TIME WHILE HOLDING A MOON PLANET",
         "BLANK",
         "BLANK",
         "RNG WILL DETERMINE YOUR FATE"

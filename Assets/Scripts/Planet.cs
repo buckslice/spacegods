@@ -8,7 +8,8 @@ public enum PlanetType {
     METAL,
     ROCKY,
     TROPICAL,
-    WATER
+    WATER,
+    MOON
 }
 
 public enum PlanetState {

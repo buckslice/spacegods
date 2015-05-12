@@ -165,7 +165,19 @@ public class GodController : MonoBehaviour {
                     }
                 }
                 break;
-
+            case GodType.KHONSU:
+                if (myPlanet) {
+                    if (myPlanet.type == PlanetType.MOON) {
+                        Time.timeScale = 0.5f;
+                        god.acceleration = god.startingAcceleration * 2f;
+                        god.maxSpeed = god.startingMaxSpeed * 2f;
+                    }
+                } else {
+                    Time.timeScale = 1f;
+                    god.acceleration = god.startingAcceleration;
+                    god.maxSpeed = god.startingMaxSpeed;
+                }
+                break;
             default:
                 break;
         }
