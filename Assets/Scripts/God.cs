@@ -46,7 +46,7 @@ public class God : MonoBehaviour {
     public float CCTimer { get; set; }   // time left on abnormal state (another good WoW reference jeffrey lol)
     private float invincible;   // tracks whether the god is immune to damage
     private float currentHealth;
-    private ParticleSystem particles;
+    public ParticleSystem particles { get; private set; }
 
     private GodController controller;
 
@@ -80,7 +80,7 @@ public class God : MonoBehaviour {
             auraCollider.isTrigger = true;
             auraCollider.enabled = false;
         }
-        if (type == GodType.HADES) {
+        if (type == GodType.HADES || type == GodType.ZEUS) {
             particles = GetComponent<ParticleSystem>();
         }
             Transform stateComponent = transform.Find("State");

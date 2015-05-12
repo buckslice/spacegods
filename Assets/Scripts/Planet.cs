@@ -143,12 +143,12 @@ public class Planet : MonoBehaviour {
                 break;
         }
 
-        if (health <= 0) {
+        if (health == 0) {
             if (particleTimer < 0f) {
                 if (!particles.isPlaying) {
                     particles.Play();
                     particleTimer = 1.8f;
-                    sr.enabled = shadesr.enabled = rb.simulated = false;
+                    sr.enabled = shadesr.enabled = rb.simulated = cc.enabled = false;
                 } else {
                     if (state == PlanetState.HELD) {
                         lastHolder.heldPlanetDestroyed(this);

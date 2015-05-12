@@ -159,6 +159,11 @@ public class GodController : MonoBehaviour {
                     myRigidbody.mass += Time.deltaTime / 10f;
                     myPlanet.changeRadius(Time.deltaTime / 10f);
                     planetCollider.radius = myPlanet.getRadius();
+                    if (!god.particles.isPlaying) {
+                        god.particles.Play();
+                    }
+                } else {
+                    god.particles.Stop();
                 }
                 break;
             case GodType.MICHAEL_JORDAN:
