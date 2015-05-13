@@ -120,6 +120,7 @@ public class GodController : MonoBehaviour {
     private void handleThrow() {
         newTrigger = Input.GetAxis("Fire_360_" + id) < 0.0;
         bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + id);
+        
         Vector2 aim;
         if (!usingJoysticks) {
             aim = myRigidbody.velocity.normalized;
@@ -133,7 +134,8 @@ public class GodController : MonoBehaviour {
         }
 
         if (myPlanet) {
-            if (fireInput) {    // throw planet
+            bool canThrow = !myPlanet.particles.isPlaying;
+            if (fireInput && canThrow) {    // throw planet
                 throwPlanet(aim);
             } else {    // move planet where aiming for blocking
                 blockWithPlanet(aim);
@@ -312,11 +314,11 @@ public class GodController : MonoBehaviour {
     private void blockWithPlanet(Vector2 aim) {
         Vector2 holdPos = aim * holdDistance;
         Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
-        myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
+        myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 15f * Time.deltaTime);
         planetCollider.offset = holdPos;
         if (god.type == GodType.ARTEMIS_APOLLO && myPlanet2) {
             Vector3 target2 = transform.position - new Vector3(holdPos.x, holdPos.y, 0);
-            myPlanet2.transform.position = Vector3.Lerp(myPlanet2.transform.position, target2, 6f * Time.deltaTime);
+            myPlanet2.transform.position = Vector3.Lerp(myPlanet2.transform.position, target2, 15f * Time.deltaTime);
             planetCollider2.offset = -holdPos;
         }
     }
