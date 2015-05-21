@@ -206,7 +206,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 189096}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.32315731, y: 1.02620351, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 408338}
@@ -335,7 +335,7 @@ MonoBehaviour:
   maxSpeed: 30
   acceleration: 1.25
   throwStrength: 20
-  special: 0
+  abilityCooldown: 0
   auraCollider: {fileID: 0}
 --- !u!114 &11478970
 MonoBehaviour:
@@ -1591,7 +1591,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: fb58ff719d2d6fe4c993c1b04faad3f8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: da2f2c4d0f42d6246a34fb2628d8d983, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
