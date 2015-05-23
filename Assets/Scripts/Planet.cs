@@ -9,6 +9,7 @@ public enum PlanetType {
     ROCKY,
     TROPICAL,
     WATER,
+	SMASH
 }
 
 public enum PlanetState {
@@ -44,6 +45,9 @@ public class Planet : MonoBehaviour {
     private ParticleSystem thrownParticles;
     //private Object explode;
 
+	private GameObject go;
+	private PlanetSpawner spawnerScript;
+
     void Awake() {
         // only need to do these once
         texture = transform.Find("Texture").transform;
@@ -58,6 +62,9 @@ public class Planet : MonoBehaviour {
         origShadeScale = shade.localScale;
         origCrackedScale = cracked.localScale;
         gravitationTarget = GameObject.Find("Sun").transform;
+
+		go = GameObject.Find("SCRIPTS"); 
+		spawnerScript = (PlanetSpawner) go.GetComponent<PlanetSpawner> ();
     }
 
     public void initializeVariables() {
@@ -157,6 +164,8 @@ public class Planet : MonoBehaviour {
                         lastHolder.god.special = false;
                     }
                     PlanetSpawner.current.returnPlanet(gameObject);
+					if (type == PlanetType.SMASH)
+						spawnerScript.setSmashPresence(false);
                 }
             }
         }
@@ -181,7 +190,8 @@ public class Planet : MonoBehaviour {
             }
             switch (state) {
                 case PlanetState.THROWN:
-                    damage();
+                    if (type != PlanetType.SMASH)
+						damage();
                     break;
                 case PlanetState.HELD:
                     // this will never get called since this gameObjects collider
@@ -195,6 +205,8 @@ public class Planet : MonoBehaviour {
                 lastHolder.god.special = false;
             }
             PlanetSpawner.current.returnPlanet(gameObject);
+			if (type == PlanetType.SMASH)
+				spawnerScript.setSmashPresence(false);
         }
     }
 
@@ -210,6 +222,8 @@ public class Planet : MonoBehaviour {
                 }
                 PlanetSpawner.current.returnPlanet(gameObject);
             }
+			if (type == PlanetType.SMASH)
+				spawnerScript.setSmashPresence(false);
         }
     }
 
@@ -219,6 +233,10 @@ public class Planet : MonoBehaviour {
             invulnerabe = 1f;
         }
     }
+
+	public void killPlanet() {
+		health = 0;
+		}
 
     public void hide() {
         sr.color = new Color(1f, 1f, 1f, 0.1f);

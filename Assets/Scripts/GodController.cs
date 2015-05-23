@@ -28,6 +28,9 @@ public class GodController : MonoBehaviour {
     private float holdDistance = 3f;    // range of holding
 	private Animator anim;
 
+	private GameObject go;
+	private PlanetSpawner spawnerScript;
+
     // use this for initialization
     void Start() {
         // getting components
@@ -35,6 +38,8 @@ public class GodController : MonoBehaviour {
         myRigidbody = GetComponent<Rigidbody2D>();
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
 
+		go = GameObject.Find("SCRIPTS"); 
+		spawnerScript = (PlanetSpawner) go.GetComponent<PlanetSpawner> ();
 
 		// just for now until every god has animator.  Well that might never happen but still.  
 		if (god.gameObject.GetComponent<Animator> () != null) {
@@ -369,13 +374,15 @@ public class GodController : MonoBehaviour {
             if (myPlanet2) {
                 if ((first.collider == planetCollider2 || first.otherCollider == planetCollider2)) {
                     AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-                    myPlanet2.damage();
+					if (myPlanet2.type != PlanetType.SMASH)
+                    	myPlanet2.damage();
                     return;
                 }
             }
             if ((first.collider == planetCollider || first.otherCollider == planetCollider)) {
                 AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-                myPlanet.damage();
+				if (myPlanet.type != PlanetType.SMASH)
+                	myPlanet.damage();
                 return;
             }
         }
@@ -411,6 +418,12 @@ public class GodController : MonoBehaviour {
             if (planetThatHitMe.lastHolder.god.type == GodType.NIKE) {
                 planetThatHitMe.lastHolder.god.throwStrength += 4f;
             }
+			if (planetThatHitMe.type == PlanetType.SMASH)
+			{
+				god.changeHealth(-1000, true);
+				planetThatHitMe.killPlanet();
+				spawnerScript.setSmashPresence(false);
+			}
         }
     }
 

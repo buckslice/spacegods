@@ -11,12 +11,17 @@ public class PlanetSpawner : MonoBehaviour {
     private float spawnTime;
 
     public Sprite[] planetSprites;
+	public Sprite smashSprite;
+	public bool smashBall;
+	private bool smashPresent;
 
     private Stack<GameObject> pool;
     private Object basicPlanet;
 
     void Awake() {
         current = this;
+
+		smashPresent = false;
 
         basicPlanet = Resources.Load("Planet");
         pool = new Stack<GameObject>();
@@ -55,7 +60,7 @@ public class PlanetSpawner : MonoBehaviour {
     }
 
     private void spawnPlanet() {
-        int numberOfPlanetTypes = System.Enum.GetValues(typeof(PlanetType)).Length;
+        int numberOfPlanetTypes = System.Enum.GetValues(typeof(PlanetType)).Length - 1;
         if (planetSprites.Length < numberOfPlanetTypes) {
             Debug.Log("Not enough planet sprites defined.");
             return;
@@ -91,10 +96,29 @@ public class PlanetSpawner : MonoBehaviour {
 
         Planet script = planet.GetComponent<Planet>();
 
-        int i = Random.Range(0, numberOfPlanetTypes);
-        script.type = (PlanetType)i;
-        planet.name = script.type.ToString();
-        script.sr.sprite = planetSprites[i];
+		bool spawnedSmash = false;
+		if (smashBall && !smashPresent) {
+			switch (Random.Range(0, 10)) {
+			case 0: 
+				script.type = PlanetType.SMASH;
+				planet.name = script.type.ToString();
+				script.sr.sprite = smashSprite;
+				smashPresent = true;
+				spawnedSmash = true;
+				break;
+			default:
+				spawnedSmash = false;
+				break;
+			}
+				}
+
+		if (!spawnedSmash) {
+			int i = Random.Range (0, numberOfPlanetTypes);
+			script.type = (PlanetType)i;
+			planet.name = script.type.ToString ();
+			script.sr.sprite = planetSprites [i];
+				}
+
         script.initializeVariables();
 
 
@@ -105,4 +129,9 @@ public class PlanetSpawner : MonoBehaviour {
 
         ++activePlanets;
     }
+
+	public void setSmashPresence(bool smashHere)
+	{
+		smashPresent = smashHere;
+		}
 }
