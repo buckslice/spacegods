@@ -26,6 +26,7 @@ public class GodController : MonoBehaviour {
     private float modelPosX;
     private bool isFlipped; // true when facing right; false when facing left
     private float holdDistance = 3f;    // range of holding
+	private Animator anim;
 
     // use this for initialization
     void Start() {
@@ -34,6 +35,11 @@ public class GodController : MonoBehaviour {
         myRigidbody = GetComponent<Rigidbody2D>();
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
 
+
+		// just for now until every god has animator.  Well that might never happen but still.  
+		if (god.gameObject.GetComponent<Animator> () != null) {
+			anim = god.gameObject.GetComponent<Animator> ();
+		}
         // add god controller to game
         Game.instance.addPlayer(this);
 
@@ -57,8 +63,8 @@ public class GodController : MonoBehaviour {
             if (joysticks[i] != "") {
                 usingJoysticks = true;
             }
-        }
-    }
+        } 
+	}
 
     // update is called once per frame
     void Update() {
@@ -66,6 +72,11 @@ public class GodController : MonoBehaviour {
         handleVelocityAndOrientation();
         handleThrow();
         handleGodPassives();
+
+		//change animation if it exists
+		if (god.gameObject.GetComponent<Animator> () != null) {
+			anim.SetFloat ("Velocity", myRigidbody.velocity.x);
+		}
     }
 
     private void updateVariables() {
@@ -105,7 +116,7 @@ public class GodController : MonoBehaviour {
         if (myRigidbody.velocity.sqrMagnitude > god.maxSpeed * god.maxSpeed) {
             myRigidbody.AddForce(-myRigidbody.velocity.normalized * (myRigidbody.velocity.magnitude - god.maxSpeed));
         }
-
+		
         // flips sprite based on last horizontal movement direction
         // as well as the default flip orientation of gods sprite
         if (!Mathf.Approximately(dx, 0f) || !Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + id), 0f)) {
@@ -120,6 +131,7 @@ public class GodController : MonoBehaviour {
     private void handleThrow() {
         newTrigger = Input.GetAxis("Fire_360_" + id) < 0.0;
         bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + id);
+        
         Vector2 aim;
         if (!usingJoysticks) {
             aim = myRigidbody.velocity.normalized;
@@ -133,7 +145,8 @@ public class GodController : MonoBehaviour {
         }
 
         if (myPlanet) {
-            if (fireInput) {    // throw planet
+            bool canThrow = !myPlanet.particles.isPlaying;
+            if (fireInput && canThrow) {    // throw planet
                 throwPlanet(aim);
             } else {    // move planet where aiming for blocking
                 blockWithPlanet(aim);
@@ -291,6 +304,10 @@ public class GodController : MonoBehaviour {
             myPlanet.hide();
             god.resetCooldown();
         }
+		//change animation if it exists kinda clunky maybe find a better way to check if null
+		if (god.gameObject.GetComponent<Animator> () != null) {
+			anim.SetTrigger ("Shoot");
+		}
         myPlanet = null;
 
         if (god.type == GodType.ARTEMIS_APOLLO && myPlanet2) {
@@ -312,11 +329,11 @@ public class GodController : MonoBehaviour {
     private void blockWithPlanet(Vector2 aim) {
         Vector2 holdPos = aim * holdDistance;
         Vector3 target = transform.position + new Vector3(holdPos.x, holdPos.y, 0);
-        myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 6f * Time.deltaTime);
+        myPlanet.transform.position = Vector3.Lerp(myPlanet.transform.position, target, 15f * Time.deltaTime);
         planetCollider.offset = holdPos;
         if (god.type == GodType.ARTEMIS_APOLLO && myPlanet2) {
             Vector3 target2 = transform.position - new Vector3(holdPos.x, holdPos.y, 0);
-            myPlanet2.transform.position = Vector3.Lerp(myPlanet2.transform.position, target2, 6f * Time.deltaTime);
+            myPlanet2.transform.position = Vector3.Lerp(myPlanet2.transform.position, target2, 15f * Time.deltaTime);
             planetCollider2.offset = -holdPos;
         }
     }

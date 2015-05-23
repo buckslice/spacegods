@@ -68,7 +68,7 @@ public class Planet : MonoBehaviour {
         thrownTimer = 0f;
         crackedsr.enabled = false;
         invulnerabe = -1f;
-        sr.enabled = shadesr.enabled = rb.simulated = true;
+        sr.enabled = shadesr.enabled = rb.simulated = cc.enabled = true;
         // randomize size and mass
         switch (Random.Range(0, 3)) {
             case 0:             // small
