@@ -19,7 +19,8 @@ public enum GodType {
     NIKE,
     HADES,
     KHONSU,
-    MORRIGAN
+    MORRIGAN,
+    KITSUNE
 }
 
 public enum GodState {
@@ -37,6 +38,7 @@ public class God : MonoBehaviour {
     public float acceleration;
     public float throwStrength;
     public float abilityCooldown;
+    public bool isKitsune;
 
     public bool special { get; set; }
     public GodState state { get; set; }
@@ -52,7 +54,7 @@ public class God : MonoBehaviour {
     private GodController controller;
 
     // renderers
-    private SpriteRenderer sr;
+    public SpriteRenderer sr { get; set; }
     private SpriteRenderer[] frozenSrs;
     private SpriteRenderer drunkSr;
     private SpriteRenderer poisonedSr;
@@ -188,7 +190,6 @@ public class God : MonoBehaviour {
                     sr.color = new Color(1f + coolDown / 30f, 1f + coolDown / 30f, 1f + coolDown / 30f);
                     particles.Stop();
                 }
-
                 break;
             default:
                 break;

@@ -52,7 +52,7 @@ public class GodController : MonoBehaviour {
         flipX = model.localScale.x;
         modelPosX = model.localPosition.x;
 
-        if (god.type == GodType.ARTEMIS_APOLLO) {
+        if (god.type == GodType.ARTEMIS_APOLLO || god.type == GodType.KITSUNE) {
             planetCollider2 = gameObject.AddComponent<CircleCollider2D>();
             planetCollider2.enabled = false;
         }
@@ -410,6 +410,10 @@ public class GodController : MonoBehaviour {
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.NIKE) {
                 planetThatHitMe.lastHolder.god.throwStrength += 4f;
+            }
+            if (planetThatHitMe.lastHolder.god.isKitsune) {
+                planetThatHitMe.lastHolder.god.type = god.type;
+                planetThatHitMe.lastHolder.god.sr.sprite = god.sr.sprite;
             }
         }
     }
