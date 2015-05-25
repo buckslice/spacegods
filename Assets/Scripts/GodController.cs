@@ -26,6 +26,10 @@ public class GodController : MonoBehaviour {
     private float modelPosX;
     private bool isFlipped; // true when facing right; false when facing left
     private float holdDistance = 3f;    // range of holding
+	private Animator anim;
+
+	private GameObject go;
+	private PlanetSpawner spawnerScript;
 
     // use this for initialization
     void Start() {
@@ -34,6 +38,13 @@ public class GodController : MonoBehaviour {
         myRigidbody = GetComponent<Rigidbody2D>();
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
 
+		go = GameObject.Find("SCRIPTS"); 
+		spawnerScript = (PlanetSpawner) go.GetComponent<PlanetSpawner> ();
+
+		// just for now until every god has animator.  Well that might never happen but still.  
+		if (god.gameObject.GetComponent<Animator> () != null) {
+			anim = god.gameObject.GetComponent<Animator> ();
+		}
         // add god controller to game
         Game.instance.addPlayer(this);
 
@@ -46,7 +57,7 @@ public class GodController : MonoBehaviour {
         flipX = model.localScale.x;
         modelPosX = model.localPosition.x;
 
-        if (god.type == GodType.ARTEMIS_APOLLO) {
+        if (god.type == GodType.ARTEMIS_APOLLO || god.type == GodType.KITSUNE) {
             planetCollider2 = gameObject.AddComponent<CircleCollider2D>();
             planetCollider2.enabled = false;
         }
@@ -57,8 +68,8 @@ public class GodController : MonoBehaviour {
             if (joysticks[i] != "") {
                 usingJoysticks = true;
             }
-        }
-    }
+        } 
+	}
 
     // update is called once per frame
     void Update() {
@@ -66,6 +77,11 @@ public class GodController : MonoBehaviour {
         handleVelocityAndOrientation();
         handleThrow();
         handleGodPassives();
+
+		//change animation if it exists
+		if (god.gameObject.GetComponent<Animator> () != null) {
+			anim.SetFloat ("Velocity", myRigidbody.velocity.x);
+		}
     }
 
     private void updateVariables() {
@@ -105,7 +121,7 @@ public class GodController : MonoBehaviour {
         if (myRigidbody.velocity.sqrMagnitude > god.maxSpeed * god.maxSpeed) {
             myRigidbody.AddForce(-myRigidbody.velocity.normalized * (myRigidbody.velocity.magnitude - god.maxSpeed));
         }
-
+		
         // flips sprite based on last horizontal movement direction
         // as well as the default flip orientation of gods sprite
         if (!Mathf.Approximately(dx, 0f) || !Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + id), 0f)) {
@@ -293,6 +309,10 @@ public class GodController : MonoBehaviour {
             myPlanet.hide();
             god.resetCooldown();
         }
+		//change animation if it exists kinda clunky maybe find a better way to check if null
+		if (god.gameObject.GetComponent<Animator> () != null) {
+			anim.SetTrigger ("Shoot");
+		}
         myPlanet = null;
 
         if (god.type == GodType.ARTEMIS_APOLLO && myPlanet2) {
@@ -354,13 +374,15 @@ public class GodController : MonoBehaviour {
             if (myPlanet2) {
                 if ((first.collider == planetCollider2 || first.otherCollider == planetCollider2)) {
                     AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-                    myPlanet2.damage();
+					if (myPlanet2.type != PlanetType.SMASH)
+                    	myPlanet2.damage();
                     return;
                 }
             }
             if ((first.collider == planetCollider || first.otherCollider == planetCollider)) {
                 AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-                myPlanet.damage();
+				if (myPlanet.type != PlanetType.SMASH)
+                	myPlanet.damage();
                 return;
             }
         }
@@ -395,6 +417,18 @@ public class GodController : MonoBehaviour {
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.NIKE) {
                 planetThatHitMe.lastHolder.god.throwStrength += 4f;
+            }
+
+			if (planetThatHitMe.type == PlanetType.SMASH)
+			{
+				god.changeHealth(-1000, true);
+				planetThatHitMe.killPlanet();
+				spawnerScript.setSmashPresence(false);
+			}
+
+            if (planetThatHitMe.lastHolder.god.isKitsune) {
+                planetThatHitMe.lastHolder.god.type = god.type;
+                planetThatHitMe.lastHolder.god.sr.sprite = god.sr.sprite;
             }
         }
     }
