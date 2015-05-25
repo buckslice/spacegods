@@ -183,7 +183,7 @@ public class Planet : MonoBehaviour {
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.tag == "Planet") {
+        if (collision.gameObject.CompareTag("Planet")) {
             // only want one of the planets to play the sound so base it off random factor like x position
             if (transform.position.x > collision.transform.position.x) {
                 //AudioManager.instance.playSound("Collision", transform.position, 1f);
@@ -200,7 +200,7 @@ public class Planet : MonoBehaviour {
                 case PlanetState.ORBITING:
                     break;
             }
-        } else if (collision.gameObject.tag == "Boundary") {
+        } else if (collision.gameObject.CompareTag("Boundary")) {
             if (lastHolder && lastHolder.god.type == GodType.THOR) {
                 lastHolder.god.special = false;
             }
@@ -211,7 +211,7 @@ public class Planet : MonoBehaviour {
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
-        if (collider.tag == "Sun") {
+        if (collider.CompareTag("Sun")) {
             // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
             if (lastHolder && lastHolder.god.type == GodType.ANUBIS) {

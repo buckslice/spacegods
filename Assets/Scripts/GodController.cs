@@ -26,10 +26,10 @@ public class GodController : MonoBehaviour {
     private float modelPosX;
     private bool isFlipped; // true when facing right; false when facing left
     private float holdDistance = 3f;    // range of holding
-	private Animator anim;
+    private Animator anim;
 
-	private GameObject go;
-	private PlanetSpawner spawnerScript;
+    private GameObject go;
+    private PlanetSpawner spawnerScript;
 
     // use this for initialization
     void Start() {
@@ -38,13 +38,13 @@ public class GodController : MonoBehaviour {
         myRigidbody = GetComponent<Rigidbody2D>();
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
 
-		go = GameObject.Find("SCRIPTS"); 
-		spawnerScript = (PlanetSpawner) go.GetComponent<PlanetSpawner> ();
+        go = GameObject.Find("SCRIPTS");
+        spawnerScript = (PlanetSpawner)go.GetComponent<PlanetSpawner>();
 
-		// just for now until every god has animator.  Well that might never happen but still.  
-		if (god.gameObject.GetComponent<Animator> () != null) {
-			anim = god.gameObject.GetComponent<Animator> ();
-		}
+        // just for now until every god has animator.  Well that might never happen but still.  
+        if (god.gameObject.GetComponent<Animator>() != null) {
+            anim = god.gameObject.GetComponent<Animator>();
+        }
         // add god controller to game
         Game.instance.addPlayer(this);
 
@@ -68,8 +68,8 @@ public class GodController : MonoBehaviour {
             if (joysticks[i] != "") {
                 usingJoysticks = true;
             }
-        } 
-	}
+        }
+    }
 
     // update is called once per frame
     void Update() {
@@ -78,10 +78,10 @@ public class GodController : MonoBehaviour {
         handleThrow();
         handleGodPassives();
 
-		//change animation if it exists
-		if (god.gameObject.GetComponent<Animator> () != null) {
-			anim.SetFloat ("Velocity", myRigidbody.velocity.x);
-		}
+        //change animation if it exists
+        if (god.gameObject.GetComponent<Animator>() != null) {
+            anim.SetFloat("Velocity", myRigidbody.velocity.x);
+        }
     }
 
     private void updateVariables() {
@@ -121,7 +121,7 @@ public class GodController : MonoBehaviour {
         if (myRigidbody.velocity.sqrMagnitude > god.maxSpeed * god.maxSpeed) {
             myRigidbody.AddForce(-myRigidbody.velocity.normalized * (myRigidbody.velocity.magnitude - god.maxSpeed));
         }
-		
+
         // flips sprite based on last horizontal movement direction
         // as well as the default flip orientation of gods sprite
         if (!Mathf.Approximately(dx, 0f) || !Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + id), 0f)) {
@@ -136,7 +136,7 @@ public class GodController : MonoBehaviour {
     private void handleThrow() {
         newTrigger = Input.GetAxis("Fire_360_" + id) < 0.0;
         bool fireInput = usingJoysticks ? !oldTrigger && newTrigger : Input.GetButtonDown("Fire" + id);
-        
+
         Vector2 aim;
         if (!usingJoysticks) {
             aim = myRigidbody.velocity.normalized;
@@ -220,18 +220,18 @@ public class GodController : MonoBehaviour {
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.tag == "God" && collision.gameObject.GetComponent<God>().type == GodType.CTHULHU) {
+        if (collision.gameObject.CompareTag("God") && collision.gameObject.GetComponent<God>().type == GodType.CTHULHU) {
             float damage = -collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass;
             god.changeHealth(damage * .5f);
         }
 
-        if (collision.gameObject.tag == "Planet") {
+        if (collision.gameObject.CompareTag("Planet")) {
             handleCollisionWithPlanet(collision);
         }
     }
 
     void OnTriggerStay2D(Collider2D col) {
-        if (col.tag == "Planet") {
+        if (col.CompareTag("Planet")) {
             bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + id) < 0.0 : Input.GetButton("Fire" + id);
             if (inputFire && !myPlanet) {
                 Planet planet = col.gameObject.GetComponent<Planet>();
@@ -240,10 +240,13 @@ public class GodController : MonoBehaviour {
                     holdPlanet(planet);
                 }
             }
-        } else if (col.tag == "Sun") {
+        } else if (col.CompareTag("Sun")) {
             god.changeHealth(-Time.deltaTime * 10f, true);
-        } else if (col.tag == "God" && col.gameObject.GetComponent<God>().type == GodType.MORRIGAN && col.gameObject.GetComponent<God>().auraCollider.enabled) {
-            god.changeHealth(-Time.deltaTime * 2f, true);
+        } else if (col.CompareTag("God")) {
+            God colGod = col.GetComponent<God>();
+            if (colGod.type == GodType.MORRIGAN && colGod.auraCollider.enabled) {
+                god.changeHealth(-Time.deltaTime * 2f, true);
+            }
         }
     }
 
@@ -309,10 +312,10 @@ public class GodController : MonoBehaviour {
             myPlanet.hide();
             god.resetCooldown();
         }
-		//change animation if it exists kinda clunky maybe find a better way to check if null
-		if (god.gameObject.GetComponent<Animator> () != null) {
-			anim.SetTrigger ("Shoot");
-		}
+        //change animation if it exists kinda clunky maybe find a better way to check if null
+        if (god.gameObject.GetComponent<Animator>() != null) {
+            anim.SetTrigger("Shoot");
+        }
         myPlanet = null;
 
         if (god.type == GodType.ARTEMIS_APOLLO && myPlanet2) {
@@ -374,15 +377,15 @@ public class GodController : MonoBehaviour {
             if (myPlanet2) {
                 if ((first.collider == planetCollider2 || first.otherCollider == planetCollider2)) {
                     AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-					if (myPlanet2.type != PlanetType.SMASH)
-                    	myPlanet2.damage();
+                    if (myPlanet2.type != PlanetType.SMASH)
+                        myPlanet2.damage();
                     return;
                 }
             }
             if ((first.collider == planetCollider || first.otherCollider == planetCollider)) {
                 AudioManager.instance.playSound("Collision", collision.contacts[0].point, 1f);
-				if (myPlanet.type != PlanetType.SMASH)
-                	myPlanet.damage();
+                if (myPlanet.type != PlanetType.SMASH)
+                    myPlanet.damage();
                 return;
             }
         }
@@ -419,12 +422,11 @@ public class GodController : MonoBehaviour {
                 planetThatHitMe.lastHolder.god.throwStrength += 4f;
             }
 
-			if (planetThatHitMe.type == PlanetType.SMASH)
-			{
-				god.changeHealth(-1000, true);
-				planetThatHitMe.killPlanet();
-				spawnerScript.setSmashPresence(false);
-			}
+            if (planetThatHitMe.type == PlanetType.SMASH) {
+                god.changeHealth(-1000, true);
+                planetThatHitMe.killPlanet();
+                spawnerScript.setSmashPresence(false);
+            }
 
             if (planetThatHitMe.lastHolder.god.isKitsune) {
                 planetThatHitMe.lastHolder.god.type = god.type;

@@ -128,7 +128,6 @@ public class CharacterSelector : MonoBehaviour {
                     thisGod.source.clip = godSounds[godCoord1D];
                 }
 
-
                 // add gods image
                 GameObject imgGO = new GameObject("image");
                 imgGO.transform.parent = mainGO.transform;
@@ -249,7 +248,8 @@ public class CharacterSelector : MonoBehaviour {
         // need at least 2 players to start game
         bool allPlayersDecided = players.Count > 1;
         // process input for joysticks and move each player
-        foreach (Player p in players) {
+        for (int i = 0; i < players.Count; i++) {
+            Player p = players[i];
 
             float speed = moveSpeed * Screen.width * Time.deltaTime;
             float x = Input.GetAxis("Horizontal" + (usingKeyboard ? "" : "_360_") + p.id);
@@ -343,6 +343,7 @@ public class CharacterSelector : MonoBehaviour {
                     PlayerPrefs.SetInt("Player" + i + " ", p.id);
                     PlayerPrefs.SetString("Player" + p.id, p.chosen);
                 }
+                PlayerPrefs.SetInt("Keyboard", usingKeyboard ? 1 : 0);
                 Application.LoadLevel("Main");
             }
         } else {

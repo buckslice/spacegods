@@ -7,6 +7,7 @@ public class Game : MonoBehaviour {
     public List<GodController> players;
     public AudioClip[] songs;
     public int numPlayers;
+    public bool usingKeyboard = false;
     private GameObject overlay;
     private Text countDown;
     private Text gameOverText;
@@ -42,6 +43,7 @@ public class Game : MonoBehaviour {
 
         // spawn players with data from player prefs
         numPlayers = PlayerPrefs.GetInt("Number of players");
+        usingKeyboard = PlayerPrefs.GetInt("Keyboard") == 1;
         for (int i = 0; i < numPlayers; i++) {
             int player = PlayerPrefs.GetInt("Player" + i + " ");
             string choice = PlayerPrefs.GetString("Player" + player);
@@ -71,8 +73,8 @@ public class Game : MonoBehaviour {
 
     public void playMusic() {
         if (song.time >= 209.68f) {
-			song.time = 40.96f;
-		}
+            song.time = 40.96f;
+        }
     }
 
     public void addPlayer(GodController player) {
@@ -100,20 +102,21 @@ public class Game : MonoBehaviour {
             if (winner == 0 && players.Count > 0) {
                 winnerName = players[0].name;
                 winner = players[0].id;
+
+                string winPlurality = winnerName == "ARTEMIS & APOLLO" ? "WIN" : "WINS";
+                string restartLetter = usingKeyboard ? "R" : "A";
+                string quitLetter = usingKeyboard ? "Q" : "B";
+                gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") " + winPlurality + "!\n P" + winner + ": " + restartLetter + " TO CHANGE GODS\nY TO PLAY AGAIN\n" + quitLetter + " TO QUIT";
             }
             if (winner != 0) {
-                if (winnerName == "ARTEMIS & APOLLO")
-					gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") WIN!\n P" + winner + ": A TO RESTART\nB TO QUIT\nY TO CHANGE GODS";
-				else
-                	gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") WINS!\n P" + winner + ": A TO RESTART\nB TO QUIT\nY TO CHANGE GODS";
                 if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
-                    Application.LoadLevel("Main");
+                    Application.LoadLevel("Character Selection");
                 }
                 if (Input.GetKeyDown(KeyCode.Q) || Input.GetButtonDown("Cancel" + winner)) {
-                    Application.LoadLevel(0);
+                    Application.LoadLevel("Menu");
                 }
                 if (Input.GetKeyDown(KeyCode.Y) || Input.GetButton("Y" + winner)) {
-                    Application.LoadLevel("Character Selection");
+                    Application.LoadLevel("Main");
                 }
             }
         }
@@ -132,7 +135,7 @@ public class Game : MonoBehaviour {
                     songStart = true;
                 }
                 song.volume += .25f * Time.deltaTime;   // fade in volume
-                countDown.text = (t <= 0) ? "GO!" : t + "";
+                countDown.text = (t <= 0) ? "GO!" : t.ToString();
                 countDown.fontSize = 300 + (int)((timer - (int)timer) * 300f);
                 if (t != soundTimer && t > 0) {
                     // noises for the countdown numbers
@@ -143,8 +146,8 @@ public class Game : MonoBehaviour {
                     // game starts here
                     AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
                     countDown.color = Color.white;
-                    foreach (GodController gc in players) {
-                        gc.freezeInputs = false;
+                    for (int i = 0; i < players.Count; i++) {
+                        players[i].freezeInputs = false;
                     }
                     gameStart = true;
                 }
