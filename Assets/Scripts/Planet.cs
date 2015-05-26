@@ -131,13 +131,17 @@ public class Planet : MonoBehaviour {
                         }
                         gravity = 20f;
                         state = PlanetState.ORBITING;
-                        thrownParticles.Stop();
+                        if (thrownParticles.isPlaying) {
+                            thrownParticles.Stop();
+                        }
                     }
                 }
                 break;
             case PlanetState.HELD:
                 thrownTimer = 0f;
-                thrownParticles.Stop();
+                if (thrownParticles.isPlaying) {
+                    thrownParticles.Stop();
+                }
                 break;
             case PlanetState.ORBITING:
                 lastHolder = null;
@@ -145,7 +149,9 @@ public class Planet : MonoBehaviour {
                     sr.color = Color.white;
                 }
                 gravity = 20f;
-                thrownParticles.Stop();
+                if (thrownParticles.isPlaying) {
+                    thrownParticles.Stop();
+                }
                 show();
                 break;
         }

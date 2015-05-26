@@ -41,10 +41,8 @@ public class GodController : MonoBehaviour {
         go = GameObject.Find("SCRIPTS");
         spawnerScript = (PlanetSpawner)go.GetComponent<PlanetSpawner>();
 
-        // just for now until every god has animator.  Well that might never happen but still.  
-        if (god.gameObject.GetComponent<Animator>() != null) {
-            anim = god.gameObject.GetComponent<Animator>();
-        }
+        anim = god.gameObject.GetComponent<Animator>();
+
         // add god controller to game
         Game.instance.addPlayer(this);
 
@@ -79,7 +77,7 @@ public class GodController : MonoBehaviour {
         handleGodPassives();
 
         //change animation if it exists
-        if (god.gameObject.GetComponent<Animator>() != null) {
+        if (anim) {
             anim.SetFloat("Velocity", myRigidbody.velocity.x);
         }
     }
