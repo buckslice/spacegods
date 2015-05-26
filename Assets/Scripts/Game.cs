@@ -61,6 +61,9 @@ public class Game : MonoBehaviour {
             godPrefab.GetComponent<GodController>().id = player;
             godPrefab.transform.Find("Range Indicator").GetComponent<SpriteRenderer>().color = Player.colors[player - 1];
         }
+
+        // generate boundary pased on number of players
+        GameObject.Find("Boundary").GetComponent<BoundaryGenerator>().generate(numPlayers);
     }
 
     // update is called once per frame

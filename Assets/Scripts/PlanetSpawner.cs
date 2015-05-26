@@ -18,6 +18,8 @@ public class PlanetSpawner : MonoBehaviour {
     private Stack<GameObject> pool;
     private Object basicPlanet;
 
+    public float boundaryRadius { private get; set; }
+
     void Awake() {
         current = this;
 
@@ -88,8 +90,8 @@ public class PlanetSpawner : MonoBehaviour {
         GameObject planet = getPlanet();
         planet.SetActive(true);
         Vector3 worldSpawn = Camera.main.ViewportToWorldPoint(new Vector3(spawn.x, spawn.y, 10f));
-        if (worldSpawn.sqrMagnitude > 99f * 99f) {
-            worldSpawn = Random.insideUnitCircle.normalized * 95f;
+        if (worldSpawn.sqrMagnitude > boundaryRadius * boundaryRadius) {
+            worldSpawn = Random.insideUnitCircle.normalized * (boundaryRadius - 2f);
         }
         planet.transform.position = worldSpawn;
         planet.transform.rotation = Quaternion.identity;    //just in case
