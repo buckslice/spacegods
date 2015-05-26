@@ -399,7 +399,7 @@ public class GodController : MonoBehaviour {
             damage *= .25f;
         }
         if (god.changeHealth(damage)) {   // if successfully damage this god
-            if (damage > 5f) {
+            if (damage < -5f) {
                 AudioManager.instance.playSound("GodHurt", transform.position, 1f);
             }
 
