@@ -178,6 +178,10 @@ Prefab:
       propertyPath: EmissionModule.enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11467234, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
+      propertyPath: maxSize
+      value: .5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
   m_IsPrefabParent: 0

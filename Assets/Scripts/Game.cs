@@ -138,28 +138,32 @@ public class Game : MonoBehaviour {
                     songStart = true;
                 }
                 song.volume += .25f * Time.deltaTime;   // fade in volume
-                countDown.text = (t <= 0) ? "GO!" : t.ToString();
-                countDown.fontSize = 300 + (int)((timer - (int)timer) * 300f);
                 if (t != soundTimer && t > 0) {
                     // noises for the countdown numbers
                     AudioManager.instance.playSound("Collision", Vector3.zero, 1f);
                     soundTimer = t;
+                    countDown.text = t.ToString();
                 }
-                if (t <= 0 && !gameStart) {
-                    // game starts here
-                    AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
-                    countDown.color = Color.white;
-                    for (int i = 0; i < players.Count; i++) {
-                        players[i].freezeInputs = false;
+                float maxFontSize = 400f;
+                if (t <= 0) {
+                    countDown.fontSize = (int)Mathf.Lerp(0f, maxFontSize, (timer + 1f) / 2f);
+                    if (!gameStart) {   // start game here
+                        countDown.text = "GO!";
+                        AudioManager.instance.playSound("Explosion1", Vector3.zero, .5f);
+                        countDown.color = Color.white;
+                        for (int i = 0; i < players.Count; i++) {
+                            players[i].freezeInputs = false;
+                        }
+                        gameStart = true;
                     }
-                    gameStart = true;
+                    if (frames > 5) {  // flicker text between yellow and white
+                        countDown.color = (countDown.color == Color.white) ? Color.yellow : Color.white;
+                        frames = 0;
+                    }
+                    frames++;
+                } else {
+                    countDown.fontSize = (int)Mathf.Lerp(maxFontSize / 2f, maxFontSize, timer - t);
                 }
-                if (t <= 0 && frames > 5) {
-                    // flicker text between yellow and white
-                    countDown.color = (countDown.color == Color.white) ? Color.yellow : Color.white;
-                    frames = 0;
-                }
-                frames++;
 
                 if (t <= -1) {
                     // intro is over
@@ -167,7 +171,7 @@ public class Game : MonoBehaviour {
                     introFinished = true;
                 }
             }
-            timer -= Time.deltaTime / 1.25f;
+            timer -= Time.deltaTime / 1.25f;    // slower than normal
         }
     }
 

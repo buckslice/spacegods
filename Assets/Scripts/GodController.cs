@@ -394,12 +394,15 @@ public class GodController : MonoBehaviour {
             return;
         }
 
-        float damage = -collision.relativeVelocity.magnitude * planetThatHitMe.getMass();
+        float damage = -collision.relativeVelocity.magnitude * planetThatHitMe.getMass() * .5f;
         if (planetThatHitMe.state == PlanetState.ORBITING) {
             damage *= .25f;
         }
-        if (god.changeHealth(damage * .5f)) {   // if successfully damage this god
-            AudioManager.instance.playSound("GodHurt", transform.position, 1f);
+        if (god.changeHealth(damage)) {   // if successfully damage this god
+            if (damage > 5f) {
+                AudioManager.instance.playSound("GodHurt", transform.position, 1f);
+            }
+
             // if no recent holder of planet then return
             if (!planetThatHitMe.lastHolder) {
                 return;

@@ -18,7 +18,7 @@ public class PlanetSpawner : MonoBehaviour {
     private Stack<GameObject> pool;
     private Object basicPlanet;
 
-    public float boundaryRadius { private get; set; }
+    public float boundaryRadius { get; set; }
 
     void Awake() {
         current = this;

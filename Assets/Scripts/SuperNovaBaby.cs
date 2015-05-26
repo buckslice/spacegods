@@ -2,7 +2,9 @@
 using System.Collections;
 
 public class SuperNovaBaby : MonoBehaviour {
-    public float timeUntilShitGetsReal = 60f;
+    [Range(.1f, 1f)]
+    public float maxSize = .5f;   // in relation to level boundary
+
     private ParticleSystem system;
     private Transform sprite;
     private CircleCollider2D circCol;
@@ -21,29 +23,20 @@ public class SuperNovaBaby : MonoBehaviour {
     void Update() {
         sprite.Rotate(0, 0, Time.deltaTime * 5f);
         circCol.radius = Mathf.Lerp(circCol.radius, targetRadius, Time.deltaTime);
-        sprite.localScale = Vector3.one * (circCol.radius / 3f);
-        sprite.localScale += Vector3.one * .2f;
-		system.maxParticles = (int)(2500f/circCol.radius);
-		system.emissionRate = (system.maxParticles/system.startLifetime);
-        //SuperNova ();
-    }
-
-    private void SuperNova() {
-        growth += Time.deltaTime;
-        float rate = Mathf.Pow(1.1f, growth - timeUntilShitGetsReal);
-        if (rate > 1.1f) {
-            targetRadius += rate * Time.deltaTime;
-            system.startSpeed += rate * Time.deltaTime;
-            system.startSize += rate * 2f * Time.deltaTime;
-        }
+        sprite.localScale = Vector3.one * (circCol.radius / 3f + .2f);
+        system.maxParticles = (int)(2500f / circCol.radius);
+        system.emissionRate = (system.maxParticles / system.startLifetime);
+        system.startSpeed = circCol.radius / 2f;
+        system.startSize = circCol.radius * 2f;
     }
 
     void OnTriggerEnter2D(Collider2D col) {
         if (col.gameObject.tag == "Planet") {
             CircleCollider2D planetCol = col.gameObject.GetComponent<CircleCollider2D>();
             targetRadius += planetCol.radius / 2f;
-            system.startSpeed += planetCol.radius / 4f;
-            system.startSize += planetCol.radius * 1f;
+            if (targetRadius > PlanetSpawner.current.boundaryRadius * maxSize) {
+                targetRadius = PlanetSpawner.current.boundaryRadius * maxSize;
+            }
         }
     }
 }
