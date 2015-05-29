@@ -243,8 +243,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 139248}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .5, y: .5, z: 1}
+  m_LocalPosition: {x: .200000003, y: 0, z: 0}
+  m_LocalScale: {x: 1.20000005, y: 1.20000005, z: 1}
   m_Children: []
   m_Father: {fileID: 498350}
   m_RootOrder: 0
@@ -344,6 +344,10 @@ MonoBehaviour:
   maxSpeed: 30
   acceleration: 1.25
   throwStrength: 20
+  abilityCooldown: 0
+  idleSprite: {fileID: 0}
+  moveSprite: {fileID: 0}
+  attackSprite: {fileID: 0}
 --- !u!212 &21251760
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -394,7 +398,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: e33e13126efbca64082664fd9863908c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 42ef6ca5af681994d847339841e1e8f6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!212 &21262548
 SpriteRenderer:

@@ -23,7 +23,7 @@ public enum GodType {
     KITSUNE
 }
 
-public enum GodState {
+public enum GodStatus {
     NORMAL,
     DRUNK,
     FROZEN,
@@ -31,37 +31,40 @@ public enum GodState {
 }
 
 public class God : MonoBehaviour {
-    // variables set in prefab
+    // variables visible in inspector
+    // need to be set in the prefab
     public GodType type;
     public float maxHealth;
     public float maxSpeed;
     public float acceleration;
     public float throwStrength;
     public float abilityCooldown;
-    public bool isKitsune;
+    public Sprite idleSprite;
+    public Sprite moveSprite;
+    public Sprite attackSprite;
+    /////////////////////////////////
 
-    public bool special { get; set; }
-    public GodState state { get; set; }
+    public GodStatus status { get; set; }
     public float startingThrowStrength { get; private set; }
     public float startingAcceleration { get; private set; }
     public float startingMaxSpeed { get; private set; }
-    public float coolDown { get; set; }  // generic variable for various god abilities
-    public float CCTimer { get; set; }   // time left on abnormal state (another good WoW reference jeffrey lol)
+    public bool special { get; set; }    // generic bool for god abilities
+    public float coolDown { get; set; }  // generic counter for god abilities
+    public float CCTimer { get; set; }   // time left on abnormal status
     private float invincible;   // tracks whether the god is immune to damage
     private float currentHealth;
     public ParticleSystem particles { get; private set; }
-
     private GodController controller;
+
+    // animation stuff
+    public bool moveInput { get; set; }
+    private float attackAnimTime = 0f;
 
     // renderers
     public SpriteRenderer sr { get; set; }
     private SpriteRenderer[] frozenSrs;
     private SpriteRenderer drunkSr;
     private SpriteRenderer poisonedSr;
-
-    // Morrigan components
-    private SpriteRenderer enragedSr;
-    public CircleCollider2D auraCollider;
 
     // health bar
     private Vector3 screenPoint;
@@ -70,31 +73,45 @@ public class God : MonoBehaviour {
     private Image cooldownBar;
     private Image background;
 
+    // Morrigan components
+    private SpriteRenderer enragedSr;
+    public CircleCollider2D auraCollider { get; private set; }
+
+    public bool isKitsune { get; private set; }
+
     // use this for initialization
     void Start() {
-        // getting components
+        // fetch component references
         controller = GetComponent<GodController>();
-        if (type != GodType.MORRIGAN) {
-            sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
-        } else {
-            sr = transform.Find("Sprite").Find("Normal").GetComponent<SpriteRenderer>();
-            enragedSr = transform.Find("Sprite").Find("Enraged").GetComponent<SpriteRenderer>();
-            particles = GetComponent<ParticleSystem>();
-            auraCollider = gameObject.AddComponent<CircleCollider2D>();
-            auraCollider.radius = 6f;
-            auraCollider.isTrigger = true;
-            auraCollider.enabled = false;
-        }
-        if (type == GodType.HADES || type == GodType.ZEUS) {
-            particles = GetComponent<ParticleSystem>();
-        }
+        sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         Transform stateComponent = transform.Find("State");
         frozenSrs = stateComponent.Find("Frozen").GetComponentsInChildren<SpriteRenderer>();
         drunkSr = stateComponent.Find("Drunk").GetComponent<SpriteRenderer>();
         poisonedSr = stateComponent.Find("Poisoned").GetComponent<SpriteRenderer>();
 
+        switch (type) {
+            case GodType.MORRIGAN:
+                sr = transform.Find("Sprite").Find("Normal").GetComponent<SpriteRenderer>();
+                enragedSr = transform.Find("Sprite").Find("Enraged").GetComponent<SpriteRenderer>();
+                particles = GetComponent<ParticleSystem>();
+                auraCollider = gameObject.AddComponent<CircleCollider2D>();
+                auraCollider.radius = 6f;
+                auraCollider.isTrigger = true;
+                auraCollider.enabled = false;
+                break;
+            case GodType.KITSUNE:
+                isKitsune = true;
+                break;
+            case GodType.HADES:
+            case GodType.ZEUS:
+                particles = GetComponent<ParticleSystem>();
+                break;
+            default:
+                break;
+        }
+
         // settings variables
-        state = GodState.NORMAL;
+        status = GodStatus.NORMAL;
         currentHealth = maxHealth;
         startingThrowStrength = throwStrength;
         startingAcceleration = acceleration;
@@ -103,7 +120,8 @@ public class God : MonoBehaviour {
         coolDown = abilityCooldown;
         special = false;
 
-        // main UI bar
+        // the rest below is just UI bullshit
+        /////////////////////////////////////
         mainBar = new GameObject(gameObject.name + " bars");
         mainBar.transform.parent = GameObject.Find("Canvas").transform;
         mainBar.transform.SetAsFirstSibling();
@@ -139,6 +157,7 @@ public class God : MonoBehaviour {
         coolDown -= Time.deltaTime;
         CCTimer -= Time.deltaTime;
         invincible -= Time.deltaTime;
+        attackAnimTime -= Time.deltaTime;
 
         handleGodPassives();
         handleGodStates();
@@ -186,7 +205,7 @@ public class God : MonoBehaviour {
                     }
                     acceleration = startingAcceleration * 2f;
                     maxSpeed = startingMaxSpeed * 2f;
-                }else {
+                } else {
                     sr.color = new Color(1f + coolDown / 30f, 1f + coolDown / 30f, 1f + coolDown / 30f);
                     particles.Stop();
                 }
@@ -198,11 +217,11 @@ public class God : MonoBehaviour {
 
     private void handleGodStates() {
         if (CCTimer < 0f) {
-            state = GodState.NORMAL;
+            status = GodStatus.NORMAL;
         }
 
-        switch (state) {
-            case GodState.NORMAL:
+        switch (status) {
+            case GodStatus.NORMAL:
                 frozenSrs[0].enabled = false;
                 frozenSrs[1].enabled = false;
                 drunkSr.enabled = false;
@@ -211,19 +230,34 @@ public class God : MonoBehaviour {
                     controller.freezeInputs = false;
                 }
                 break;
-            case GodState.DRUNK:
+            case GodStatus.DRUNK:
                 drunkSr.enabled = true;
                 break;
-            case GodState.FROZEN:
+            case GodStatus.FROZEN:
                 frozenSrs[0].enabled = true;
                 frozenSrs[1].enabled = true;
                 controller.freezeInputs = true;
                 break;
-            case GodState.POISONED:
+            case GodStatus.POISONED:
                 poisonedSr.enabled = true;
                 changeHealth(-controller.getVelocity().magnitude * Time.deltaTime, true);
                 break;
         }
+
+        // only do this if sprites are defined
+        if (idleSprite && moveSprite && attackSprite) {
+            if (attackAnimTime > 0f) {
+                sr.sprite = attackSprite;
+            } else if (moveInput) {
+                sr.sprite = moveSprite;
+            } else {
+                sr.sprite = idleSprite;
+            }
+        }
+    }
+
+    public void setAttackTimer() {
+        attackAnimTime = .5f;
     }
 
     public bool changeHealth(float diff, bool forced = false) {
@@ -277,7 +311,7 @@ public class God : MonoBehaviour {
             background.rectTransform.anchoredPosition = new Vector2(screenPoint.x, screenPoint.y - 5f);
             float cd = Mathf.Clamp01(1f - coolDown / abilityCooldown) * 100f;
             cooldownBar.rectTransform.sizeDelta = new Vector2(cd, 5f);
-        }else {
+        } else {
             background.rectTransform.anchoredPosition = screenPoint;
         }
     }

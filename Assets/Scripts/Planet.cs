@@ -170,8 +170,6 @@ public class Planet : MonoBehaviour {
                         lastHolder.god.special = false;
                     }
                     PlanetSpawner.current.returnPlanet(gameObject);
-					if (type == PlanetType.SMASH)
-						spawnerScript.setSmashPresence(false);
                 }
             }
         }
@@ -211,8 +209,6 @@ public class Planet : MonoBehaviour {
                 lastHolder.god.special = false;
             }
             PlanetSpawner.current.returnPlanet(gameObject);
-			if (type == PlanetType.SMASH)
-				spawnerScript.setSmashPresence(false);
         }
     }
 
@@ -228,8 +224,6 @@ public class Planet : MonoBehaviour {
                 }
                 PlanetSpawner.current.returnPlanet(gameObject);
             }
-			if (type == PlanetType.SMASH)
-				spawnerScript.setSmashPresence(false);
         }
     }
 

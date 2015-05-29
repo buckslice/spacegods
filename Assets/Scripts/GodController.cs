@@ -20,16 +20,18 @@ public class GodController : MonoBehaviour {
     private float timeSinceCatch;   // time since the player caught a planet
     private bool usingJoysticks;
 
+    private static float maxTimeSinceTriggerToCatch = .15f;
+
     // sprite orientation variables
     private Transform model;
     private float flipX;
     private float modelPosX;
     private bool isFlipped; // true when facing right; false when facing left
     private float holdDistance = 3f;    // range of holding
-    private Animator anim;
 
     private GameObject go;
     private PlanetSpawner spawnerScript;
+
 
     // use this for initialization
     void Start() {
@@ -40,8 +42,6 @@ public class GodController : MonoBehaviour {
 
         go = GameObject.Find("SCRIPTS");
         spawnerScript = (PlanetSpawner)go.GetComponent<PlanetSpawner>();
-
-        anim = god.gameObject.GetComponent<Animator>();
 
         // add god controller to game
         Game.instance.addPlayer(this);
@@ -75,11 +75,6 @@ public class GodController : MonoBehaviour {
         handleVelocityAndOrientation();
         handleThrow();
         handleGodPassives();
-
-        //change animation if it exists
-        if (anim) {
-            anim.SetFloat("Velocity", myRigidbody.velocity.x);
-        }
     }
 
     private void updateVariables() {
@@ -102,7 +97,7 @@ public class GodController : MonoBehaviour {
                 dy = Input.GetAxis("Vertical" + id);
             }
         }
-        if (god.state == GodState.DRUNK) {
+        if (god.status == GodStatus.DRUNK) {
             float temp = dx;
             dx = dy;
             dy = temp;
@@ -122,13 +117,16 @@ public class GodController : MonoBehaviour {
 
         // flips sprite based on last horizontal movement direction
         // as well as the default flip orientation of gods sprite
-        if (!Mathf.Approximately(dx, 0f) || !Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + id), 0f)) {
-            isFlipped = Mathf.Approximately(Input.GetAxis("Horizontal_aim_360_" + id), 0f) ? dx < 0 :
-                Input.GetAxis("Horizontal_aim_360_" + id) < 0f;
+        float horizAim = Input.GetAxis("Horizontal_aim_360_" + id);
+        if (!Mathf.Approximately(dx, 0f) || !Mathf.Approximately(horizAim, 0f)) {
+            isFlipped = Mathf.Approximately(horizAim, 0f) ? dx < 0 : horizAim < 0f;
             int flip = isFlipped ? -1 : 1;
             model.localScale = new Vector3(flipX * flip, model.localScale.y, model.localScale.z);
             model.localPosition = new Vector3(modelPosX * flip, model.localPosition.y, model.localPosition.z);
         }
+
+        // if player is trying to move set sprite correctly
+        god.moveInput = !Mathf.Approximately(dx, 0f) || !Mathf.Approximately(dy, 0f);
     }
 
     private void handleThrow() {
@@ -233,7 +231,7 @@ public class GodController : MonoBehaviour {
             bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + id) < 0.0 : Input.GetButton("Fire" + id);
             if (inputFire && !myPlanet) {
                 Planet planet = col.gameObject.GetComponent<Planet>();
-                bool canCatch = planet.lastHolder == this || planet.state == PlanetState.ORBITING || timeSinceTrigger < .25f;
+                bool canCatch = planet.lastHolder == this || planet.state == PlanetState.ORBITING || timeSinceTrigger < maxTimeSinceTriggerToCatch;
                 if (releasedTrigger && canCatch) {
                     holdPlanet(planet);
                 }
@@ -298,6 +296,8 @@ public class GodController : MonoBehaviour {
         if (timeSinceCatch < .1f) {
             return;
         }
+        god.setAttackTimer();
+
         releasedTrigger = false;
         myPlanet.state = PlanetState.THROWN;
         myPlanet.transform.parent = null;
@@ -310,12 +310,7 @@ public class GodController : MonoBehaviour {
             myPlanet.hide();
             god.resetCooldown();
         }
-        //change animation if it exists kinda clunky maybe find a better way to check if null
-        if (god.gameObject.GetComponent<Animator>() != null) {
-            anim.SetTrigger("Shoot");
-        }
         myPlanet = null;
-
         if (god.type == GodType.ARTEMIS_APOLLO && myPlanet2) {
             myPlanet2.state = PlanetState.THROWN;
             myPlanet2.transform.parent = null;
@@ -408,15 +403,15 @@ public class GodController : MonoBehaviour {
                 return;
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.POSEIDON && planetThatHitMe.type == PlanetType.ICY) {
-                god.state = GodState.FROZEN;
+                god.status = GodStatus.FROZEN;
                 god.CCTimer = 3f;
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
-                god.state = GodState.POISONED;
+                god.status = GodStatus.POISONED;
                 god.CCTimer = 4f;
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.JESUS && planetThatHitMe.type == PlanetType.WATER) {
-                god.state = GodState.DRUNK;
+                god.status = GodStatus.DRUNK;
                 god.CCTimer = 5f;
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.NIKE) {
@@ -426,12 +421,11 @@ public class GodController : MonoBehaviour {
             if (planetThatHitMe.type == PlanetType.SMASH) {
                 god.changeHealth(-1000, true);
                 planetThatHitMe.killPlanet();
-                spawnerScript.setSmashPresence(false);
             }
 
             if (planetThatHitMe.lastHolder.god.isKitsune) {
                 planetThatHitMe.lastHolder.god.type = god.type;
-                planetThatHitMe.lastHolder.god.sr.sprite = god.sr.sprite;
+                //planetThatHitMe.lastHolder.god.sr.sprite = god.sr.sprite;
             }
         }
     }

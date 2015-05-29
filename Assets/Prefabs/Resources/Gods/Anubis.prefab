@@ -333,6 +333,10 @@ MonoBehaviour:
   maxSpeed: 30
   acceleration: 1.25
   throwStrength: 20
+  abilityCooldown: 0
+  idleSprite: {fileID: 0}
+  moveSprite: {fileID: 0}
+  attackSprite: {fileID: 0}
 --- !u!114 &11488810
 MonoBehaviour:
   m_ObjectHideFlags: 1

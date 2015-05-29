@@ -13,7 +13,7 @@ public class PlanetSpawner : MonoBehaviour {
     public Sprite[] planetSprites;
     public Sprite smashSprite;
     public bool smashBall;
-    private bool smashPresent;
+    private Planet smashPlanet;
 
     private Stack<GameObject> pool;
     private Object basicPlanet;
@@ -22,8 +22,6 @@ public class PlanetSpawner : MonoBehaviour {
 
     void Awake() {
         current = this;
-
-        smashPresent = false;
 
         basicPlanet = Resources.Load("Planet");
         pool = new Stack<GameObject>();
@@ -98,23 +96,18 @@ public class PlanetSpawner : MonoBehaviour {
 
         Planet script = planet.GetComponent<Planet>();
 
-        bool spawnedSmash = false;
-        if (smashBall && !smashPresent) {
-            switch (Random.Range(0, 10)) {
-                case 0:
-                    script.type = PlanetType.SMASH;
-                    planet.name = script.type.ToString();
-                    script.sr.sprite = smashSprite;
-                    smashPresent = true;
-                    spawnedSmash = true;
-                    break;
-                default:
-                    spawnedSmash = false;
-                    break;
-            }
+        // incase smash planet got recycled back into pool
+        if (smashPlanet && smashPlanet.type != PlanetType.SMASH) {
+            smashPlanet = null;
         }
 
-        if (!spawnedSmash) {
+        // change to turn this planet into smash if there isnt one already
+        if (smashBall && !smashPlanet && Random.Range(0, 10) == 0) {
+            script.type = PlanetType.SMASH;
+            planet.name = script.type.ToString();
+            script.sr.sprite = smashSprite;
+            smashPlanet = script;
+        } else {    // else spawn random planet
             int i = Random.Range(0, numberOfPlanetTypes);
             script.type = (PlanetType)i;
             planet.name = script.type.ToString();
@@ -123,16 +116,11 @@ public class PlanetSpawner : MonoBehaviour {
 
         script.initializeVariables();
 
-
         // add some random velocity tangent to the direction of gravity
         Vector3 dir = (Vector3.zero - script.transform.position).normalized;
         Vector3 tangent = Vector3.Cross(dir, new Vector3(0, 0, 1f)).normalized;
-        script.rb.velocity = Random.Range(8f, 12f) * tangent + Random.Range(5f, 10f) * dir;
+        script.rb.velocity = Random.Range(5f, 10f) * tangent + Random.Range(-2f, 2f) * dir;
 
         ++activePlanets;
-    }
-
-    public void setSmashPresence(bool smashHere) {
-        smashPresent = smashHere;
     }
 }
