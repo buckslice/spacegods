@@ -13,10 +13,11 @@ public class PlanetSpawner : MonoBehaviour {
     public Sprite[] planetSprites;
     public Sprite smashSprite;
     public bool smashBall;
-    private Planet smashPlanet;
+	public bool smashBallSpawned;
 
     private Stack<GameObject> pool;
     private Object basicPlanet;
+	private GameObject smashBallObject;
 
     public float boundaryRadius { get; set; }
 
@@ -24,6 +25,7 @@ public class PlanetSpawner : MonoBehaviour {
         current = this;
 
         basicPlanet = Resources.Load("Planet");
+		smashBallObject = (GameObject)Instantiate(Resources.Load ("Smash Ball"));
         pool = new Stack<GameObject>();
         for (int i = 0; i < maxPlanets; i++) {
             returnPlanet((GameObject)Instantiate(basicPlanet));
@@ -34,9 +36,13 @@ public class PlanetSpawner : MonoBehaviour {
     public void returnPlanet(GameObject obj) {
         obj.transform.parent = transform;
         obj.SetActive(false);
-        obj.name = "Pooled Planet";
-        pool.Push(obj);
-        --activePlanets;
+		if (obj == smashBallObject) {
+			smashBallSpawned = false;
+		} else {
+			obj.name = "Pooled Planet";
+			pool.Push (obj);
+			--activePlanets;
+		}
     }
 
     public GameObject getPlanet() {
@@ -85,7 +91,15 @@ public class PlanetSpawner : MonoBehaviour {
                 break;
         }
 
-        GameObject planet = getPlanet();
+		GameObject planet;
+		bool spawningSmash = false;
+		if (smashBall && !smashBallSpawned && Random.Range (0, 10) == 0) {
+			planet = smashBallObject;
+			spawningSmash = smashBallSpawned = true;
+		} else {
+			planet = getPlanet();
+		}
+
         planet.SetActive(true);
         Vector3 worldSpawn = Camera.main.ViewportToWorldPoint(new Vector3(spawn.x, spawn.y, 10f));
         if (worldSpawn.sqrMagnitude > boundaryRadius * boundaryRadius) {
@@ -96,23 +110,12 @@ public class PlanetSpawner : MonoBehaviour {
 
         Planet script = planet.GetComponent<Planet>();
 
-        // incase smash planet got recycled back into pool
-        if (smashPlanet && smashPlanet.type != PlanetType.SMASH) {
-            smashPlanet = null;
-        }
-
-        // change to turn this planet into smash if there isnt one already
-        if (smashBall && !smashPlanet && Random.Range(0, 10) == 0) {
-            script.type = PlanetType.SMASH;
-            planet.name = script.type.ToString();
-            script.sr.sprite = smashSprite;
-            smashPlanet = script;
-        } else {    // else spawn random planet
-            int i = Random.Range(0, numberOfPlanetTypes);
-            script.type = (PlanetType)i;
-            planet.name = script.type.ToString();
-            script.sr.sprite = planetSprites[i];
-        }
+		if (!spawningSmash) {
+			int i = Random.Range (0, numberOfPlanetTypes);
+			script.type = (PlanetType)i;
+			planet.name = script.type.ToString ();
+			script.sr.sprite = planetSprites [i];
+		}
 
         script.initializeVariables();
 
