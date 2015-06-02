@@ -30,8 +30,6 @@ public class GodController : MonoBehaviour {
     private float holdDistance = 3f;    // range of holding
 
     private GameObject go;
-    private PlanetSpawner spawnerScript;
-
 
     // use this for initialization
     void Start() {
@@ -39,9 +37,6 @@ public class GodController : MonoBehaviour {
         god = GetComponent<God>();
         myRigidbody = GetComponent<Rigidbody2D>();
         planetCollider = gameObject.AddComponent<CircleCollider2D>();
-
-        go = GameObject.Find("SCRIPTS");
-        spawnerScript = (PlanetSpawner)go.GetComponent<PlanetSpawner>();
 
         // add god controller to game
         Game.instance.addPlayer(this);
@@ -198,12 +193,17 @@ public class GodController : MonoBehaviour {
                 }
                 break;
             case GodType.KHONSU:
-                if (myPlanet) {
-                    if (myPlanet.type == PlanetType.MOON) {
-                        Time.timeScale = 0.5f;
-                        god.acceleration = god.startingAcceleration * 2f;
-                        god.maxSpeed = god.startingMaxSpeed * 2f;
+                if (god.coolDown < 0f) {
+                    if (!myPlanet || (myPlanet && myPlanet.type != PlanetType.MOON)) {
+                        god.coolDown += Time.deltaTime;
                     }
+                }
+                if (myPlanet && myPlanet.type == PlanetType.MOON && god.coolDown < 0f && god.coolDown > -7.5f) {
+                    Time.timeScale = 0.5f;
+                    god.acceleration = god.startingAcceleration * 2f;
+                    god.maxSpeed = god.startingMaxSpeed * 2f;
+                } else if (god.coolDown < -7.5f) {
+                    god.resetCooldown();
                 } else {
                     Time.timeScale = 1f;
                     god.acceleration = god.startingAcceleration;
@@ -216,13 +216,24 @@ public class GodController : MonoBehaviour {
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.CompareTag("God") && collision.gameObject.GetComponent<God>().type == GodType.CTHULHU) {
-            float damage = -collision.relativeVelocity.magnitude * collision.gameObject.GetComponent<Rigidbody2D>().mass;
-            god.changeHealth(damage * .5f);
+        // damage other gods when you hit them if you are cthulhu
+        if (god.type == GodType.CTHULHU && collision.gameObject.CompareTag("God")) {
+            God other = collision.gameObject.GetComponent<God>();
+            float damage = -collision.relativeVelocity.magnitude * myRigidbody.mass * .5f;
+            other.changeHealth(damage);
         }
 
         if (collision.gameObject.CompareTag("Planet")) {
-            handleCollisionWithPlanet(collision);
+            bool inputFire = (usingJoysticks) ? Input.GetAxis("Fire_360_" + id) < 0.0 : Input.GetButton("Fire" + id);
+            if (inputFire && !myPlanet && god.type != GodType.CTHULHU) {
+                Planet planet = collision.gameObject.GetComponent<Planet>();
+                bool canCatch = planet.lastHolder == this || planet.state == PlanetState.ORBITING || timeSinceTrigger < maxTimeSinceTriggerToCatch;
+                if (releasedTrigger && canCatch) {
+                    holdPlanet(planet);
+                }
+            } else {
+                handleCollisionWithPlanet(collision);
+            }
         }
     }
 
@@ -324,7 +335,6 @@ public class GodController : MonoBehaviour {
         if (god.type == GodType.THOR && !god.special) {
             god.special = true;
         }
-
     }
 
     private void blockWithPlanet(Vector2 aim) {
@@ -389,7 +399,7 @@ public class GodController : MonoBehaviour {
             return;
         }
 
-        float damage = -collision.relativeVelocity.magnitude * planetThatHitMe.getMass() * .5f;
+        float damage = -collision.relativeVelocity.magnitude * planetThatHitMe.getMass() * .4f;
         if (planetThatHitMe.state == PlanetState.ORBITING) {
             damage *= .25f;
         }
@@ -408,14 +418,14 @@ public class GodController : MonoBehaviour {
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.QUETZALCOATL && planetThatHitMe.type == PlanetType.TROPICAL) {
                 god.status = GodStatus.POISONED;
-                god.CCTimer = 4f;
+                god.CCTimer = 3f;
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.JESUS && planetThatHitMe.type == PlanetType.WATER) {
                 god.status = GodStatus.DRUNK;
                 god.CCTimer = 5f;
             }
             if (planetThatHitMe.lastHolder.god.type == GodType.NIKE) {
-                planetThatHitMe.lastHolder.god.throwStrength += 4f;
+                planetThatHitMe.lastHolder.god.throwStrength += 7f;
             }
 
             if (planetThatHitMe.type == PlanetType.SMASH) {

@@ -113,6 +113,7 @@ public class God : MonoBehaviour {
         // settings variables
         status = GodStatus.NORMAL;
         currentHealth = maxHealth;
+        throwStrength *= 2f;
         startingThrowStrength = throwStrength;
         startingAcceleration = acceleration;
         startingMaxSpeed = maxSpeed;
@@ -240,7 +241,7 @@ public class God : MonoBehaviour {
                 break;
             case GodStatus.POISONED:
                 poisonedSr.enabled = true;
-                changeHealth(-controller.getVelocity().magnitude * Time.deltaTime, true);
+                changeHealth(-controller.getVelocity().magnitude * Time.deltaTime * .5f, true);
                 break;
         }
 

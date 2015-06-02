@@ -26,7 +26,7 @@ public class Game : MonoBehaviour {
     public static Game instance { get; private set; }
     void Awake() {
         instance = this;
-		//Application.targetFrameRate = 60;
+        //Application.targetFrameRate = 60;
     }
 
     // use this for initialization

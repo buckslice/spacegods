@@ -126,62 +126,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 11467234, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: timeUntilShitGetsReal
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: InitialModule.maxNumParticles
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 5855876, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: m_Radius
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: lengthInSec
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: looping
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: SizeModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].value
-      value: .540540576
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: ShapeModule.radius
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: InitialModule.startSize.scalar
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: EmissionModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11467234, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: maxSize
-      value: .5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
   m_IsPrefabParent: 0
@@ -653,6 +597,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ed2321cc0237c6547aba69b8d8313a9e, type: 3}
   smashSprite: {fileID: 21300000, guid: d682c8550c6ff294eb4fc193d57a532f, type: 3}
   smashBall: 1
+  smashBallSpawned: 0
 --- !u!114 &1664334441
 MonoBehaviour:
   m_ObjectHideFlags: 0

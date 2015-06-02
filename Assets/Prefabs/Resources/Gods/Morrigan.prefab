@@ -29,8 +29,8 @@ GameObject:
   - 58: {fileID: 5831572}
   - 58: {fileID: 5856124}
   - 114: {fileID: 11444214}
-  - 198: {fileID: 19824504}
-  - 199: {fileID: 19918170}
+  - 199: {fileID: 19905934}
+  - 198: {fileID: 19849510}
   m_Layer: 0
   m_Name: Morrigan
   m_TagString: God
@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc1542dbe7344c54ea6e783a16aacecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!198 &19824504
+--- !u!198 &19849510
 ParticleSystem:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -1460,7 +1460,7 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
---- !u!199 &19918170
+--- !u!199 &19905934
 ParticleSystemRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

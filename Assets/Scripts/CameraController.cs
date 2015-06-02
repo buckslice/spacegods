@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour {
     private Camera mainCam;
     private Renderer background;
 
-    private float[] cameraJumps = { 12, 20, 30, 45, 60, 80, 100 };
+    private float[] cameraJumps = { 15, 22, 30, 45, 60, 80, 100 };
 
     // use this for initialization
     void Start() {
