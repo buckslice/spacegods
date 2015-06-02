@@ -556,7 +556,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449acb889f887b648b5e28fda11bb50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSize: 12
   backgroundScale: .0199999996
 --- !u!114 &1664334439
 MonoBehaviour:

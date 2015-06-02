@@ -21,7 +21,7 @@ public enum GodType {
     KHONSU,
     MORRIGAN,
     KITSUNE,
-	RA
+    RA
 }
 
 public enum GodStatus {
@@ -106,6 +106,7 @@ public class God : MonoBehaviour {
                 break;
             case GodType.HADES:
             case GodType.ZEUS:
+            case GodType.ANUBIS:
                 particles = GetComponent<ParticleSystem>();
                 break;
             default:
@@ -177,13 +178,13 @@ public class God : MonoBehaviour {
                 }
                 break;
 
-			case GodType.ANUBIS:
-				if (coolDown< 0f) {
-					GameObject.Find ("SCRIPTS").GetComponent<Game> ().DamageAllEnemies ();
-					resetCooldown ();
-					this.gameObject.GetComponent<ParticleSystem>().Play (false);
-				}	
-				break;
+            case GodType.ANUBIS:
+                if (coolDown < 0f) {
+                    Game.instance.DamageAllEnemies();
+                    resetCooldown();
+                    particles.Play(false);
+                }
+                break;
 
             case GodType.ODIN:
                 float r = currentHealth / maxHealth;
