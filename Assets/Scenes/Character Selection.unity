@@ -359,7 +359,7 @@ MonoBehaviour:
   godSounds:
   - {fileID: 8300000, guid: c68a2ec3ab227f7418d714c639124b83, type: 3}
   - {fileID: 8300000, guid: 3f7ea45b7bbea884889121ce1704625f, type: 3}
-  - {fileID: 8300000, guid: 5b125cb97652d5c4cb1910c2cea5301b, type: 3}
+  - {fileID: 8300000, guid: c89c7ff5df97ff446841b9986b05ab92, type: 3}
   - {fileID: 8300000, guid: 364b300b6e10f87488590463dfc9e664, type: 3}
   - {fileID: 8300000, guid: e30af868fc3981b49ba14586b14892ad, type: 3}
   - {fileID: 8300000, guid: 20d9ba389eaedbd4baa3c94b676aa342, type: 3}
@@ -376,7 +376,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c2a47e4d4dba005419b7799d4b2bccda, type: 3}
   - {fileID: 8300000, guid: ac95733c74f3eb745b4695af38f1ae72, type: 3}
   - {fileID: 8300000, guid: 218698b95639e514f94007f69b391b09, type: 3}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 2577f17ab3a2afb4f8a2ab1a8d0ff439, type: 3}
   - {fileID: 0}
   nameBackground: {fileID: 21300000, guid: e788c6d739f5ed648b724f35844e4b3e, type: 3}
   playerSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
