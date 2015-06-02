@@ -81,6 +81,14 @@ public class Game : MonoBehaviour {
         }
     }
 
+	public void DamageAllEnemies(){
+		foreach (GodController player in players){
+			if (player.god.name!="ANUBIS"){
+				player.god.changeHealth (-10);
+			}
+		}
+	}
+
     public void addPlayer(GodController player) {
         players.Add(player);
     }

@@ -216,7 +216,7 @@ public class Planet : MonoBehaviour {
         if (collider.CompareTag("Sun")) {
             // kill planet if it hits sun
             //AudioManager.instance.playSound("Explosion0", transform.position, .25f);
-            if (lastHolder && lastHolder.god.type == GodType.ANUBIS) {
+            if (lastHolder && lastHolder.god.type == GodType.RA) {
                 gravity = 0f;
             } else {
                 if (lastHolder && lastHolder.god.type == GodType.THOR) {

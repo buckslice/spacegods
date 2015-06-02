@@ -20,7 +20,8 @@ public enum GodType {
     HADES,
     KHONSU,
     MORRIGAN,
-    KITSUNE
+    KITSUNE,
+	RA
 }
 
 public enum GodStatus {
@@ -81,6 +82,7 @@ public class God : MonoBehaviour {
 
     // use this for initialization
     void Start() {
+
         // fetch component references
         controller = GetComponent<GodController>();
         sr = transform.Find("Sprite").GetComponent<SpriteRenderer>();
@@ -174,6 +176,14 @@ public class God : MonoBehaviour {
                     sr.color = Color.white;
                 }
                 break;
+
+			case GodType.ANUBIS:
+				if (coolDown< 0f) {
+					GameObject.Find ("SCRIPTS").GetComponent<Game> ().DamageAllEnemies ();
+					resetCooldown ();
+					this.gameObject.GetComponent<ParticleSystem>().Play (false);
+				}	
+				break;
 
             case GodType.ODIN:
                 float r = currentHealth / maxHealth;

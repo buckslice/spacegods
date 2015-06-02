@@ -354,7 +354,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2a79c82435bcff5479e24c3d55d7b4cc, type: 3}
   - {fileID: 21300000, guid: a695c74353ef4224395db00690bd7c15, type: 3}
   - {fileID: 21300000, guid: 7a21f041affbbf04ab4990e6fada380b, type: 3}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: e0e36868d52f26c4a81f5e11e9bd58bd, type: 3}
   - {fileID: 21300000, guid: ab3e03de5d9633446b0b803c7fc4ea57, type: 3}
   godSounds:
   - {fileID: 8300000, guid: c68a2ec3ab227f7418d714c639124b83, type: 3}
