@@ -188,7 +188,7 @@ Transform:
   m_GameObject: {fileID: 105442}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: -2, y: 2.5, z: 1}
   m_Children: []
   m_Father: {fileID: 483948}
   m_RootOrder: 0
@@ -316,7 +316,7 @@ Transform:
   m_GameObject: {fileID: 101764}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -.5, y: .5, z: 1}
+  m_LocalScale: {x: -.600000024, y: .600000024, z: 1}
   m_Children:
   - {fileID: 403116}
   - {fileID: 444918}
@@ -393,7 +393,9 @@ MonoBehaviour:
   acceleration: 1.25
   throwStrength: 20
   abilityCooldown: 30
-  auraCollider: {fileID: 0}
+  idleSprite: {fileID: 0}
+  moveSprite: {fileID: 0}
+  attackSprite: {fileID: 0}
 --- !u!114 &11444214
 MonoBehaviour:
   m_ObjectHideFlags: 1
