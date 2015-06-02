@@ -2,13 +2,13 @@
 using System.Collections;
 
 public class CameraController : MonoBehaviour {
-    public float minSize;
+    private float minSize = 15f;
     public float backgroundScale;
 
     private Camera mainCam;
     private Renderer background;
 
-    private float[] cameraJumps = { 15, 22, 30, 45, 60, 80, 100 };
+    private float[] cameraJumps = { 15, 23, 32, 45, 60, 80, 100 };
 
     // use this for initialization
     void Start() {
@@ -51,7 +51,7 @@ public class CameraController : MonoBehaviour {
 
         // lerp quickly when camera is expanding and slowly when shrinking
         float rate = targSize > mainCam.orthographicSize ? Time.deltaTime * 3f : Time.deltaTime;
-        if(Time.timeSinceLevelLoad < .5f) { // for smooth beginning
+        if (Time.timeSinceLevelLoad < .5f) { // for smooth beginning
             rate = 0f;
         }
         mainCam.orthographicSize = Mathf.Lerp(mainCam.orthographicSize, targSize, rate);

@@ -26,7 +26,7 @@ public class CharacterSelector : MonoBehaviour {
     private string[] godInfo = new string[]{
         "CHARGES PLANETS THE LONGER HE HOLDS THEM",
         "FREEZES PLAYERS BY THROWING ICE PLANETS",
-		"DAMAGES ALL PLAYERS EVERY 30 SECONDS",
+        "DAMAGES ALL PLAYERS EVERY 30 SECONDS",
         "MAKES PLANETS BOOMERANG BACK TO HIM",
         "STRENGTH INCREASES AS HEALTH DECREASES",
         "HEALS HERSELF WHEN HEALTH IS LOW",
@@ -43,7 +43,7 @@ public class CharacterSelector : MonoBehaviour {
         "TRANSFORMS INTO A RAVEN AND HAS AURA THAT DEALS DAMAGE",
         "SLOWS TIME WHILE HOLDING A MOON PLANET",
         "GAINS THE ABILITY OF THE LAST GOD HIT",
-		"CAN THROW PLANETS THROUGH THE SUN",
+        "CAN THROW PLANETS THROUGH THE SUN",
         "RNG WILL DETERMINE YOUR FATE"
     };
 
@@ -205,6 +205,8 @@ public class CharacterSelector : MonoBehaviour {
             usingKeyboard = true;
             players.Add(new Player(1, playerFont, playerSprite));
             players.Add(new Player(2, playerFont, playerSprite));
+        } else {
+            GameObject.Find("Button").SetActive(false);
         }
     }
 
