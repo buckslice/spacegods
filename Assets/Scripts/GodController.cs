@@ -230,6 +230,8 @@ public class GodController : MonoBehaviour {
                 bool canCatch = planet.lastHolder == this || planet.state == PlanetState.ORBITING || timeSinceTrigger < maxTimeSinceTriggerToCatch;
                 if (releasedTrigger && canCatch) {
                     holdPlanet(planet);
+                } else {
+                    handleCollisionWithPlanet(collision);
                 }
             } else {
                 handleCollisionWithPlanet(collision);
