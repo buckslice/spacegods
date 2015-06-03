@@ -582,10 +582,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1420800238}
   m_RootOrder: 0
-  m_AnchorMin: {x: .292522728, y: .0978186727}
-  m_AnchorMax: {x: .514999986, y: .424772024}
-  m_AnchoredPosition: {x: 8, y: 0}
-  m_SizeDelta: {x: -16, y: 0}
+  m_AnchorMin: {x: .274000019, y: .132661894}
+  m_AnchorMax: {x: .527685225, y: .424772024}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &840640016
 MonoBehaviour:
