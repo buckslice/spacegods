@@ -435,6 +435,13 @@ public class GodController : MonoBehaviour {
 
             if (planetThatHitMe.lastHolder.god.isKitsune) {
                 planetThatHitMe.lastHolder.god.type = god.type;
+                planetThatHitMe.lastHolder.god.abilityCooldown = god.abilityCooldown;
+                planetThatHitMe.lastHolder.god.startingMaxSpeed = god.startingMaxSpeed;
+                planetThatHitMe.lastHolder.god.startingAcceleration = god.startingAcceleration;
+                planetThatHitMe.lastHolder.god.startingThrowStrength = god.startingThrowStrength;
+                if (god.particles) {
+                    planetThatHitMe.lastHolder.god.particles = god.particles;
+                }
                 //planetThatHitMe.lastHolder.god.sr.sprite = god.sr.sprite;
             }
         }

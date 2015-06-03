@@ -46,15 +46,15 @@ public class God : MonoBehaviour {
     /////////////////////////////////
 
     public GodStatus status { get; set; }
-    public float startingThrowStrength { get; private set; }
-    public float startingAcceleration { get; private set; }
-    public float startingMaxSpeed { get; private set; }
+    public float startingThrowStrength { get; set; }
+    public float startingAcceleration { get; set; }
+    public float startingMaxSpeed { get; set; }
     public bool special { get; set; }    // generic bool for god abilities
     public float coolDown { get; set; }  // generic counter for god abilities
     public float CCTimer { get; set; }   // time left on abnormal status
     private float invincible;   // tracks whether the god is immune to damage
     private float currentHealth;
-    public ParticleSystem particles { get; private set; }
+    public ParticleSystem particles { get; set; }
     private GodController controller;
 
     // animation stuff
