@@ -20,14 +20,14 @@ public class CharacterSelector : MonoBehaviour {
     public static string[][] gods = new string[3][] {
         new string[] {"ZEUS","POSEIDON","ANUBIS","THOR","ODIN","ATHENA","MICHAEL JORDAN"},
         new string[] {"CTHULHU","HERMES", "SHIVA","SUN-WUKONG", "QUETZALCOATL","ARTEMIS & APOLLO", "JESUS"},
-        new string[] {"NIKE","HADES", "MORRIGAN", "KHONSU", "KITSUNE", "BLANK", "RANDOM" },
+        new string[] {"NIKE","HADES", "MORRIGAN", "KHONSU", "KITSUNE", "RA", "RANDOM" },
     };
 
     private string[] godInfo = new string[]{
         "CHARGES PLANETS THE LONGER HE HOLDS THEM",
         "FREEZES PLAYERS BY THROWING ICE PLANETS",
-        "CAN THROW PLANETS THROUGH THE SUN",
-        "ATTACHES HIS HAMMER TO PLANETS AND CAUSES THEM TO BOOMERANG BACK TO HIM",
+        "DAMAGES ALL PLAYERS EVERY 30 SECONDS",
+        "MAKES PLANETS BOOMERANG BACK TO HIM",
         "STRENGTH INCREASES AS HEALTH DECREASES",
         "HEALS HERSELF WHEN HEALTH IS LOW",
         "FIND THE BASKETBALLS AND SHOW THEM HOW TO SLAM",
@@ -35,15 +35,15 @@ public class CharacterSelector : MonoBehaviour {
         "VERY FAST BUT FRAGILE AND WEAK",
         "GAINS HEALTH WHEN A PLANET DIES IN HIS HANDS",
         "CAN THROW INVISIBLE PLANETS",
-        "POISONS GODS WHEN THROWING TROPICAL PLANETS",
+        "POISONS GODS BY THROWING TROPICAL PLANETS",
         "HELD PLANETS ARE SPLIT AND THROWN IN OPPOSITE DIRECTIONS",
-        "TURNS WATER INTO WINE AND MAKES PLAYERS DRUNK WHEN THROWING WATER PLANETS",
-        "STRONGER THE CLOSER SHE IS TO VICTORY (EVERYTIME SHE HITS ANOTHER GOD)",
+        "TURNS WATER INTO WINE AND MAKES PLAYERS DRUNK BY THROWING WATER PLANETS",
+        "STRONGER THE CLOSER SHE IS TO VICTORY (EVERY TIME SHE HITS ANOTHER GOD)",
         "COMES BACK FROM DEATH",
-        "TRANSFORMS INTO A RAVEN HAS AURA THAT DEALS DAMAGE",
+        "TRANSFORMS INTO A RAVEN AND HAS AURA THAT DEALS DAMAGE",
         "SLOWS TIME WHILE HOLDING A MOON PLANET",
         "GAINS THE ABILITY OF THE LAST GOD HIT",
-        "BLANK",
+        "CAN THROW PLANETS THROUGH THE SUN",
         "RNG WILL DETERMINE YOUR FATE"
     };
 
@@ -205,6 +205,8 @@ public class CharacterSelector : MonoBehaviour {
             usingKeyboard = true;
             players.Add(new Player(1, playerFont, playerSprite));
             players.Add(new Player(2, playerFont, playerSprite));
+        } else {
+            GameObject.Find("Button").SetActive(false);
         }
     }
 

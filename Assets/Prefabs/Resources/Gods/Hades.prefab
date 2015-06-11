@@ -211,7 +211,7 @@ Transform:
   m_GameObject: {fileID: 154642}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 451378}
   m_RootOrder: 0
@@ -336,7 +336,9 @@ MonoBehaviour:
   acceleration: 1.25
   throwStrength: 20
   abilityCooldown: 30
-  auraCollider: {fileID: 0}
+  idleSprite: {fileID: 0}
+  moveSprite: {fileID: 0}
+  attackSprite: {fileID: 0}
 --- !u!114 &11495886
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -365,7 +367,7 @@ ParticleSystem:
   InitialModule:
     enabled: 1
     startLifetime:
-      scalar: 1
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -398,7 +400,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 3
+      scalar: 10
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -522,7 +524,7 @@ ParticleSystem:
         rgba: 4294967295
       maxColor:
         serializedVersion: 2
-        rgba: 4294967295
+        rgba: 4294929152
       minMaxState: 0
     startSize:
       scalar: 3
@@ -611,7 +613,7 @@ ParticleSystem:
     enabled: 1
     m_Type: 0
     rate:
-      scalar: 10
+      scalar: 100
       maxCurve:
         serializedVersion: 2
         m_Curve:

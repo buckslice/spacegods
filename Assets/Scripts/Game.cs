@@ -11,6 +11,7 @@ public class Game : MonoBehaviour {
     private GameObject overlay;
     private Text countDown;
     private Text gameOverText;
+    private Text gameOverTextBack;
     private float timer;
     private int soundTimer;
     private int frames;
@@ -26,7 +27,7 @@ public class Game : MonoBehaviour {
     public static Game instance { get; private set; }
     void Awake() {
         instance = this;
-		//Application.targetFrameRate = 60;
+        //Application.targetFrameRate = 60;
     }
 
     // use this for initialization
@@ -37,6 +38,7 @@ public class Game : MonoBehaviour {
         winner = 0;
         countDown = GameObject.Find("CountdownText").GetComponent<Text>();
         gameOverText = GameObject.Find("GameOverText").GetComponent<Text>();
+        gameOverTextBack = GameObject.Find("GameOverTextBack").GetComponent<Text>();
         song = Camera.main.GetComponent<AudioSource>();
         overlay = GameObject.Find("PauseOverlay");
         overlay.SetActive(false);
@@ -81,6 +83,14 @@ public class Game : MonoBehaviour {
         }
     }
 
+    public void DamageAllEnemies() {
+        for (int i = 0; i < players.Count; i++) {
+            if (players[i].god.type != GodType.ANUBIS) {
+                players[i].god.changeHealth(-10);
+            }
+        }
+    }
+
     public void addPlayer(GodController player) {
         players.Add(player);
     }
@@ -111,6 +121,7 @@ public class Game : MonoBehaviour {
                 string restartLetter = usingKeyboard ? "R" : "A";
                 string quitLetter = usingKeyboard ? "Q" : "B";
                 gameOverText.text = "GAME OVER!\n" + winnerName + " (P" + winner + ") " + winPlurality + "!\n P" + winner + ": " + restartLetter + " TO CHANGE GODS\nY TO PLAY AGAIN\n" + quitLetter + " TO QUIT";
+                gameOverTextBack.text = gameOverText.text;
             }
             if (winner != 0) {
                 if (Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Submit" + winner)) {
@@ -181,6 +192,7 @@ public class Game : MonoBehaviour {
             Time.timeScale = 0;
             isPaused = true;
             gameOverText.text = "PAUSED";
+            gameOverTextBack.text = gameOverText.text;
             overlay.SetActive(true);
         } else if (isPaused) {
             if (Input.GetKeyDown(KeyCode.R)) {
@@ -198,6 +210,7 @@ public class Game : MonoBehaviour {
                 isPaused = false;
                 overlay.SetActive(false);
                 gameOverText.text = "";
+                gameOverTextBack.text = gameOverText.text;
             }
         }
     }

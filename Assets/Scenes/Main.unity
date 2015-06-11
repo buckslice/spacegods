@@ -126,62 +126,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 11467234, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: timeUntilShitGetsReal
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: InitialModule.maxNumParticles
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 5855876, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: m_Radius
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: lengthInSec
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: looping
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: SizeModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].value
-      value: .540540576
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: ShapeModule.radius
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: InitialModule.startSize.scalar
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 19805210, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: EmissionModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11467234, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
-      propertyPath: maxSize
-      value: .5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e5bdf6253b6253a4f90db0cc0506f8e1, type: 2}
   m_IsPrefabParent: 0
@@ -340,6 +284,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 839771479}
+  - {fileID: 1955738584}
   - {fileID: 1452947029}
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -484,7 +429,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1243934482}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_AnchorMin: {x: .100000001, y: .25}
   m_AnchorMax: {x: .899999976, y: .75}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -502,7 +447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: .784313738, g: 1, b: 1, a: 1}
+  m_Color: {r: .860294104, g: 1, b: 1, a: 1}
   m_FontData:
     m_Font: {fileID: 12800000, guid: 9421c4433e4ef2b45b8afe4d58b14f01, type: 3}
     m_FontSize: 14
@@ -515,9 +460,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '
-
-'
+  m_Text: 
 --- !u!222 &1452947031
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -562,10 +505,6 @@ Prefab:
     - target: {fileID: 400000, guid: 98c467743216f044cb846816f0671024, type: 2}
       propertyPath: m_RootOrder
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8200000, guid: 98c467743216f044cb846816f0671024, type: 2}
-      propertyPath: Loop
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 98c467743216f044cb846816f0671024, type: 2}
@@ -612,7 +551,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449acb889f887b648b5e28fda11bb50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSize: 12
   backgroundScale: .0199999996
 --- !u!114 &1664334439
 MonoBehaviour:
@@ -653,6 +591,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ed2321cc0237c6547aba69b8d8313a9e, type: 3}
   smashSprite: {fileID: 21300000, guid: d682c8550c6ff294eb4fc193d57a532f, type: 3}
   smashBall: 1
+  smashBallSpawned: 0
 --- !u!114 &1664334441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -734,3 +673,69 @@ Transform:
   - {fileID: 653609593}
   m_Father: {fileID: 0}
   m_RootOrder: 5
+--- !u!1 &1955738583
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1955738584}
+  - 222: {fileID: 1955738586}
+  - 114: {fileID: 1955738585}
+  m_Layer: 5
+  m_Name: GameOverTextBack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1955738584
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1955738583}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1243934482}
+  m_RootOrder: 1
+  m_AnchorMin: {x: .104999997, y: .245000005}
+  m_AnchorMax: {x: .904999971, y: .745000005}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: .5, y: .5}
+--- !u!114 &1955738585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1955738583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 9421c4433e4ef2b45b8afe4d58b14f01, type: 3}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 10
+    m_MaxSize: 100
+    m_Alignment: 4
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 
+--- !u!222 &1955738586
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1955738583}

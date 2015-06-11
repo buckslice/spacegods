@@ -344,9 +344,10 @@ MonoBehaviour:
   maxSpeed: 30
   acceleration: 1.25
   throwStrength: 20
-  abilityCooldown: 0
-  isKitsune: 1
-  auraCollider: {fileID: 0}
+  abilityCooldown: -1
+  idleSprite: {fileID: 0}
+  moveSprite: {fileID: 0}
+  attackSprite: {fileID: 0}
 --- !u!212 &21209126
 SpriteRenderer:
   m_ObjectHideFlags: 1
